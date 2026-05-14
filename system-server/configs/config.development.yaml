@@ -1,0 +1,32 @@
+# 开发环境覆盖配置（APP_ENV=development）
+# 仅需填写与 config.yaml 不同的项
+
+server:
+  mode: debug
+
+log:
+  level: debug
+
+db:
+  driver: mysql
+  dsn: root:123456@tcp(127.0.0.1:3306)/aevo_db?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
+
+redis:
+  addr: 127.0.0.1:6379
+  password: ""
+
+rocketmq:
+  enabled: true
+  name_servers:
+    - "127.0.0.1:9876"
+
+# 开发环境开启 Swagger
+swagger:
+  enabled: true
+
+webauthn:
+  rp_id: localhost
+  rp_origins:
+    - http://localhost:5173
+    - http://192.168.31.82:5173
+  rp_name: Aevons Admin
