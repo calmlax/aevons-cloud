@@ -5,6 +5,7 @@ import (
 
 	appconfig "github.com/calmlax/aevons-framework/config"
 	"github.com/calmlax/aevons-framework/middleware"
+	"github.com/calmlax/aevons-framework/web"
 	"github.com/calmlax/aevons-framework/xlog"
 
 	"github.com/gin-gonic/gin"
@@ -21,6 +22,7 @@ func Setup(cfg *appconfig.Config) *gin.Engine {
 	r.Use(middleware.RequestID())
 	r.Use(middleware.CORS(cfg.CORS.Enabled, cfg.CORS.AllowedOrigins))
 	r.Use(middleware.XSSMiddleware(cfg))
+	web.RegisterHealthRoute(r, cfg.Server.Name)
 
 	// tokenStore := pkgauth.NewRedisTokenStore(redis.Client)
 	// r.Use(middleware.AuthMiddleware(tokenStore, cfg.Auth.Excludes))
