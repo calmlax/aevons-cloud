@@ -22,7 +22,7 @@ rocketmq:
 
 # 开发环境开启 Swagger
 swagger:
-  enabled: true
+  enabled: false
 
 webauthn:
   rp_id: localhost
