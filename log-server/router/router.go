@@ -46,27 +46,33 @@ func Setup(app *core.App) (*gin.Engine, error) {
 
 	v1 := r.Group("/api/v1")
 	{
-		registerConfRoutes(v1, db)
+		registerLoginLogRoutes(v1, db)
+		registerOperLogRoutes(v1, db)
 	}
 
 	return r, nil
 }
 
-func registerConfRoutes(rg *gin.RouterGroup, db *gorm.DB) {
-	h := handler.NewConfHandler(
-		service.NewConfService(
-			repository.NewConfRepository(db),
-		),
-	)
-	g := rg.Group("/conf")
+func registerLoginLogRoutes(rg *gin.RouterGroup, db *gorm.DB) {
+	h := handler.NewLoginLogHandler(service.NewLoginLogService(repository.NewLoginLogRepository(db)))
+	g := rg.Group("/login/log")
 	{
-		g.GET("/list", middleware.HasPermission("sys:conf$list"), h.List)
-		g.GET("/page", middleware.HasPermission("sys:conf$list"), h.Page)
-		g.GET("/:id", middleware.HasPermission("sys:conf$query"), h.Get)
-		g.GET("/key/:key", h.GetConfByKey)
-		// g.POST("", middleware.HasPermission("sys:conf$add"), middleware.OperLog(db, "参数配置", consts.INSERT), h.CreateConf)
-		// g.POST("/refresh-cache", middleware.HasPermission("sys:conf$edit"), middleware.OperLog(db, "参数配置", consts.CLEAN), h.RefreshCache)
-		// g.PUT("/:id", middleware.HasPermission("sys:conf$edit"), middleware.OperLog(db, "参数配置", consts.UPDATE), h.UpdateConf)
-		// g.DELETE("/:id", middleware.HasPermission("sys:conf$delete"), middleware.OperLog(db, "参数配置", consts.DELETE), h.Delete)
+		g.GET("/list", middleware.HasPermission("monitor:login:log$query"), h.List)
+		g.GET("/page", middleware.HasPermission("monitor:login:log$query"), h.Page)
+		g.GET("/:id", middleware.HasPermission("monitor:login:log$query"), h.Get)
+		// g.DELETE("/:ids", middleware.HasPermission("monitor:log$delete"), middleware.OperLog(db, "LoginLog-[登录日志]", consts.DELETE), h.BatchDelete)
+		// g.DELETE("", middleware.HasPermission("monitor:login:log$clear"), middleware.OperLog(db, "LoginLog-[登录日志清空]", consts.CLEAN), h.Clear)
+	}
+}
+
+func registerOperLogRoutes(rg *gin.RouterGroup, db *gorm.DB) {
+	h := handler.NewOperLogHandler(service.NewOperLogService(repository.NewOperLogRepository(db)))
+	g := rg.Group("/oper/log")
+	{
+		g.GET("/list", middleware.HasPermission("monitor:oper:log$query"), h.List)
+		g.GET("/page", middleware.HasPermission("monitor:oper:log$query"), h.Page)
+		g.GET("/:id", middleware.HasPermission("monitor:oper:log$query"), h.Get)
+		// g.DELETE("/:ids", middleware.HasPermission("monitor:oper:log$delete"), middleware.OperLog(db, "OperLog-[操作日志]", consts.DELETE), h.BatchDelete)
+		// g.DELETE("", middleware.HasPermission("monitor:oper:log$clear"), middleware.OperLog(db, "OperLog-[操作日志清空]", consts.CLEAN), h.Clear)
 	}
 }
