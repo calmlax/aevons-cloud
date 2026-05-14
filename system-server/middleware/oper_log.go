@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"aevons-grpc/log-server/operlog"
+	"aevons-grpc/log-grpc/operlog"
 
 	frameworkauth "github.com/calmlax/aevons-framework/auth"
 	"github.com/calmlax/aevons-framework/consts"

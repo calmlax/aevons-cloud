@@ -7,6 +7,7 @@ import (
 	"log-server/service"
 
 	"github.com/calmlax/aevons-framework/auth"
+	"github.com/calmlax/aevons-framework/consts"
 	"github.com/calmlax/aevons-framework/core"
 	"github.com/calmlax/aevons-framework/core/server"
 	"github.com/calmlax/aevons-framework/middleware"
@@ -60,8 +61,8 @@ func registerLoginLogRoutes(rg *gin.RouterGroup, db *gorm.DB) {
 		g.GET("/list", middleware.HasPermission("monitor:login:log$query"), h.List)
 		g.GET("/page", middleware.HasPermission("monitor:login:log$query"), h.Page)
 		g.GET("/:id", middleware.HasPermission("monitor:login:log$query"), h.Get)
-		// g.DELETE("/:ids", middleware.HasPermission("monitor:log$delete"), middleware.OperLog(db, "LoginLog-[登录日志]", consts.DELETE), h.BatchDelete)
-		// g.DELETE("", middleware.HasPermission("monitor:login:log$clear"), middleware.OperLog(db, "LoginLog-[登录日志清空]", consts.CLEAN), h.Clear)
+		g.DELETE("/:ids", middleware.HasPermission("monitor:log$delete"), middleware.OperLog(db, "LoginLog-[登录日志]", consts.DELETE), h.BatchDelete)
+		g.DELETE("", middleware.HasPermission("monitor:login:log$clear"), middleware.OperLog(db, "LoginLog-[登录日志清空]", consts.CLEAN), h.Clear)
 	}
 }
 
@@ -72,7 +73,7 @@ func registerOperLogRoutes(rg *gin.RouterGroup, db *gorm.DB) {
 		g.GET("/list", middleware.HasPermission("monitor:oper:log$query"), h.List)
 		g.GET("/page", middleware.HasPermission("monitor:oper:log$query"), h.Page)
 		g.GET("/:id", middleware.HasPermission("monitor:oper:log$query"), h.Get)
-		// g.DELETE("/:ids", middleware.HasPermission("monitor:oper:log$delete"), middleware.OperLog(db, "OperLog-[操作日志]", consts.DELETE), h.BatchDelete)
-		// g.DELETE("", middleware.HasPermission("monitor:oper:log$clear"), middleware.OperLog(db, "OperLog-[操作日志清空]", consts.CLEAN), h.Clear)
+		g.DELETE("/:ids", middleware.HasPermission("monitor:oper:log$delete"), middleware.OperLog(db, "OperLog-[操作日志]", consts.DELETE), h.BatchDelete)
+		g.DELETE("", middleware.HasPermission("monitor:oper:log$clear"), middleware.OperLog(db, "OperLog-[操作日志清空]", consts.CLEAN), h.Clear)
 	}
 }

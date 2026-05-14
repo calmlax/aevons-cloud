@@ -6,7 +6,7 @@ import (
 	"log-server/repository"
 	"log-server/service"
 
-	"aevons-grpc/log-server/operlog"
+	"aevons-grpc/log-grpc/operlog"
 
 	"gorm.io/gorm"
 )

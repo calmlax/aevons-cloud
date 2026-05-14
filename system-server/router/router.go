@@ -7,7 +7,7 @@ import (
 	"system-server/repository"
 	"system-server/service"
 
-	"aevons-grpc/log-server/operlog"
+	"aevons-grpc/log-grpc/operlog"
 
 	"github.com/calmlax/aevons-framework/auth"
 	"github.com/calmlax/aevons-framework/consts"

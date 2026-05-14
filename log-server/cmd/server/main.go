@@ -24,7 +24,7 @@ import (
 	"syscall"
 	"time"
 
-	"aevons-grpc/log-server/operlog"
+	"aevons-grpc/log-grpc/operlog"
 
 	"github.com/calmlax/aevons-framework/config"
 	"github.com/calmlax/aevons-framework/core"
