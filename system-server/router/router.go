@@ -13,7 +13,7 @@ import (
 
 // Setup 配置 Gin 引擎，注册中间件和路由。
 func Setup(cfg *appconfig.Config) *gin.Engine {
-	gin.SetMode(cfg.Service.Mode)
+	gin.SetMode(cfg.Server.Mode)
 
 	r := gin.New()
 	r.Use(middleware.Logger())
@@ -34,7 +34,7 @@ func Setup(cfg *appconfig.Config) *gin.Engine {
 			}
 			c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(doc))
 		})
-		xlog.Info("apifox openapi:    http://localhost:%d/apifox/openapi.json", cfg.Service.Port)
+		xlog.Info("apifox openapi:    http://localhost:%d/apifox/openapi.json", cfg.Server.Port)
 	}
 
 	// v1 := r.Group("/api/v1")

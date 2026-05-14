@@ -22,9 +22,9 @@ import (
 	"system-server/router"
 	"time"
 
+	"github.com/calmlax/aevons-framework/config"
 	"github.com/calmlax/aevons-framework/xjson"
 	"github.com/calmlax/aevons-framework/xlog"
-	"honnef.co/go/tools/config"
 
 	"github.com/gin-gonic/gin/binding"
 )
@@ -36,20 +36,23 @@ func init() {
 
 func main() {
 	// --config flag allows overriding the config file path at runtime.
-	// Defaults to configs/config.yaml; APP_ENV env var selects the overlay file.
+	// Defaults to configs; APP_ENV env var selects the overlay file.
 	// Examples:
 	//   ./main                                    -> configs/config.yaml
 	//   APP_ENV=production ./main                 -> configs/config.yaml + configs/config.production.yaml
-	//   ./main --config configs/config.yaml       -> explicit path
-	configPath := "configs/config.yaml"
+	//   ./main --config configs       -> explicit path
+	configPath := "configs"
 	for i, arg := range os.Args[1:] {
 		if arg == "--config" && i+1 < len(os.Args[1:]) {
 			configPath = os.Args[i+2]
 			break
 		}
 	}
-
-	cfg, err := config.Load(configPath)
+	env := os.Getenv("APP_ENV")
+	if env == "" {
+		env = "development"
+	}
+	cfg, err := config.Load(configPath, env)
 	if err != nil {
 		xlog.Fatal("failed to load config: %v", err)
 	}
@@ -86,7 +89,7 @@ func main() {
 	// 	xlog.Fatal("failed to migrate db: %v", err)
 	// }
 
-	engine := router.Setup(cfg, nil)
+	engine := router.Setup(&cfg)
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", cfg.Server.Port),

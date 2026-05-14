@@ -1,6 +1,11 @@
 server:
-  port: 8021
-  mode: debug
+  name: sys-server
+  host: 127.0.0.1
+  port: 8082
+
+consul:
+  enabled: true
+  address: http://127.0.0.1:8500
 
 log:
   level: info
@@ -15,7 +20,7 @@ db:
   dsn: root:123456@tcp(127.0.0.1:3306)/aevo_db?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
 
 redis:
-  addr: 127.0.0.1:6379
+  address: 127.0.0.1:6379
   password: ""
   db: 0
   pool_size: 10
