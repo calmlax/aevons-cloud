@@ -60,9 +60,9 @@ func main() {
 	if err != nil {
 		xlog.Fatal("failed to load config: %v", err)
 	}
-
+	gdb, err := db.Init(&cfg)
 	// 初始化数据库连接与连接池。
-	if _, err := db.Init(&cfg); err != nil {
+	if err != nil {
 		xlog.Fatal("failed to init db: %v", err)
 	}
 
@@ -81,7 +81,7 @@ func main() {
 	// }
 
 	// 构建 HTTP 路由与中间件链。
-	engine := router.Setup(&cfg)
+	engine := router.Setup(&cfg, gdb)
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", cfg.Server.Port),
