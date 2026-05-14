@@ -2,11 +2,15 @@ package router
 
 import (
 	"fmt"
+	handler "system-server/hander"
+	"system-server/repository"
+	"system-server/service"
 
 	"github.com/calmlax/aevons-framework/auth"
 	"github.com/calmlax/aevons-framework/core"
 	"github.com/calmlax/aevons-framework/core/server"
 	"github.com/calmlax/aevons-framework/middleware"
+	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,6 +27,11 @@ func Setup(app *core.App) (*gin.Engine, error) {
 		return nil, fmt.Errorf("router: 读取 Redis 客户端失败: %w", err)
 	}
 
+	db, err := app.RawDatabase()
+	if err != nil {
+		return nil, fmt.Errorf("router: 读取数据库连接失败: %w", err)
+	}
+
 	gin.SetMode(cfg.Server.Mode)
 
 	r := gin.New()
@@ -33,31 +42,31 @@ func Setup(app *core.App) (*gin.Engine, error) {
 	r.Use(middleware.XSSMiddleware(cfg))
 	server.RegisterHealthRoute(r, cfg.Server.Name)
 	server.RegisterOpenApiRoute(r, cfg)
-
-	tokenStore := auth.NewRedisTokenStore(redisClient)
-	r.Use(middleware.AuthMiddleware(tokenStore, cfg.Auth.Excludes))
+	r.Use(middleware.AuthMiddleware(auth.NewRedisTokenStore(redisClient), cfg.Auth.Excludes))
 
 	v1 := r.Group("/api/v1")
 	{
-		registerConfRoutes(v1, app)
+		registerConfRoutes(v1, db)
 	}
 
 	return r, nil
 }
 
-func registerConfRoutes(rg *gin.RouterGroup, app *core.App) {
-	// h := handler.NewConfHandler(service.NewConfService(repository.NewConfRepository(db)))
-	// g := rg.Group("/conf")
-	// {
-	// 	g.GET("/list", middleware.HasPermission("sys:conf$list"), h.List)
-	// 	g.GET("/page", middleware.HasPermission("sys:conf$list"), h.Page)
-	// 	g.GET("/:id", middleware.HasPermission("sys:conf$query"), h.Get)
-	// 	g.GET("/key/:key", h.GetConfByKey)
-	// 	g.POST("", middleware.HasPermission("sys:conf$add"), middleware.OperLog(db, "参数配置", consts.INSERT), h.CreateConf)
-	// 	g.POST("/refresh-cache", middleware.HasPermission("sys:conf$edit"), middleware.OperLog(db, "参数配置", consts.CLEAN), h.RefreshCache)
-	// 	g.PUT("/:id", middleware.HasPermission("sys:conf$edit"), middleware.OperLog(db, "参数配置", consts.UPDATE), h.UpdateConf)
-	// 	g.DELETE("/:id", middleware.HasPermission("sys:conf$delete"), middleware.OperLog(db, "参数配置", consts.DELETE), h.Delete)
-	// }
-	_ = rg
-	_ = app
+func registerConfRoutes(rg *gin.RouterGroup, db *gorm.DB) {
+	h := handler.NewConfHandler(
+		service.NewConfService(
+			repository.NewConfRepository(db),
+		),
+	)
+	g := rg.Group("/conf")
+	{
+		g.GET("/list", middleware.HasPermission("sys:conf$list"), h.List)
+		g.GET("/page", middleware.HasPermission("sys:conf$list"), h.Page)
+		g.GET("/:id", middleware.HasPermission("sys:conf$query"), h.Get)
+		g.GET("/key/:key", h.GetConfByKey)
+		// g.POST("", middleware.HasPermission("sys:conf$add"), middleware.OperLog(db, "参数配置", consts.INSERT), h.CreateConf)
+		// g.POST("/refresh-cache", middleware.HasPermission("sys:conf$edit"), middleware.OperLog(db, "参数配置", consts.CLEAN), h.RefreshCache)
+		// g.PUT("/:id", middleware.HasPermission("sys:conf$edit"), middleware.OperLog(db, "参数配置", consts.UPDATE), h.UpdateConf)
+		// g.DELETE("/:id", middleware.HasPermission("sys:conf$delete"), middleware.OperLog(db, "参数配置", consts.DELETE), h.Delete)
+	}
 }

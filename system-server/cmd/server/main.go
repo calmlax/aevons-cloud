@@ -74,6 +74,7 @@ func main() {
 		xlog.Fatal("failed to init redis: %v", err)
 	}
 
+	// App 仅作为装配层上下文使用，后续将显式拆出路由层需要的依赖。
 	app := core.NewApp(&cfg, redisClient, gdb)
 
 	// if err := rocketmq.Init(cfg); err != nil {
@@ -102,9 +103,7 @@ func main() {
 		xlog.Fatal("failed to listen on %s: %v", srv.Addr, err)
 	}
 
-	var (
-		consulManager *consul.Managed
-	)
+	var consulManager *consul.Managed
 
 	// 启动 HTTP 服务主循环。
 	go func() {
