@@ -12,7 +12,7 @@ db:
   dsn: root:123456@tcp(127.0.0.1:3306)/aevo_db?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
 
 redis:
-  addr: 127.0.0.1:6379
+  address: 127.0.0.1:6379
   password: ""
 
 rocketmq:

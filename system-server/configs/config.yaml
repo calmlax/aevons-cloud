@@ -20,10 +20,50 @@ db:
   dsn: root:123456@tcp(127.0.0.1:3306)/aevo_db?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
 
 redis:
+  # 支持模式：
+  # - standalone：单机模式
+  # - sentinel：哨兵模式
+  # - cluster：集群模式
+  mode: standalone
   address: 127.0.0.1:6379
   password: ""
   db: 0
   pool_size: 10
+  min_idle_conns: 2
+  max_retries: 3
+  dial_timeout_seconds: 5
+  read_timeout_seconds: 3
+  write_timeout_seconds: 3
+
+  # 哨兵模式示例：
+  # mode: sentinel
+  # master_name: mymaster
+  # addresses:
+  #   - 127.0.0.1:26379
+  #   - 127.0.0.1:26380
+  #   - 127.0.0.1:26381
+  # password: ""
+  # db: 0
+  # pool_size: 10
+  # min_idle_conns: 2
+  # max_retries: 3
+  # dial_timeout_seconds: 5
+  # read_timeout_seconds: 3
+  # write_timeout_seconds: 3
+
+  # 集群模式示例：
+  # mode: cluster
+  # addresses:
+  #   - 127.0.0.1:7000
+  #   - 127.0.0.1:7001
+  #   - 127.0.0.1:7002
+  # password: ""
+  # pool_size: 20
+  # min_idle_conns: 4
+  # max_retries: 3
+  # dial_timeout_seconds: 5
+  # read_timeout_seconds: 3
+  # write_timeout_seconds: 3
 
 auth:
   access_token_ttl: 7200    # 单位：秒，2 小时
