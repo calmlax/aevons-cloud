@@ -14,7 +14,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -96,8 +95,7 @@ func main() {
 	}
 
 	var (
-		registry  *consul.Registry
-		serviceID string
+		consulManager *consul.Managed
 	)
 
 	// 启动 HTTP 服务主循环。
@@ -112,24 +110,18 @@ func main() {
 	// 如果启用了 Consul，则在健康检查接口就绪后再执行服务注册，
 	// 避免服务刚启动就因为探测过早而被标记为不健康。
 	if cfg.Consul.Enabled {
-		if err := waitForHealth(cfg.Server.Host, cfg.Server.Port, consul.DefaultHealthPath, 5*time.Second); err != nil {
-			_ = listener.Close()
-			xlog.Fatal("health endpoint not ready before consul registration: %v", err)
-		}
-
-		registry, err = consul.New(cfg.Consul)
+		consulManager, err = consul.NewManaged(cfg.Consul, cfg.Server, consul.DefaultHealthPath)
 		if err != nil {
 			_ = listener.Close()
-			xlog.Fatal("failed to init consul registry: %v", err)
+			xlog.Fatal("failed to init consul manager: %v", err)
 		}
 
-		serviceID, err = registry.Register(cfg.Server, consul.DefaultHealthPath)
-		if err != nil {
+		if err := consulManager.Register(5 * time.Second); err != nil {
 			_ = listener.Close()
 			xlog.Fatal("failed to register service to consul: %v", err)
 		}
 
-		instances, discoverErr := registry.Discover(cfg.Server.Name)
+		instances, discoverErr := consulManager.Discover()
 		if discoverErr != nil {
 			xlog.Warn("consul discover %s failed: %v", cfg.Server.Name, discoverErr)
 		} else {
@@ -145,8 +137,8 @@ func main() {
 	xlog.Info("shutting down server...")
 
 	// 先从 Consul 注销实例，避免下线中的节点继续接收流量。
-	if registry != nil {
-		if err := registry.Deregister(serviceID); err != nil {
+	if consulManager != nil {
+		if err := consulManager.Deregister(); err != nil {
 			xlog.Error("failed to deregister service from consul: %v", err)
 		}
 	}
@@ -170,30 +162,4 @@ func main() {
 
 	// rocketmq.Close()
 	xlog.Info("server exited gracefully")
-}
-
-// waitForHealth 轮询本机健康检查接口，直到返回 2xx 或超时。
-func waitForHealth(host string, port int, path string, timeout time.Duration) error {
-	address := host
-	switch address {
-	case "", "0.0.0.0", "::", "[::]":
-		address = "127.0.0.1"
-	}
-
-	deadline := time.Now().Add(timeout)
-	url := fmt.Sprintf("http://%s:%d%s", address, port, path)
-	client := &http.Client{Timeout: 1 * time.Second}
-
-	for time.Now().Before(deadline) {
-		resp, err := client.Get(url)
-		if err == nil {
-			resp.Body.Close()
-			if resp.StatusCode >= http.StatusOK && resp.StatusCode < http.StatusMultipleChoices {
-				return nil
-			}
-		}
-		time.Sleep(200 * time.Millisecond)
-	}
-
-	return errors.New("timeout waiting for health endpoint")
 }
