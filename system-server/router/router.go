@@ -20,8 +20,8 @@ func Setup(cfg *appconfig.Config) *gin.Engine {
 	r.Use(middleware.RequestID())
 	r.Use(middleware.CORS(cfg.CORS.Enabled, cfg.CORS.AllowedOrigins))
 	r.Use(middleware.XSSMiddleware(cfg))
-	server.RegisterOpenApiRoute(r, cfg)
 	server.RegisterHealthRoute(r, cfg.Server.Name)
+	server.RegisterOpenApiRoute(r, cfg)
 
 	// tokenStore := pkgauth.NewRedisTokenStore(redis.Client)
 	// r.Use(middleware.AuthMiddleware(tokenStore, cfg.Auth.Excludes))
