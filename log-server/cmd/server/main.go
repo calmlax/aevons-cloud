@@ -130,6 +130,7 @@ func main() {
 
 		grpcSrv = grpcx.NewServer()
 		log_grpc.RegisterService(grpcSrv, grpcs.NewOperLogServiceServer(gdb))
+		log_grpc.RegisterLoginService(grpcSrv, grpcs.NewLoginLogServiceServer(gdb))
 
 		go func() {
 			xlog.Info("grpc server starting on port %d", cfg.Server.GRPCPort)
