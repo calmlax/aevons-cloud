@@ -15,6 +15,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log-server/grpcs"
 	"log-server/router"
 	"net"
 	"net/http"
@@ -23,15 +24,19 @@ import (
 	"syscall"
 	"time"
 
+	"aevons-grpc/log-server/operlog"
+
 	"github.com/calmlax/aevons-framework/config"
 	"github.com/calmlax/aevons-framework/core"
 	"github.com/calmlax/aevons-framework/core/consul"
 	"github.com/calmlax/aevons-framework/db"
+	"github.com/calmlax/aevons-framework/grpcx"
 	"github.com/calmlax/aevons-framework/redis"
 	"github.com/calmlax/aevons-framework/xjson"
 	"github.com/calmlax/aevons-framework/xlog"
 
 	"github.com/gin-gonic/gin/binding"
+	"google.golang.org/grpc"
 )
 
 func init() {
@@ -97,6 +102,8 @@ func main() {
 		Handler: engine,
 	}
 
+	var grpcSrv *grpc.Server
+
 	// 先显式监听端口，确保端口占用问题能在启动早期暴露出来。
 	listener, err := net.Listen("tcp", srv.Addr)
 	if err != nil {
@@ -113,6 +120,25 @@ func main() {
 			os.Exit(1)
 		}
 	}()
+
+	if cfg.Server.GRPCPort > 0 {
+		grpcListener, err := net.Listen("tcp", fmt.Sprintf(":%d", cfg.Server.GRPCPort))
+		if err != nil {
+			_ = listener.Close()
+			xlog.Fatal("failed to listen on grpc port %d: %v", cfg.Server.GRPCPort, err)
+		}
+
+		grpcSrv = grpcx.NewServer()
+		operlog.RegisterService(grpcSrv, grpcs.NewOperLogServiceServer(gdb))
+
+		go func() {
+			xlog.Info("grpc server starting on port %d", cfg.Server.GRPCPort)
+			if err := grpcSrv.Serve(grpcListener); err != nil {
+				xlog.Error("grpc server failed to start: %v", err)
+				os.Exit(1)
+			}
+		}()
+	}
 
 	// 如果启用了 Consul，则在健康检查接口就绪后再执行服务注册，
 	// 避免服务刚启动就因为探测过早而被标记为不健康。
@@ -157,6 +183,9 @@ func main() {
 	if err := srv.Shutdown(ctx); err != nil {
 		xlog.Error("server forced to shutdown: %v", err)
 		os.Exit(1)
+	}
+	if grpcSrv != nil {
+		grpcSrv.GracefulStop()
 	}
 
 	// 回收基础资源连接。

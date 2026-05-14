@@ -20,6 +20,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	appconfig "system-server/config"
 	"system-server/router"
 	"time"
 
@@ -61,6 +62,10 @@ func main() {
 	if err != nil {
 		xlog.Fatal("failed to load config: %v", err)
 	}
+	downstreamCfg, err := appconfig.LoadDownstream(configPath, env)
+	if err != nil {
+		xlog.Fatal("failed to load downstream config: %v", err)
+	}
 
 	// 初始化数据库连接与连接池。
 	gdb, err := db.Init(&cfg)
@@ -87,7 +92,7 @@ func main() {
 	// }
 
 	// 构建 HTTP 路由与中间件链。
-	engine, err := router.Setup(app)
+	engine, err := router.Setup(app, downstreamCfg.LogServiceGRPCTarget)
 	if err != nil {
 		xlog.Fatal("failed to setup router: %v", err)
 	}
