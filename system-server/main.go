@@ -23,6 +23,8 @@ import (
 	"time"
 
 	"github.com/calmlax/aevons-framework/config"
+	"github.com/calmlax/aevons-framework/db"
+	"github.com/calmlax/aevons-framework/redis"
 	"github.com/calmlax/aevons-framework/xjson"
 	"github.com/calmlax/aevons-framework/xlog"
 
@@ -56,14 +58,13 @@ func main() {
 	if err != nil {
 		xlog.Fatal("failed to load config: %v", err)
 	}
+	if _, err := db.Init(&cfg); err != nil {
+		xlog.Fatal("failed to init db: %v", err)
+	}
 
-	// if err := db.Init(cfg); err != nil {
-	// 	xlog.Fatal("failed to init db: %v", err)
-	// }
-
-	// if err := redis.Init(cfg); err != nil {
-	// 	xlog.Fatal("failed to init redis: %v", err)
-	// }
+	if err := redis.Init(&cfg); err != nil {
+		xlog.Fatal("failed to init redis: %v", err)
+	}
 
 	// if err := rocketmq.Init(cfg); err != nil {
 	// 	xlog.Fatal("failed to init rocketmq: %v", err)
@@ -72,21 +73,6 @@ func main() {
 	// if len(os.Args) > 1 {
 	// 	cmd.Execute(cfg.Generator, db.DB)
 	// 	return
-	// }
-
-	// if err := db.DB.AutoMigrate(
-	// 	&model.User{},
-	// 	&model.Role{},
-	// 	&model.Dept{},
-	// 	&model.Post{},
-	// 	&model.Conf{},
-	// 	&model.Dict{},
-	// 	&model.DictData{},
-	// 	&model.Menu{},
-	// 	&model.LoginLog{},
-	// 	&model.OperLog{},
-	// ); err != nil {
-	// 	xlog.Fatal("failed to migrate db: %v", err)
 	// }
 
 	engine := router.Setup(&cfg)

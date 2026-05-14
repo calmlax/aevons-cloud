@@ -18,6 +18,10 @@ cors:
 db:
   driver: mysql
   dsn: root:123456@tcp(127.0.0.1:3306)/aevo_db?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
+  max_open_conns: 20
+  max_idle_conns: 10
+  conn_max_lifetime_seconds: 3600
+  conn_max_idle_time_seconds: 1800
 
 redis:
   # 支持模式：
