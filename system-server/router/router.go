@@ -7,7 +7,7 @@ import (
 	"system-server/repository"
 	"system-server/service"
 
-	"aevons-grpc/log-grpc/operlog"
+	"aevons-grpc/log_grpc"
 
 	"github.com/calmlax/aevons-framework/auth"
 	"github.com/calmlax/aevons-framework/consts"
@@ -37,9 +37,9 @@ func Setup(app *core.App, logServiceGRPCTarget string) (*gin.Engine, error) {
 		return nil, fmt.Errorf("router: 读取数据库连接失败: %w", err)
 	}
 
-	logWriter := operlog.Writer(operlog.NopWriter{})
+	logWriter := log_grpc.Writer(log_grpc.NopWriter{})
 	if logServiceGRPCTarget != "" {
-		client, err := operlog.NewClient(logServiceGRPCTarget)
+		client, err := log_grpc.NewClient(logServiceGRPCTarget)
 		if err != nil {
 			xlog.Warn("init oper log grpc client failed: %v", err)
 		} else {
@@ -69,7 +69,7 @@ func Setup(app *core.App, logServiceGRPCTarget string) (*gin.Engine, error) {
 	return r, nil
 }
 
-func registerConfRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter operlog.Writer) {
+func registerConfRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.Writer) {
 	h := handler.NewConfHandler(
 		service.NewConfService(
 			repository.NewConfRepository(db),

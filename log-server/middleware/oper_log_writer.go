@@ -1,4 +1,4 @@
-package grpcs
+package middleware
 
 import (
 	"context"
@@ -6,24 +6,22 @@ import (
 	"log-server/repository"
 	"log-server/service"
 
-	"aevons-grpc/log_grpc"
-
 	"gorm.io/gorm"
 )
 
-// OperLogServiceServer 实现 log-server 的操作日志 gRPC 服务。
-type OperLogServiceServer struct {
+// DBOperLogWriter 供 log-server 自身使用，直接落库写入操作日志。
+type DBOperLogWriter struct {
 	svc service.OperLogService
 }
 
-func NewOperLogServiceServer(db *gorm.DB) *OperLogServiceServer {
+func NewDBOperLogWriter(db *gorm.DB) OperLogWriter {
 	repo := repository.NewOperLogRepository(db)
-	svc := service.NewOperLogService(repo)
-	return &OperLogServiceServer{svc: svc}
+	return &DBOperLogWriter{
+		svc: service.NewOperLogService(repo),
+	}
 }
 
-func (s *OperLogServiceServer) WriteOperLog(ctx context.Context, req *log_grpc.WriteRequest) (*log_grpc.WriteResponse, error) {
-	entry := req.Entry
+func (w *DBOperLogWriter) Write(_ context.Context, entry OperLogEntry) error {
 	record := model.OperLog{
 		Module:      entry.Module,
 		Type:        entry.Type,
@@ -44,13 +42,9 @@ func (s *OperLogServiceServer) WriteOperLog(ctx context.Context, req *log_grpc.W
 		Username:    entry.Username,
 		OperAt:      entry.OperAt,
 	}
+	return w.svc.Create(&record)
+}
 
-	if err := s.svc.Create(&record); err != nil {
-		return nil, err
-	}
-
-	return &log_grpc.WriteResponse{
-		Success: true,
-		Message: "ok",
-	}, nil
+func (w *DBOperLogWriter) Close() error {
+	return nil
 }

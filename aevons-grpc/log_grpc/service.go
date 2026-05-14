@@ -1,4 +1,4 @@
-package operlog
+package log_grpc
 
 import (
 	"context"

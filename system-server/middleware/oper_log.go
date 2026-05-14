@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"aevons-grpc/log-grpc/operlog"
+	"aevons-grpc/log_grpc"
 
 	frameworkauth "github.com/calmlax/aevons-framework/auth"
 	"github.com/calmlax/aevons-framework/consts"
@@ -16,9 +16,9 @@ import (
 )
 
 // OperLog 采集请求上下文并通过 log-server 的 gRPC 接口同步写入操作日志。
-func OperLog(writer operlog.Writer, module string, bizType consts.BizType) gin.HandlerFunc {
+func OperLog(writer log_grpc.Writer, module string, bizType consts.BizType) gin.HandlerFunc {
 	if writer == nil {
-		writer = operlog.NopWriter{}
+		writer = log_grpc.NopWriter{}
 	}
 
 	return func(c *gin.Context) {
@@ -46,7 +46,7 @@ func OperLog(writer operlog.Writer, module string, bizType consts.BizType) gin.H
 		ctx, cancel := context.WithTimeout(c.Request.Context(), 3*time.Second)
 		defer cancel()
 
-		if err := writer.Write(ctx, operlog.Entry{
+		if err := writer.Write(ctx, log_grpc.Entry{
 			Module:      module,
 			Type:        string(bizType),
 			Description: module,

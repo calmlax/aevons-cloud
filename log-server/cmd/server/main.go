@@ -15,7 +15,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log-server/grpcs"
 	"log-server/router"
 	"net"
 	"net/http"
@@ -24,7 +23,8 @@ import (
 	"syscall"
 	"time"
 
-	"aevons-grpc/log-grpc/operlog"
+	"aevons-grpc/log_grpc"
+	"log-server/grpcs"
 
 	"github.com/calmlax/aevons-framework/config"
 	"github.com/calmlax/aevons-framework/core"
@@ -129,7 +129,7 @@ func main() {
 		}
 
 		grpcSrv = grpcx.NewServer()
-		operlog.RegisterService(grpcSrv, grpcs.NewOperLogServiceServer(gdb))
+		log_grpc.RegisterService(grpcSrv, grpcs.NewOperLogServiceServer(gdb))
 
 		go func() {
 			xlog.Info("grpc server starting on port %d", cfg.Server.GRPCPort)

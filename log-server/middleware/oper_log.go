@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"aevons-grpc/log-server/operlog"
-
 	frameworkauth "github.com/calmlax/aevons-framework/auth"
 	"github.com/calmlax/aevons-framework/consts"
 	"github.com/calmlax/aevons-framework/utils"
@@ -15,10 +13,37 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// OperLog 采集请求上下文并通过 log-server 的 gRPC 接口同步写入操作日志。
-func OperLog(writer operlog.Writer, module string, bizType consts.BizType) gin.HandlerFunc {
+type OperLogEntry struct {
+	Module      string
+	Type        string
+	Description string
+	Method      string
+	URL         string
+	IP          string
+	Location    string
+	Payload     string
+	Result      string
+	Device      string
+	OS          string
+	Browser     string
+	Status      int16
+	Error       string
+	TimeMS      int64
+	UserID      int64
+	Username    string
+	OperAt      time.Time
+}
+
+type OperLogWriter interface {
+	Write(ctx context.Context, entry OperLogEntry) error
+}
+
+// OperLog 采集请求上下文，并通过统一 writer 写入操作日志。
+func OperLog(writer OperLogWriter, module string, bizType consts.BizType) gin.HandlerFunc {
 	if writer == nil {
-		writer = operlog.NopWriter{}
+		return func(c *gin.Context) {
+			c.Next()
+		}
 	}
 
 	return func(c *gin.Context) {
@@ -46,7 +71,7 @@ func OperLog(writer operlog.Writer, module string, bizType consts.BizType) gin.H
 		ctx, cancel := context.WithTimeout(c.Request.Context(), 3*time.Second)
 		defer cancel()
 
-		if err := writer.Write(ctx, operlog.Entry{
+		if err := writer.Write(ctx, OperLogEntry{
 			Module:      module,
 			Type:        string(bizType),
 			Description: module,
