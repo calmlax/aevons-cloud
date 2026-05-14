@@ -1,6 +1,8 @@
 package router
 
 import (
+	"net/http"
+
 	appconfig "github.com/calmlax/aevons-framework/config"
 	"github.com/calmlax/aevons-framework/core/server"
 	"github.com/calmlax/aevons-framework/middleware"
@@ -24,10 +26,14 @@ func Setup(cfg *appconfig.Config) *gin.Engine {
 	// tokenStore := pkgauth.NewRedisTokenStore(redis.Client)
 	// r.Use(middleware.AuthMiddleware(tokenStore, cfg.Auth.Excludes))
 
-	// v1 := r.Group("/api/v1")
-
-	// v1.GET("/ping", handler.Ping)
-	// system.RegisterRoutes(v1, cfg)
+	v1 := r.Group("/api/v1")
+	v1.GET("/test/ping", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"code":    "OK",
+			"message": "pong",
+			"service": cfg.Server.Name,
+		})
+	})
 
 	return r
 }
