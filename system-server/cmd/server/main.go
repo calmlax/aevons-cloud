@@ -24,6 +24,7 @@ import (
 	"time"
 
 	"github.com/calmlax/aevons-framework/config"
+	"github.com/calmlax/aevons-framework/core"
 	"github.com/calmlax/aevons-framework/core/consul"
 	"github.com/calmlax/aevons-framework/db"
 	"github.com/calmlax/aevons-framework/redis"
@@ -60,16 +61,20 @@ func main() {
 	if err != nil {
 		xlog.Fatal("failed to load config: %v", err)
 	}
-	gdb, err := db.Init(&cfg)
+
 	// 初始化数据库连接与连接池。
+	gdb, err := db.Init(&cfg)
 	if err != nil {
 		xlog.Fatal("failed to init db: %v", err)
 	}
 
 	// 初始化 Redis 客户端。
-	if err := redis.Init(&cfg); err != nil {
+	redisClient, err := redis.Init(&cfg)
+	if err != nil {
 		xlog.Fatal("failed to init redis: %v", err)
 	}
+
+	app := core.NewApp(&cfg, redisClient, gdb)
 
 	// if err := rocketmq.Init(cfg); err != nil {
 	// 	xlog.Fatal("failed to init rocketmq: %v", err)
@@ -81,7 +86,10 @@ func main() {
 	// }
 
 	// 构建 HTTP 路由与中间件链。
-	engine := router.Setup(&cfg, gdb)
+	engine, err := router.Setup(app)
+	if err != nil {
+		xlog.Fatal("failed to setup router: %v", err)
+	}
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", cfg.Server.Port),
