@@ -1,6 +1,6 @@
 server:
-  name: sys-server
-  host: 127.0.0.1
+  name: system-server
+  host: 192.168.31.81
   port: 8082
 
 consul:
