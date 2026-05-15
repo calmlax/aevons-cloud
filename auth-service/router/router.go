@@ -37,12 +37,12 @@ func Setup(app *core.App) (*gin.Engine, error) {
 		return nil, fmt.Errorf("router: 读取数据库连接失败: %w", err)
 	}
 
-	logWriter := log_grpc.LoginLogWriter(log_grpc.NopLoginLogWriter{})
+	logStore := log_grpc.LoginLogStore(log_grpc.NopLoginLogStore{})
 	client, err := log_grpc.NewLoginLogClient(cfg.Consul)
 	if err != nil {
 		xlog.Warn("init login log grpc client from consul failed: %v", err)
 	} else {
-		logWriter = client
+		logStore = client
 	}
 
 	gin.SetMode(cfg.Server.Mode)
@@ -59,18 +59,18 @@ func Setup(app *core.App) (*gin.Engine, error) {
 
 	v1 := r.Group("/api/v1")
 	{
-		RegisterRoutes(v1, db, redisClient, cfg, logWriter)
+		RegisterRoutes(v1, db, redisClient, cfg, logStore)
 	}
 
 	return r, nil
 }
 
 // RegisterRoutes 将认证模块的所有路由注册到指定路由组。
-func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB, client *redis.Client, cfg *config.Config, logWriter log_grpc.LoginLogWriter) {
+func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB, client *redis.Client, cfg *config.Config, logStore log_grpc.LoginLogStore) {
 	store := auth.NewRedisTokenStore(client)
 	repo := authRepo.NewAuthRepository(db)
 	notifier := auth.NewHttpSLONotifier()
-	svc := authService.NewAuthService(store, repo, cfg.Auth, notifier, logWriter)
+	svc := authService.NewAuthService(store, repo, cfg.Auth, notifier, logStore)
 
 	h := authHandler.NewAuthHandler(svc)
 

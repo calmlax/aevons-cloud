@@ -83,7 +83,7 @@ type authService struct {
 	authRepo  authRepo.AuthRepository
 	cfg       config.AuthConfig
 	notifier  auth.SLONotifier
-	logWriter log_grpc.LoginLogWriter
+	logStore  log_grpc.LoginLogStore
 }
 
 // NewAuthService 创建 AuthService 实例。
@@ -92,14 +92,14 @@ func NewAuthService(
 	authRepo authRepo.AuthRepository,
 	cfg config.AuthConfig,
 	notifier auth.SLONotifier,
-	logWriter log_grpc.LoginLogWriter,
+	logStore log_grpc.LoginLogStore,
 ) AuthService {
 	return &authService{
 		store:     store,
 		authRepo:  authRepo,
 		cfg:       cfg,
 		notifier:  notifier,
-		logWriter: logWriter,
+		logStore:  logStore,
 	}
 }
 
@@ -128,7 +128,7 @@ func (s *authService) recordLoginLog(ctx context.Context, username, clientId, gr
 	}
 
 	go func(record *log_grpc.LoginEntry) {
-		_ = s.logWriter.WriteLoginLog(ctx, *record)
+		_ = s.logStore.WriteLoginLog(ctx, *record)
 	}(log)
 }
 
@@ -1066,7 +1066,7 @@ func (s *authService) GetLatestLoginLog(ctx context.Context) ([]*log_grpc.LoginE
 	if err != nil {
 		return nil, err
 	}
-	entries, err := s.logWriter.GetLatestLoginLog(ctx, user.Username, 10)
+	entries, err := s.logStore.GetLatestLoginLog(ctx, user.Username, 10)
 	if err != nil {
 		return nil, err
 	}

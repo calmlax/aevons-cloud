@@ -58,8 +58,8 @@ type GetLatestLoginLogResponse struct {
 	Entries []LoginEntry `json:"entries"`
 }
 
-// LoginLogWriter 定义登录日志写入器。
-type LoginLogWriter interface {
+// LoginLogStore 定义登录日志完整访问接口。
+type LoginLogStore interface {
 	WriteLoginLog(ctx context.Context, entry LoginEntry) error
 	GetLatestLoginLog(ctx context.Context, username string, limit int) ([]LoginEntry, error)
 	Close() error
@@ -71,14 +71,14 @@ type LoginService interface {
 	GetLatestLoginLog(ctx context.Context, req *GetLatestLoginLogRequest) (*GetLatestLoginLogResponse, error)
 }
 
-// NopLoginLogWriter 是登录日志空实现。
-type NopLoginLogWriter struct{}
+// NopLoginLogStore 是登录日志空实现。
+type NopLoginLogStore struct{}
 
-func (NopLoginLogWriter) WriteLoginLog(context.Context, LoginEntry) error { return nil }
-func (NopLoginLogWriter) GetLatestLoginLog(context.Context, string, int) ([]LoginEntry, error) {
+func (NopLoginLogStore) WriteLoginLog(context.Context, LoginEntry) error { return nil }
+func (NopLoginLogStore) GetLatestLoginLog(context.Context, string, int) ([]LoginEntry, error) {
 	return nil, nil
 }
-func (NopLoginLogWriter) Close() error { return nil }
+func (NopLoginLogStore) Close() error { return nil }
 
 // LoginLogClient 是登录日志 gRPC 客户端。
 type LoginLogClient struct {

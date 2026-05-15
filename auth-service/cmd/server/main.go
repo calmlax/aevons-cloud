@@ -13,6 +13,7 @@
 package main
 
 import (
+	"auth-service/router"
 	"context"
 	"fmt"
 	"net"
@@ -20,7 +21,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"system-service/router"
 	"time"
 
 	"github.com/calmlax/aevons-framework/config"
@@ -76,15 +76,6 @@ func main() {
 
 	// App 仅作为装配层上下文使用，后续将显式拆出路由层需要的依赖。
 	app := core.NewApp(&cfg, redisClient, gdb)
-
-	// if err := rocketmq.Init(cfg); err != nil {
-	// 	xlog.Fatal("failed to init rocketmq: %v", err)
-	// }
-
-	// if len(os.Args) > 1 {
-	// 	cmd.Execute(cfg.Generator, db.DB)
-	// 	return
-	// }
 
 	// 构建 HTTP 路由与中间件链。
 	engine, err := router.Setup(app)
