@@ -21,18 +21,13 @@ import (
 // 继承BaseRepository
 type UserRepository interface {
 	base.BaseRepository[model.User]
-	GetByUsername(username string) (*model.User, error)
-	GetByEmail(email string) (*model.User, error)
-	GetRolesByUserId(userId int64) ([]model.Role, error)
+	// 获取用户部门岗位关联列表
 	GetUserDeptsByUserId(userId int64) ([]model.UserDept, error)
-	GetRoleDeptIdsByRoleId(roleId int64) ([]int64, error)
-	GetPermissionsByRoleIds(roleIds []int64) ([]string, error)
-	GetMenusByRoleIds(roleIds []int64, langCode string) ([]dto.MenuDTO, error)
-	GetAllMenus(langCode string) ([]dto.MenuDTO, error)
-	GetProfileDeptPosts(userId int64) ([]dto.ProfileDeptPost, error)
+	// 事务执行用户相关操作
 	UserTransaction(fn func(repo UserRepository) error) error
 	// 用户角色关联
 	GetRoleIdsByUserId(userId int64) ([]int64, error)
+	// 设置用户角色关联（先删后插）
 	SetUserRoles(userId int64, roleIds []int64) error
 	// 用户部门岗位关联
 	SetUserDeptPosts(userId int64, deptPosts []dto.UserDeptPostDTO) error
@@ -67,35 +62,6 @@ func (r *userRepository) UserTransaction(fn func(repo UserRepository) error) err
 	})
 }
 
-// GetByUsername 根据用户名查询用户。
-func (r *userRepository) GetByUsername(username string) (*model.User, error) {
-	var user model.User
-	if err := r.db.Where("username = ?", username).First(&user).Error; err != nil {
-		return nil, err
-	}
-	return &user, nil
-}
-
-// GetByEmail 根据邮箱查询用户。
-func (r *userRepository) GetByEmail(email string) (*model.User, error) {
-	var user model.User
-	if err := r.db.Where("email = ?", email).First(&user).Error; err != nil {
-		return nil, err
-	}
-	return &user, nil
-}
-
-// GetRolesByUserId 查询用户的角色列表。
-// 路径：sys_user_role → sys_role
-func (r *userRepository) GetRolesByUserId(userId int64) ([]model.Role, error) {
-	var roles []model.Role
-	err := r.db.Table("sys_role").
-		Select("sys_role.*").
-		Joins("INNER JOIN sys_user_role ON sys_user_role.role_id = sys_role.id").
-		Where("sys_user_role.user_id = ? AND sys_role.status = 0", userId).Find(&roles).Error
-	return roles, err
-}
-
 // GetUserDeptsByUserId 查询用户的用户部门关联列表。
 func (r *userRepository) GetUserDeptsByUserId(userId int64) ([]model.UserDept, error) {
 	var userDepts []model.UserDept
@@ -103,73 +69,6 @@ func (r *userRepository) GetUserDeptsByUserId(userId int64) ([]model.UserDept, e
 		return nil, err
 	}
 	return userDepts, nil
-}
-
-// GetRoleDeptIdsByRoleId 查询角色的部门ID列表。
-// 路径：sys_role_dept → sys_dept
-func (r *userRepository) GetRoleDeptIdsByRoleId(roleId int64) ([]int64, error) {
-	var roleDeptIds []int64
-	if err := r.db.Table("sys_role_dept").Where("role_id = ?", roleId).Pluck("dept_id", &roleDeptIds).Error; err != nil {
-		return nil, err
-	}
-	return roleDeptIds, nil
-}
-
-// GetMenusByRoleIds 查询角色关联的菜单（父节点已在保存时补全，直接 IN 查询）。
-func (r *userRepository) GetMenusByRoleIds(roleIds []int64, langCode string) ([]dto.MenuDTO, error) {
-	if len(roleIds) == 0 {
-		return []dto.MenuDTO{}, nil
-	}
-	var menus []dto.MenuDTO
-	err := r.db.Table("sys_menu m").
-		Select("m.id, m.parent_id, tl.lang_code, tl.title, m.type, m.sort, m.path, m.component, m.`query`, m.visible, m.`status`, m.is_frame, m.permission, m.icon, m.active_id").
-		Joins("INNER JOIN sys_role_menu rm ON rm.menu_id = m.id").
-		Joins("LEFT JOIN sys_menu_tl tl ON m.id = tl.menu_id AND tl.lang_code = ?", langCode).
-		Where("rm.role_id IN ? AND m.type IN (1,2) AND m.status = 0", roleIds).
-		Distinct().
-		Order("m.parent_id, m.sort").
-		Find(&menus).Error
-	return menus, err
-}
-
-// GetAllMenus 查询所有菜单（管理员）。
-func (r *userRepository) GetAllMenus(langCode string) ([]dto.MenuDTO, error) {
-	var menus []dto.MenuDTO
-	err := r.db.Table("sys_menu m").
-		Select("m.id,m.parent_id,tl.lang_code,tl.title,m.type,m.sort,m.path,m.component,m.`query`,m.visible,m.`status`,m.is_frame,m.permission,m.icon,m.active_id").
-		Joins("LEFT JOIN sys_menu_tl tl ON m.id = tl.menu_id AND tl.lang_code = ?", langCode).
-		Distinct().
-		Where("m.type IN (1, 2) AND m.status = 0").
-		Order("m.parent_id, m.sort").
-		Find(&menus).Error
-	return menus, err
-}
-
-// GetPermissionsByRoleIds 查询用户的权限标识列表（菜单 permission）。
-// 路径：sys_role_menu → sys_menu.permission
-func (r *userRepository) GetPermissionsByRoleIds(roleIds []int64) ([]string, error) {
-	if len(roleIds) == 0 {
-		return []string{}, nil
-	}
-	var permissions []string
-	err := r.db.Table("sys_menu m").
-		Select("DISTINCT m.permission").
-		Joins("INNER JOIN sys_role_menu ON sys_role_menu.menu_id = m.id").
-		Where("sys_role_menu.role_id IN ? AND m.permission != ''", roleIds).
-		Pluck("m.permission", &permissions).Error
-	return permissions, err
-}
-
-// GetProfileDeptPosts 获取用户的部门岗位详细信息映射。
-func (r *userRepository) GetProfileDeptPosts(userId int64) ([]dto.ProfileDeptPost, error) {
-	var results []dto.ProfileDeptPost
-	err := r.db.Table("sys_user_dept ud").
-		Select("d.id as dept_id, d.dept_name as dept_name, p.id as post_id, p.post_name as post_name").
-		Joins("INNER JOIN sys_dept d ON ud.dept_id = d.id").
-		Joins("INNER JOIN sys_post p ON ud.post_id = p.id").
-		Where("ud.user_id = ?", userId).
-		Find(&results).Error
-	return results, err
 }
 
 // GetRoleIdsByUserId 查询用户已关联的角色ID列表。
