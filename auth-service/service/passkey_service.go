@@ -120,7 +120,7 @@ func (s *passkeyService) buildWAUser(userId int64) (*waUser, error) {
 	if err != nil {
 		return nil, err
 	}
-	creds, err := s.credRepo.GetByUserId(userId)
+	creds, err := s.credRepo.GetCredentialByUserId(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -240,7 +240,7 @@ func (s *passkeyService) FinishRegistration(ctx context.Context, userId int64, s
 		BackupState:     &backupState,
 	}
 
-	return s.credRepo.Create(c)
+	return s.credRepo.CreateCredential(c)
 }
 
 func (s *passkeyService) BeginAuthentication(ctx context.Context, username string) ([]byte, string, error) {
@@ -274,7 +274,7 @@ func (s *passkeyService) FinishAuthentication(ctx context.Context, sessionKey st
 
 	// discoverable login：通过 rawId 找到凭据和用户
 	rawId := parsedResponse.RawID
-	cred, err := s.credRepo.GetByCredentialId(rawId)
+	cred, err := s.credRepo.GetCredentialByCredentialId(rawId)
 	if err != nil {
 		// 记录失败日志
 		s.authSvc.RecordLoginLog("", "passkey", "passkey", 0, "Credential not found", userAgent, clientIP)
@@ -310,7 +310,7 @@ func (s *passkeyService) FinishAuthentication(ctx context.Context, sessionKey st
 	}
 
 	// 更新签名计数器
-	_ = s.credRepo.UpdateSignatureCount(cred.Id, uint64(credential.Authenticator.SignCount))
+	_ = s.credRepo.UpdateCredentialSignatureCount(cred.Id, uint64(credential.Authenticator.SignCount))
 
 	// 颁发 token（复用 authSvc 的内部方法，通过 grant_type=passkey 走 Login）
 	pair, err := s.authSvc.LoginByUserId(ctx, cred.UserId, "passkey")
@@ -327,18 +327,18 @@ func (s *passkeyService) FinishAuthentication(ctx context.Context, sessionKey st
 }
 
 func (s *passkeyService) ListCredentials(_ context.Context, userId int64) ([]*credModel.UserCredential, error) {
-	return s.credRepo.ListByUserId(userId)
+	return s.credRepo.ListCredentialByUserId(userId)
 }
 
 func (s *passkeyService) RevokeCredential(_ context.Context, userId int64, credId int64) error {
 	// 确认凭据属于该用户
-	creds, err := s.credRepo.ListByUserId(userId)
+	creds, err := s.credRepo.ListCredentialByUserId(userId)
 	if err != nil {
 		return err
 	}
 	for _, c := range creds {
 		if c.Id == credId {
-			return s.credRepo.Revoke(credId)
+			return s.credRepo.RevokeCredential(credId)
 		}
 	}
 	return fmt.Errorf("credential not found")
