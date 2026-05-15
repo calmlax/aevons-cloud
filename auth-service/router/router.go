@@ -77,26 +77,7 @@ func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB, client *redis.Client, cfg 
 	notifier := auth.NewHttpSLONotifier()
 	svc := authService.NewAuthService(store, userRepo, clientSvc, cfg.Auth, notifier, logWriter)
 
-	credRepository := credRepo.NewCredentialRepository(db)
-	rpId := cfg.WebAuthn.RPID
-	if rpId == "" {
-		rpId = "localhost"
-	}
-	rpOrigins := cfg.WebAuthn.RPOrigins
-	if len(rpOrigins) == 0 {
-		rpOrigins = []string{"http://localhost:5173"}
-	}
-	rpName := cfg.WebAuthn.RPName
-	if rpName == "" {
-		rpName = "Aevons Admin"
-	}
-
-	passkeySvc, err := authService.NewPasskeyService(rpId, rpOrigins, rpName, store, userRepo, credRepository, svc)
-	if err != nil {
-		xlog.Error("passkey service init failed: %v", err)
-	}
 	h := authHandler.NewAuthHandler(svc)
-	p := authHandler.NewPasskeyHandler(passkeySvc, svc)
 
 	// 公开路由，无需令牌
 	rg.POST("/auth/login", h.Login)
@@ -111,10 +92,6 @@ func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB, client *redis.Client, cfg 
 	rg.POST("/auth/authorize", h.ApproveAuthorize)
 	rg.GET("/auth/callback", h.Callback)
 
-	// Passkey 公开端点（认证流程无需 token）
-	rg.POST("/auth/passkey/login/begin", p.BeginAuthentication)
-	rg.POST("/auth/passkey/login/finish", p.FinishAuthentication)
-
 	// 受保护路由，由全局 AuthMiddleware 验证令牌
 	rg.POST("/auth/code", h.GenerateAuthCode)
 	rg.POST("/auth/logout", h.Logout)
@@ -124,6 +101,27 @@ func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB, client *redis.Client, cfg 
 	rg.PUT("/auth/user/profile", h.UpdateProfile)
 	rg.PUT("/auth/user/password", h.UpdatePassword)
 
+	credRepository := credRepo.NewCredentialRepository(db)
+	rpId := cfg.WebAuthn.RPID
+	if rpId == "" {
+		rpId = "localhost"
+	}
+	rpOrigins := cfg.WebAuthn.RPOrigins
+	if len(rpOrigins) == 0 {
+		rpOrigins = []string{"http://localhost:5173"}
+	}
+	rpName := cfg.WebAuthn.RPName
+	if rpName == "" {
+		rpName = "Aevons Admin"
+	}
+	passkeySvc, err := authService.NewPasskeyService(rpId, rpOrigins, rpName, store, userRepo, credRepository, svc)
+	if err != nil {
+		xlog.Error("passkey service init failed: %v", err)
+	}
+	p := authHandler.NewPasskeyHandler(passkeySvc, svc)
+	// Passkey 公开端点（认证流程无需 token）
+	rg.POST("/auth/passkey/login/begin", p.BeginAuthentication)
+	rg.POST("/auth/passkey/login/finish", p.FinishAuthentication)
 	// Passkey 受保护端点（注册需要已登录）
 	rg.POST("/auth/passkey/register/begin", p.BeginRegistration)
 	rg.POST("/auth/passkey/register/finish", p.FinishRegistration)
