@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/calmlax/aevons-framework/grpcx"
+	"github.com/calmlax/aevons-framework/config"
 	"google.golang.org/grpc"
 )
 
@@ -64,9 +64,10 @@ type LoginLogClient struct {
 	conn *grpc.ClientConn
 }
 
-// NewLoginLogClient 创建登录日志 gRPC 客户端。
-func NewLoginLogClient(target string, opts ...grpc.DialOption) (*LoginLogClient, error) {
-	conn, err := grpcx.NewClientConn(target, opts...)
+// NewLoginLogClient 通过 Consul 服务发现创建登录日志 gRPC 客户端。
+// 默认使用 RegistryServiceName 作为日志中心服务注册名，业务侧无需再配置。
+func NewLoginLogClient(consulCfg config.ConsulConfig, opts ...grpc.DialOption) (*LoginLogClient, error) {
+	conn, err := newServiceConn(consulCfg, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +77,7 @@ func NewLoginLogClient(target string, opts ...grpc.DialOption) (*LoginLogClient,
 // WriteLogin 调用远端 log-service 写入登录日志。
 func (c *LoginLogClient) WriteLogin(ctx context.Context, entry LoginEntry) error {
 	resp := &WriteLoginResponse{}
-	return c.conn.Invoke(ctx, WriteLoginLogMethodFullName, &WriteLoginRequest{Entry: entry}, resp)
+	return invokeUnary(ctx, c.conn, WriteLoginLogMethodFullName, &WriteLoginRequest{Entry: entry}, resp)
 }
 
 // Close 关闭底层 gRPC 连接。
@@ -84,23 +85,12 @@ func (c *LoginLogClient) Close() error {
 	if c == nil {
 		return nil
 	}
-	return grpcx.CloseClientConn(c.conn)
+	return closeConn(c.conn)
 }
 
 // RegisterLoginService 注册登录日志 gRPC 服务。
 func RegisterLoginService(registrar grpc.ServiceRegistrar, srv LoginService) {
-	registrar.RegisterService(&grpc.ServiceDesc{
-		ServiceName: LoginLogServiceName,
-		HandlerType: (*LoginService)(nil),
-		Methods: []grpc.MethodDesc{
-			{
-				MethodName: WriteLoginLogMethodName,
-				Handler:    writeLoginLogHandler,
-			},
-		},
-		Streams:  []grpc.StreamDesc{},
-		Metadata: "login_log",
-	}, srv)
+	registerUnaryService(registrar, srv, LoginLogServiceName, (*LoginService)(nil), WriteLoginLogMethodName, writeLoginLogHandler, "login_log")
 }
 
 func writeLoginLogHandler(

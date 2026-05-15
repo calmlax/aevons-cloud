@@ -8,9 +8,6 @@ consul:
   enabled: true
   address: http://127.0.0.1:8500
 
-downstream:
-  log_service_grpc_target: 127.0.0.1:10803
-
 log:
   level: info
 

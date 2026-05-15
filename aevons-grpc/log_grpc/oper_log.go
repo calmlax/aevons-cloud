@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/calmlax/aevons-framework/grpcx"
+	"github.com/calmlax/aevons-framework/config"
 	"google.golang.org/grpc"
 )
 
@@ -72,9 +72,10 @@ type OperLogClient struct {
 	conn *grpc.ClientConn
 }
 
-// NewOperLogClient 创建操作日志 gRPC 客户端。
-func NewOperLogClient(target string, opts ...grpc.DialOption) (*OperLogClient, error) {
-	conn, err := grpcx.NewClientConn(target, opts...)
+// NewOperLogClient 通过 Consul 服务发现创建操作日志 gRPC 客户端。
+// 默认使用 RegistryServiceName 作为日志中心服务注册名，业务侧无需再配置。
+func NewOperLogClient(consulCfg config.ConsulConfig, opts ...grpc.DialOption) (*OperLogClient, error) {
+	conn, err := newServiceConn(consulCfg, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +85,7 @@ func NewOperLogClient(target string, opts ...grpc.DialOption) (*OperLogClient, e
 // Write 调用远端 log-service 写入操作日志。
 func (c *OperLogClient) Write(ctx context.Context, entry Entry) error {
 	resp := &WriteResponse{}
-	return c.conn.Invoke(ctx, WriteOperLogMethodFullName, &WriteRequest{Entry: entry}, resp)
+	return invokeUnary(ctx, c.conn, WriteOperLogMethodFullName, &WriteRequest{Entry: entry}, resp)
 }
 
 // Close 关闭底层 gRPC 连接。
@@ -92,23 +93,12 @@ func (c *OperLogClient) Close() error {
 	if c == nil {
 		return nil
 	}
-	return grpcx.CloseClientConn(c.conn)
+	return closeConn(c.conn)
 }
 
 // RegisterService 注册操作日志 gRPC 服务。
 func RegisterService(registrar grpc.ServiceRegistrar, srv Service) {
-	registrar.RegisterService(&grpc.ServiceDesc{
-		ServiceName: OperLogServiceName,
-		HandlerType: (*Service)(nil),
-		Methods: []grpc.MethodDesc{
-			{
-				MethodName: WriteOperLogMethodName,
-				Handler:    writeOperLogHandler,
-			},
-		},
-		Streams:  []grpc.StreamDesc{},
-		Metadata: "oper_log",
-	}, srv)
+	registerUnaryService(registrar, srv, OperLogServiceName, (*Service)(nil), WriteOperLogMethodName, writeOperLogHandler, "oper_log")
 }
 
 func writeOperLogHandler(

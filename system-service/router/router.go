@@ -21,7 +21,7 @@ import (
 )
 
 // Setup 配置 Gin 引擎，注册中间件和路由。
-func Setup(app *core.App, logServiceGRPCTarget string) (*gin.Engine, error) {
+func Setup(app *core.App) (*gin.Engine, error) {
 	cfg, err := app.RawConfig()
 	if err != nil {
 		return nil, fmt.Errorf("router: 读取应用配置失败: %w", err)
@@ -38,15 +38,11 @@ func Setup(app *core.App, logServiceGRPCTarget string) (*gin.Engine, error) {
 	}
 
 	logWriter := log_grpc.OperLogWriter(log_grpc.NopOperLogWriter{})
-	if logServiceGRPCTarget != "" {
-		client, err := log_grpc.NewOperLogClient(logServiceGRPCTarget)
-		if err != nil {
-			xlog.Warn("init oper log grpc client failed: %v", err)
-		} else {
-			logWriter = client
-		}
+	client, err := log_grpc.NewOperLogClient(cfg.Consul)
+	if err != nil {
+		xlog.Warn("init oper log grpc client from consul failed: %v", err)
 	} else {
-		xlog.Warn("log service grpc target is empty, oper log will be skipped")
+		logWriter = client
 	}
 
 	gin.SetMode(cfg.Server.Mode)

@@ -20,7 +20,7 @@ import (
 )
 
 // Setup 配置 Gin 引擎，注册中间件和路由。
-func Setup(app *core.App, logServiceGRPCTarget string) (*gin.Engine, error) {
+func Setup(app *core.App) (*gin.Engine, error) {
 	cfg, err := app.RawConfig()
 	if err != nil {
 		return nil, fmt.Errorf("router: 读取应用配置失败: %w", err)
@@ -37,8 +37,8 @@ func Setup(app *core.App, logServiceGRPCTarget string) (*gin.Engine, error) {
 	}
 
 	// logWriter := log_grpc.OperLogWriter(log_grpc.NopOperLogWriter{})
-	// if logServiceGRPCTarget != "" {
-	// 	client, err := log_grpc.NewOperLogClient(logServiceGRPCTarget)
+	// if logServiceName != "" {
+	// 	client, err := log_grpc.NewOperLogClient(logServiceName)
 	// 	if err != nil {
 	// 		xlog.Warn("init oper log grpc client failed: %v", err)
 	// 	} else {
