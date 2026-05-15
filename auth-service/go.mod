@@ -5,10 +5,10 @@ go 1.25.0
 replace aevons-grpc => ../aevons-grpc
 
 require (
+	aevons-grpc v0.0.0-00010101000000-000000000000
 	github.com/calmlax/aevons-framework v0.0.0
 	github.com/gin-gonic/gin v1.12.0
 	github.com/go-webauthn/webauthn v0.17.3
-	github.com/goccy/go-yaml v1.19.2
 	github.com/google/uuid v1.6.0
 	github.com/mileusna/useragent v1.3.5
 	github.com/redis/go-redis/v9 v9.19.0
@@ -42,6 +42,7 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/go-webauthn/x v0.2.5 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
+	github.com/goccy/go-yaml v1.19.2 // indirect
 	github.com/golang-jwt/jwt/v5 v5.3.1 // indirect
 	github.com/google/go-tpm v0.9.8 // indirect
 	github.com/gorilla/css v1.0.1 // indirect
@@ -79,6 +80,8 @@ require (
 	golang.org/x/sys v0.44.0 // indirect
 	golang.org/x/text v0.37.0 // indirect
 	golang.org/x/tools v0.44.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250804133106-a7a43d27e69b // indirect
+	google.golang.org/grpc v1.76.0 // indirect
 	google.golang.org/protobuf v1.36.10 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gorm.io/driver/mysql v1.6.0 // indirect

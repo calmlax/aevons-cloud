@@ -44,7 +44,7 @@ type WriteLoginResponse struct {
 
 // LoginLogWriter 定义登录日志写入器。
 type LoginLogWriter interface {
-	WriteLogin(ctx context.Context, entry LoginEntry) error
+	WriteLoginLog(ctx context.Context, entry LoginEntry) error
 	Close() error
 }
 
@@ -56,8 +56,8 @@ type LoginService interface {
 // NopLoginLogWriter 是登录日志空实现。
 type NopLoginLogWriter struct{}
 
-func (NopLoginLogWriter) WriteLogin(context.Context, LoginEntry) error { return nil }
-func (NopLoginLogWriter) Close() error                                 { return nil }
+func (NopLoginLogWriter) WriteLoginLog(context.Context, LoginEntry) error { return nil }
+func (NopLoginLogWriter) Close() error                                    { return nil }
 
 // LoginLogClient 是登录日志 gRPC 客户端。
 type LoginLogClient struct {
@@ -74,8 +74,8 @@ func NewLoginLogClient(consulCfg config.ConsulConfig, opts ...grpc.DialOption) (
 	return &LoginLogClient{conn: conn}, nil
 }
 
-// WriteLogin 调用远端 log-service 写入登录日志。
-func (c *LoginLogClient) WriteLogin(ctx context.Context, entry LoginEntry) error {
+// WriteLoginLog 调用远端 log-service 写入登录日志。
+func (c *LoginLogClient) WriteLoginLog(ctx context.Context, entry LoginEntry) error {
 	resp := &WriteLoginResponse{}
 	return invokeUnary(ctx, c.conn, WriteLoginLogMethodFullName, &WriteLoginRequest{Entry: entry}, resp)
 }

@@ -3,6 +3,10 @@ package router
 import (
 	"fmt"
 
+	"aevo/internal/modules/system/handler"
+	"aevo/internal/modules/system/repository"
+	"aevo/internal/modules/system/service"
+	"aevons-grpc/log_grpc"
 	authHandler "auth-service/handler"
 	credRepo "auth-service/repository"
 	authService "auth-service/service"
@@ -36,17 +40,13 @@ func Setup(app *core.App) (*gin.Engine, error) {
 		return nil, fmt.Errorf("router: 读取数据库连接失败: %w", err)
 	}
 
-	// logWriter := log_grpc.OperLogWriter(log_grpc.NopOperLogWriter{})
-	// if logServiceName != "" {
-	// 	client, err := log_grpc.NewOperLogClient(logServiceName)
-	// 	if err != nil {
-	// 		xlog.Warn("init oper log grpc client failed: %v", err)
-	// 	} else {
-	// 		logWriter = client
-	// 	}
-	// } else {
-	// 	xlog.Warn("log service grpc target is empty, oper log will be skipped")
-	// }
+	logWriter := log_grpc.LoginLogWriter(log_grpc.NopLoginLogWriter{})
+	client, err := log_grpc.NewLoginLogClient(cfg.Consul)
+	if err != nil {
+		xlog.Warn("init login log grpc client from consul failed: %v", err)
+	} else {
+		logWriter = client
+	}
 
 	gin.SetMode(cfg.Server.Mode)
 
@@ -62,67 +62,20 @@ func Setup(app *core.App) (*gin.Engine, error) {
 
 	v1 := r.Group("/api/v1")
 	{
-		RegisterRoutes(v1, db, redisClient, cfg)
+		RegisterRoutes(v1, db, redisClient, cfg, logWriter)
 	}
 
 	return r, nil
 }
 
 // RegisterRoutes 将认证模块的所有路由注册到指定路由组。
-func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB, client *redis.Client, cfg *config.Config) {
-	h := ProvideAuthHandler(db, client, cfg)
-
-	// 公开路由，无需令牌
-	rg.POST("/auth/login", h.Login)
-	rg.POST("/auth/refresh", h.Refresh)
-	rg.POST("/auth/email/code", h.SendEmailCode)
-	rg.POST("/auth/register", h.Register)
-	rg.POST("/auth/reset-password", h.ResetPassword)
-	rg.GET("/auth/public-key", h.GetPublicKey)
-
-	// OAuth2 标准授权码流程端点
-	rg.GET("/auth/authorize", h.Authorize)
-	rg.POST("/auth/authorize", h.ApproveAuthorize)
-	rg.GET("/auth/callback", h.Callback)
-
-	// Passkey 公开端点（认证流程无需 token）
-	rg.POST("/auth/passkey/login/begin", h.Passkey.BeginAuthentication)
-	rg.POST("/auth/passkey/login/finish", h.Passkey.FinishAuthentication)
-
-	// 受保护路由，由全局 AuthMiddleware 验证令牌
-	rg.POST("/auth/code", h.GenerateAuthCode)
-	rg.POST("/auth/logout", h.Logout)
-	rg.GET("/auth/routers", h.Routers)
-	rg.GET("/auth/user", h.GetUserInfo)
-	rg.GET("/auth/user/profile", h.GetProfile)
-	rg.PUT("/auth/user/profile", h.UpdateProfile)
-	rg.PUT("/auth/user/password", h.UpdatePassword)
-
-	// Passkey 受保护端点（注册需要已登录）
-	rg.POST("/auth/passkey/register/begin", h.Passkey.BeginRegistration)
-	rg.POST("/auth/passkey/register/finish", h.Passkey.FinishRegistration)
-	rg.GET("/auth/passkey/credentials", h.Passkey.ListCredentials)
-	rg.DELETE("/auth/passkey/credentials/:id", h.Passkey.RevokeCredential)
-
-	loginLogHandler := handler.NewLoginLogHandler(service.NewLoginLogService(repository.NewLoginLogRepository(db)))
-	rg.GET("/auth/user/login-logs", loginLogHandler.GetProfileLoginLog)
-}
-
-// AuthHandlerBundle 包含 AuthHandler 和 PasskeyHandler。
-type AuthHandlerBundle struct {
-	*authHandler.AuthHandler
-	Passkey *authHandler.PasskeyHandler
-}
-
-// ProvideAuthHandler 组装 AuthHandler 及其所有依赖。
-func ProvideAuthHandler(db *gorm.DB, redisClient *redis.Client, cfg *config.Config) *AuthHandlerBundle {
-	store := auth.NewRedisTokenStore(redisClient)
+func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB, client *redis.Client, cfg *config.Config, logWriter log_grpc.LoginLogWriter) {
+	store := auth.NewRedisTokenStore(client)
 	userRepo := repository.NewUserRepository(db)
 	clientRepo := repository.NewOauthClientRepository(db)
 	clientSvc := service.NewOauthClientService(clientRepo)
 	notifier := auth.NewHttpSLONotifier()
-	logRepo := repository.NewLoginLogRepository(db)
-	svc := authService.NewAuthService(store, userRepo, clientSvc, cfg.Auth, notifier, logRepo)
+	svc := authService.NewAuthService(store, userRepo, clientSvc, cfg.Auth, notifier, logWriter)
 
 	credRepository := credRepo.NewCredentialRepository(db)
 	rpId := cfg.WebAuthn.RPID
@@ -142,9 +95,41 @@ func ProvideAuthHandler(db *gorm.DB, redisClient *redis.Client, cfg *config.Conf
 	if err != nil {
 		xlog.Error("passkey service init failed: %v", err)
 	}
+	h := authHandler.NewAuthHandler(svc)
+	p := authHandler.NewPasskeyHandler(passkeySvc, svc)
 
-	return &AuthHandlerBundle{
-		AuthHandler: authHandler.NewAuthHandler(svc),
-		Passkey:     authHandler.NewPasskeyHandler(passkeySvc, svc),
-	}
+	// 公开路由，无需令牌
+	rg.POST("/auth/login", h.Login)
+	rg.POST("/auth/refresh", h.Refresh)
+	rg.POST("/auth/email/code", h.SendEmailCode)
+	rg.POST("/auth/register", h.Register)
+	rg.POST("/auth/reset-password", h.ResetPassword)
+	rg.GET("/auth/public-key", h.GetPublicKey)
+
+	// OAuth2 标准授权码流程端点
+	rg.GET("/auth/authorize", h.Authorize)
+	rg.POST("/auth/authorize", h.ApproveAuthorize)
+	rg.GET("/auth/callback", h.Callback)
+
+	// Passkey 公开端点（认证流程无需 token）
+	rg.POST("/auth/passkey/login/begin", p.BeginAuthentication)
+	rg.POST("/auth/passkey/login/finish", p.FinishAuthentication)
+
+	// 受保护路由，由全局 AuthMiddleware 验证令牌
+	rg.POST("/auth/code", h.GenerateAuthCode)
+	rg.POST("/auth/logout", h.Logout)
+	rg.GET("/auth/routers", h.Routers)
+	rg.GET("/auth/user", h.GetUserInfo)
+	rg.GET("/auth/user/profile", h.GetProfile)
+	rg.PUT("/auth/user/profile", h.UpdateProfile)
+	rg.PUT("/auth/user/password", h.UpdatePassword)
+
+	// Passkey 受保护端点（注册需要已登录）
+	rg.POST("/auth/passkey/register/begin", p.BeginRegistration)
+	rg.POST("/auth/passkey/register/finish", p.FinishRegistration)
+	rg.GET("/auth/passkey/credentials", p.ListCredentials)
+	rg.DELETE("/auth/passkey/credentials/:id", p.RevokeCredential)
+
+	loginLogHandler := handler.NewLoginLogHandler(service.NewLoginLogService(repository.NewLoginLogRepository(db)))
+	rg.GET("/auth/user/login-logs", loginLogHandler.GetProfileLoginLog)
 }

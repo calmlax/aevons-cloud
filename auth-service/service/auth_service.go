@@ -2,6 +2,8 @@
 package service
 
 import (
+	"aevons-grpc/log_grpc"
+	"auth-service/dto"
 	"context"
 	"crypto/rand"
 	"errors"
@@ -10,10 +12,9 @@ import (
 	"strings"
 	"time"
 
-	"aevo/internal/modules/system/dto"
-	"aevo/internal/modules/system/model"
-	"aevo/internal/modules/system/repository"
-	"aevo/internal/modules/system/service"
+	// "aevo/internal/modules/system/model"
+	// "aevo/internal/modules/system/repository"
+	// "aevo/internal/modules/system/service"
 
 	"github.com/calmlax/aevons-framework/auth"
 	"github.com/calmlax/aevons-framework/config"
@@ -73,7 +74,7 @@ type AuthService interface {
 	// LoginByUserId 直接为指定用户颁发令牌对（Passkey 等无密码登录使用）
 	LoginByUserId(ctx context.Context, userId int64, clientId string) (*auth.TokenPair, error)
 	// RecordLoginLog 记录登录日志（供外部服务调用）
-	RecordLoginLog(username, clientId, grantType string, status int16, msg, userAgent, ip string)
+	RecordLoginLog(ctx context.Context, username, clientId, grantType string, status int16, msg, userAgent, ip string)
 }
 
 type authService struct {
@@ -82,7 +83,7 @@ type authService struct {
 	clientSvc service.OauthClientService
 	cfg       config.AuthConfig
 	notifier  auth.SLONotifier
-	logRepo   repository.LoginLogRepository
+	logWriter log_grpc.LoginLogWriter
 }
 
 // NewAuthService 创建 AuthService 实例。
@@ -92,7 +93,7 @@ func NewAuthService(
 	clientSvc service.OauthClientService,
 	cfg config.AuthConfig,
 	notifier auth.SLONotifier,
-	logRepo repository.LoginLogRepository,
+	logWriter log_grpc.LoginLogWriter,
 ) AuthService {
 	return &authService{
 		store:     store,
@@ -100,11 +101,11 @@ func NewAuthService(
 		clientSvc: clientSvc,
 		cfg:       cfg,
 		notifier:  notifier,
-		logRepo:   logRepo,
+		logWriter: logWriter,
 	}
 }
 
-func (s *authService) recordLoginLog(username, clientId, grantType string, status int16, msg, uaString, ip string) {
+func (s *authService) recordLoginLog(ctx context.Context, username, clientId, grantType string, status int16, msg, uaString, ip string) {
 	ua := useragent.Parse(uaString)
 
 	os := ua.OS
@@ -116,20 +117,20 @@ func (s *authService) recordLoginLog(username, clientId, grantType string, statu
 		browser = "Unknown"
 	}
 
-	log := &model.LoginLog{
+	log := &log_grpc.LoginEntry{
 		Username:  username,
-		ClientId:  clientId,
+		ClientID:  clientId,
 		GrantType: grantType,
-		Ip:        ip,
+		IP:        ip,
 		Browser:   browser,
-		Os:        os,
+		OS:        os,
 		Status:    status,
 		Msg:       msg,
 		LoginAt:   time.Now(),
 	}
 
-	go func(record *model.LoginLog) {
-		_ = s.logRepo.Create(record)
+	go func(record *log_grpc.LoginEntry) {
+		_ = s.logWriter.WriteLoginLog(ctx, *record)
 	}(log)
 }
 
@@ -177,16 +178,16 @@ func (s *authService) AuthorizeLogin(ctx context.Context, req *auth.LoginRequest
 	}
 
 	if err != nil {
-		s.recordLoginLog(logUsername, "", "authorize_login", 0, err.Error(), req.UserAgent, req.ClientIP)
+		s.recordLoginLog(ctx, logUsername, "", "authorize_login", 0, err.Error(), req.UserAgent, req.ClientIP)
 		return "", err
 	}
 	// 颁发短期 token（10分钟），仅用于完成授权流程
 	token, err := s.IssueShortToken(ctx, userId)
 	if err != nil {
-		s.recordLoginLog(logUsername, "", "authorize_login", 0, err.Error(), req.UserAgent, req.ClientIP)
+		s.recordLoginLog(ctx, logUsername, "", "authorize_login", 0, err.Error(), req.UserAgent, req.ClientIP)
 		return "", err
 	}
-	s.recordLoginLog(logUsername, "", "authorize_login", 1, "Login successful", req.UserAgent, req.ClientIP)
+	s.recordLoginLog(ctx, logUsername, "", "authorize_login", 1, "Login successful", req.UserAgent, req.ClientIP)
 	return token, nil
 }
 
@@ -202,13 +203,13 @@ func (s *authService) Login(ctx context.Context, req *auth.LoginRequest) (*auth.
 
 	client, err := s.clientSvc.ValidateClient(ctx, req.ClientId, req.ClientSecret, req.GrantType)
 	if err != nil {
-		s.recordLoginLog(logUsername, req.ClientId, req.GrantType, 0, consts.ErrOAuthInvalidClient, req.UserAgent, req.ClientIP)
+		s.recordLoginLog(ctx, logUsername, req.ClientId, req.GrantType, 0, consts.ErrOAuthInvalidClient, req.UserAgent, req.ClientIP)
 		return nil, err
 	}
 
 	if client.WebServerRedirectUri != "" && req.RedirectURI != "" {
 		if req.RedirectURI != client.WebServerRedirectUri {
-			s.recordLoginLog(logUsername, req.ClientId, req.GrantType, 0, consts.ErrOAuthRedirectURIMismatch, req.UserAgent, req.ClientIP)
+			s.recordLoginLog(ctx, logUsername, req.ClientId, req.GrantType, 0, consts.ErrOAuthRedirectURIMismatch, req.UserAgent, req.ClientIP)
 			return nil, &AuthError{Code: consts.ErrOAuthRedirectURIMismatch, HTTPStatus: 400}
 		}
 	}
@@ -236,11 +237,11 @@ func (s *authService) Login(ctx context.Context, req *auth.LoginRequest) (*auth.
 	}
 
 	if err != nil {
-		s.recordLoginLog(logUsername, req.ClientId, req.GrantType, 0, err.Error(), req.UserAgent, req.ClientIP)
+		s.recordLoginLog(ctx, logUsername, req.ClientId, req.GrantType, 0, err.Error(), req.UserAgent, req.ClientIP)
 		return nil, err
 	}
 
-	s.recordLoginLog(logUsername, req.ClientId, req.GrantType, 1, "Login successful", req.UserAgent, req.ClientIP)
+	s.recordLoginLog(ctx, logUsername, req.ClientId, req.GrantType, 1, "Login successful", req.UserAgent, req.ClientIP)
 	return pair, nil
 }
 
@@ -1058,6 +1059,6 @@ func (s *authService) LoginByUserId(ctx context.Context, userId int64, clientId 
 }
 
 // RecordLoginLog 记录登录日志（供外部服务调用）。
-func (s *authService) RecordLoginLog(username, clientId, grantType string, status int16, msg, userAgent, ip string) {
-	s.recordLoginLog(username, clientId, grantType, status, msg, userAgent, ip)
+func (s *authService) RecordLoginLog(ctx context.Context, username, clientId, grantType string, status int16, msg, userAgent, ip string) {
+	s.recordLoginLog(ctx, username, clientId, grantType, status, msg, userAgent, ip)
 }
