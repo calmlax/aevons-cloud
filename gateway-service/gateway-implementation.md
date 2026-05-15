@@ -75,11 +75,11 @@ swagger:
   ui_enabled: true
   docs:
     - name: auth-service
-      url: /auth/apifox/openapi.json
+      url: /auth/api/swagger.json
     - name: system-service
-      url: /system/apifox/openapi.json
+      url: /system/api/swagger.json
     - name: log-service
-      url: /log/apifox/openapi.json
+      url: /log/api/swagger.json
 
 services:
   - id: auth

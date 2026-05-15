@@ -4,7 +4,6 @@
 // @host            localhost:8021
 // @BasePath        /api/v1
 // @schemes         http https
-
 // @securityDefinitions.apikey  BearerAuth
 // @in                          header
 // @name                        Authorization

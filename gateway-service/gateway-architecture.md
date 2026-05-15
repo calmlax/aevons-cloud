@@ -304,7 +304,7 @@ clients:
 
 ## 9. Swagger UI 聚合设计
 
-可以在网关中统一集成 Swagger UI，并聚合所有服务的 `api/openapi.json` 文档。
+可以在网关中统一集成 Swagger UI，并聚合所有服务的 `api/swagger.json` 文档。
 
 这样做的好处是：
 
@@ -315,8 +315,8 @@ clients:
 
 建议规则：
 
-1. 各服务继续各自维护 `api/openapi.json`
-2. 各服务通过自身 `/apifox/openapi.json` 对外暴露文档
+1. 各服务继续各自维护 `api/swagger.json`
+2. 各服务通过自身 `/api/swagger.json` 对外暴露文档
 3. 网关负责聚合这些 OpenAPI 地址
 4. 统一通过一个 Swagger UI 页面展示多个服务文档
 
@@ -339,7 +339,7 @@ Swagger UI 必须支持配置开关控制。
 建议开关语义：
 
 - `swagger.enabled = true`
-  允许暴露当前服务的 `/apifox/openapi.json`
+  允许暴露当前服务的 `/api/swagger.json`
 
 - `swagger.ui_enabled = true`
   允许暴露网关 Swagger UI 页面
@@ -367,11 +367,11 @@ swagger:
   ui_enabled: true
   docs:
     - name: auth-service
-      url: /auth/apifox/openapi.json
+      url: /auth/api/swagger.json
     - name: system-service
-      url: /system/apifox/openapi.json
+      url: /system/api/swagger.json
     - name: log-service
-      url: /log/apifox/openapi.json
+      url: /log/api/swagger.json
 ```
 
 Swagger UI 通过这个列表动态展示多个服务文档。
