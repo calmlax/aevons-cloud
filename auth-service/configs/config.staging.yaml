@@ -24,10 +24,6 @@ rocketmq:
   name_servers:
     - "127.0.0.1:9876"
 
-# 预发布环境可开启 Swagger 方便联调
-swagger:
-  enabled: true
-
 webauthn:
   rp_id: staging.your-domain.com
   rp_origins:

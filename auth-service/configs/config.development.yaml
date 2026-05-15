@@ -20,10 +20,6 @@ rocketmq:
   name_servers:
     - "127.0.0.1:9876"
 
-# 开发环境开启 Swagger
-swagger:
-  enabled: false
-
 webauthn:
   rp_id: localhost
   rp_origins:
