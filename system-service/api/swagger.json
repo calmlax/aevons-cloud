@@ -1,0 +1,24 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Aevons 后台管理系统接口文档，供 Apifox 同步使用",
+        "title": "Aevons Admin API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8021",
+    "basePath": "/api/v1",
+    "paths": {},
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Bearer token，格式：Bearer {token}",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

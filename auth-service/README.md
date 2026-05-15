@@ -5,5 +5,5 @@
 生成 `api/swagger.json`：
 
 ```bash
-swag init -g cmd/server/main.go -o ./api --outputTypes json
+go run github.com/swaggo/swag/cmd/swag@latest init -g cmd/server/main.go -o ./api --outputTypes json
 ```
