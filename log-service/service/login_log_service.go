@@ -19,7 +19,7 @@ import (
 
 type LoginLogService interface {
 	base.BaseService[model.LoginLog, *dto.LoginLogQuery]
-	GetProfileLoginLogs(username string) ([]model.LoginLog, error)
+	GetLatestLoginLog(username string, limit int) ([]model.LoginLog, error)
 	TruncateAll() error
 }
 
@@ -35,8 +35,8 @@ func NewLoginLogService(repo repository.LoginLogRepository) LoginLogService {
 	}
 }
 
-func (s *loginLogService) GetProfileLoginLogs(username string) ([]model.LoginLog, error) {
-	return s.repo.GetLatestLoginLogs(username, 10)
+func (s *loginLogService) GetLatestLoginLog(username string, limit int) ([]model.LoginLog, error) {
+	return s.repo.GetLatestLoginLog(username, limit)
 }
 
 func (s *loginLogService) TruncateAll() error {

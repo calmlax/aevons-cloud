@@ -19,6 +19,7 @@ const (
 
 // LoginEntry 定义通用登录日志载荷。
 type LoginEntry struct {
+	ID        int64     `json:"id,string,omitempty"`
 	Username  string    `json:"username"`
 	ClientID  string    `json:"clientId"`
 	GrantType string    `json:"grantType"`

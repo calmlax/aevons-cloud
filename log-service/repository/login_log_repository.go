@@ -19,7 +19,7 @@ import (
 
 type LoginLogRepository interface {
 	base.BaseRepository[model.LoginLog]
-	GetLatestLoginLogs(username string, limit int) ([]model.LoginLog, error)
+	GetLatestLoginLog(username string, limit int) ([]model.LoginLog, error)
 	TruncateAll() error
 }
 
@@ -35,7 +35,7 @@ func NewLoginLogRepository(db *gorm.DB) LoginLogRepository {
 	}
 }
 
-func (r *loginLogRepository) GetLatestLoginLogs(username string, limit int) ([]model.LoginLog, error) {
+func (r *loginLogRepository) GetLatestLoginLog(username string, limit int) ([]model.LoginLog, error) {
 	var list []model.LoginLog
 	err := r.db.Model(&model.LoginLog{}).
 		Where("username = ?", username).

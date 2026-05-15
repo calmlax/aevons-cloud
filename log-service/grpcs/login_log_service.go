@@ -46,3 +46,29 @@ func (s *LoginLogServiceServer) WriteLoginLog(ctx context.Context, req *log_grpc
 		Message: "ok",
 	}, nil
 }
+
+func (s *LoginLogServiceServer) GetLatestLoginLog(username string, limit int) ([]log_grpc.LoginEntry, error) {
+	records, err := s.svc.GetLatestLoginLog(username, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	entries := make([]log_grpc.LoginEntry, len(records))
+	for i, record := range records {
+		entries[i] = log_grpc.LoginEntry{
+			ID:        record.Id,
+			Username:  record.Username,
+			ClientID:  record.ClientId,
+			GrantType: record.GrantType,
+			OS:        record.Os,
+			Browser:   record.Browser,
+			IP:        record.Ip,
+			Location:  record.Location,
+			Status:    record.Status,
+			Msg:       record.Msg,
+			LoginAt:   record.LoginAt,
+		}
+	}
+
+	return entries, nil
+}
