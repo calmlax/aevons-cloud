@@ -37,9 +37,9 @@ func Setup(app *core.App, logServiceGRPCTarget string) (*gin.Engine, error) {
 		return nil, fmt.Errorf("router: 读取数据库连接失败: %w", err)
 	}
 
-	logWriter := log_grpc.Writer(log_grpc.NopWriter{})
+	logWriter := log_grpc.OperLogWriter(log_grpc.NopOperLogWriter{})
 	if logServiceGRPCTarget != "" {
-		client, err := log_grpc.NewClient(logServiceGRPCTarget)
+		client, err := log_grpc.NewOperLogClient(logServiceGRPCTarget)
 		if err != nil {
 			xlog.Warn("init oper log grpc client failed: %v", err)
 		} else {
@@ -59,17 +59,21 @@ func Setup(app *core.App, logServiceGRPCTarget string) (*gin.Engine, error) {
 	r.Use(middleware.XSSMiddleware(cfg))
 	server.RegisterHealthRoute(r, cfg.Server.Name)
 	server.RegisterOpenApiRoute(r, cfg)
+	fmt.Printf("--------------cfg.Auth.Excludes = %v \n", cfg.Auth.Excludes)
 	r.Use(middleware.AuthMiddleware(auth.NewRedisTokenStore(redisClient), cfg.Auth.Excludes))
 
 	v1 := r.Group("/api/v1")
 	{
 		registerConfRoutes(v1, db, logWriter)
+		v1.GET("/ping", localmiddleware.OperLog(logWriter, "Ping", consts.OTHER), func(c *gin.Context) {
+			c.JSON(200, gin.H{"message": "pong"})
+		})
 	}
 
 	return r, nil
 }
 
-func registerConfRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.Writer) {
+func registerConfRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.OperLogWriter) {
 	h := handler.NewConfHandler(
 		service.NewConfService(
 			repository.NewConfRepository(db),

@@ -16,9 +16,9 @@ import (
 )
 
 // OperLog 采集请求上下文并通过 log-server 的 gRPC 接口同步写入操作日志。
-func OperLog(writer log_grpc.Writer, module string, bizType consts.BizType) gin.HandlerFunc {
+func OperLog(writer log_grpc.OperLogWriter, module string, bizType consts.BizType) gin.HandlerFunc {
 	if writer == nil {
-		writer = log_grpc.NopWriter{}
+		writer = log_grpc.NopOperLogWriter{}
 	}
 
 	return func(c *gin.Context) {
