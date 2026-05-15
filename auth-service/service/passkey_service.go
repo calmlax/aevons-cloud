@@ -9,8 +9,7 @@ import (
 	"time"
 
 	credModel "auth-service/model"
-	credRepo "auth-service/repository"
-	sysRepo "auth-service/repository"
+	authRepo "auth-service/repository"
 
 	pkgauth "github.com/calmlax/aevons-framework/auth"
 
@@ -54,8 +53,7 @@ func (u *waUser) WebAuthnCredentials() []webauthn.Credential { return u.credenti
 type passkeyService struct {
 	wa       *webauthn.WebAuthn
 	store    pkgauth.TokenStore // 复用 Redis store 存 session
-	userRepo sysRepo.UserRepository
-	credRepo credRepo.CredentialRepository
+	authRepo authRepo.AuthRepository
 	authSvc  AuthService // 复用 issueTokenPair
 }
 
@@ -64,8 +62,7 @@ func NewPasskeyService(
 	rpOrigins []string,
 	rpName string,
 	store pkgauth.TokenStore,
-	userRepo sysRepo.UserRepository,
-	credRepo credRepo.CredentialRepository,
+	authRepo authRepo.AuthRepository,
 	authSvc AuthService,
 ) (PasskeyService, error) {
 	wa, err := webauthn.New(&webauthn.Config{
@@ -84,8 +81,7 @@ func NewPasskeyService(
 	return &passkeyService{
 		wa:       wa,
 		store:    store,
-		userRepo: userRepo,
-		credRepo: credRepo,
+		authRepo: authRepo,
 		authSvc:  authSvc,
 	}, nil
 }
@@ -116,11 +112,11 @@ func (s *passkeyService) loadSession(ctx context.Context, key string) (*webauthn
 }
 
 func (s *passkeyService) buildWAUser(userId int64) (*waUser, error) {
-	user, err := s.userRepo.GetById(userId)
+	user, err := s.authRepo.GetUserByUserId(userId)
 	if err != nil {
 		return nil, err
 	}
-	creds, err := s.credRepo.GetCredentialByUserId(userId)
+	creds, err := s.authRepo.GetCredentialByUserId(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -213,7 +209,7 @@ func (s *passkeyService) FinishRegistration(ctx context.Context, userId int64, s
 		return fmt.Errorf("create credential: %w", err)
 	}
 
-	user, err := s.userRepo.GetById(userId)
+	user, err := s.authRepo.GetUserByUserId(userId)
 	if err != nil {
 		return err
 	}
@@ -240,7 +236,7 @@ func (s *passkeyService) FinishRegistration(ctx context.Context, userId int64, s
 		BackupState:     &backupState,
 	}
 
-	return s.credRepo.CreateCredential(c)
+	return s.authRepo.CreateCredential(c)
 }
 
 func (s *passkeyService) BeginAuthentication(ctx context.Context, username string) ([]byte, string, error) {
@@ -274,17 +270,17 @@ func (s *passkeyService) FinishAuthentication(ctx context.Context, sessionKey st
 
 	// discoverable login：通过 rawId 找到凭据和用户
 	rawId := parsedResponse.RawID
-	cred, err := s.credRepo.GetCredentialByCredentialId(rawId)
+	cred, err := s.authRepo.GetCredentialByCredentialId(rawId)
 	if err != nil {
 		// 记录失败日志
-		s.authSvc.RecordLoginLog("", "passkey", "passkey", 0, "Credential not found", userAgent, clientIP)
+		s.authSvc.RecordLoginLog(ctx, "", "passkey", "passkey", 0, "Credential not found", userAgent, clientIP)
 		return nil, &AuthError{Code: "auth.passkey_credential_not_found", HTTPStatus: 401}
 	}
 
 	waUser, err := s.buildWAUser(cred.UserId)
 	if err != nil {
 		// 记录失败日志
-		s.authSvc.RecordLoginLog(cred.Username, "passkey", "passkey", 0, fmt.Sprintf("Build user failed: %v", err), userAgent, clientIP)
+		s.authSvc.RecordLoginLog(ctx, cred.Username, "passkey", "passkey", 0, fmt.Sprintf("Build user failed: %v", err), userAgent, clientIP)
 		return nil, err
 	}
 
@@ -305,40 +301,40 @@ func (s *passkeyService) FinishAuthentication(ctx context.Context, sessionKey st
 		fmt.Printf("[Passkey] Response RawID: %x\n", rawId)
 		fmt.Printf("[Passkey] User ID: %d\n", cred.UserId)
 		// 记录失败日志
-		s.authSvc.RecordLoginLog(cred.Username, "passkey", "passkey", 0, "Passkey verification failed", userAgent, clientIP)
+		s.authSvc.RecordLoginLog(ctx, cred.Username, "passkey", "passkey", 0, "Passkey verification failed", userAgent, clientIP)
 		return nil, &AuthError{Code: "auth.passkey_verify_failed", HTTPStatus: 401}
 	}
 
 	// 更新签名计数器
-	_ = s.credRepo.UpdateCredentialSignatureCount(cred.Id, uint64(credential.Authenticator.SignCount))
+	_ = s.authRepo.UpdateCredentialSignatureCount(cred.Id, uint64(credential.Authenticator.SignCount))
 
 	// 颁发 token（复用 authSvc 的内部方法，通过 grant_type=passkey 走 Login）
 	pair, err := s.authSvc.LoginByUserId(ctx, cred.UserId, "passkey")
 	if err != nil {
 		// 记录失败日志
-		s.authSvc.RecordLoginLog(cred.Username, "passkey", "passkey", 0, fmt.Sprintf("Token issuance failed: %v", err), userAgent, clientIP)
+		s.authSvc.RecordLoginLog(ctx, cred.Username, "passkey", "passkey", 0, fmt.Sprintf("Token issuance failed: %v", err), userAgent, clientIP)
 		return nil, err
 	}
 
 	// 记录成功日志
-	s.authSvc.RecordLoginLog(cred.Username, "passkey", "passkey", 1, "Passkey login successful", userAgent, clientIP)
+	s.authSvc.RecordLoginLog(ctx, cred.Username, "passkey", "passkey", 1, "Passkey login successful", userAgent, clientIP)
 
 	return pair, nil
 }
 
 func (s *passkeyService) ListCredentials(_ context.Context, userId int64) ([]*credModel.UserCredential, error) {
-	return s.credRepo.ListCredentialByUserId(userId)
+	return s.authRepo.ListCredentialByUserId(userId)
 }
 
 func (s *passkeyService) RevokeCredential(_ context.Context, userId int64, credId int64) error {
 	// 确认凭据属于该用户
-	creds, err := s.credRepo.ListCredentialByUserId(userId)
+	creds, err := s.authRepo.ListCredentialByUserId(userId)
 	if err != nil {
 		return err
 	}
 	for _, c := range creds {
 		if c.Id == credId {
-			return s.credRepo.RevokeCredential(credId)
+			return s.authRepo.RevokeCredential(credId)
 		}
 	}
 	return fmt.Errorf("credential not found")

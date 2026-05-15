@@ -233,6 +233,26 @@ func (h *AuthHandler) ResetPassword(c *gin.Context) {
 	response.Success(c, nil)
 }
 
+// GetLatestLoginLog 获取当前登录用户最近的登录日志。
+//
+// @Summary      查询最近登录日志
+// @Description  返回当前登录用户最近 10 条登录日志记录。
+// @Tags         认证
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Failure      401  {object}  response.Response
+// @Failure      500  {object}  response.Response
+// @Router       /auth/user/login-logs [get]
+func (h *AuthHandler) GetLatestLoginLog(c *gin.Context) {
+	entries, err := h.svc.GetLatestLoginLog(c.Request.Context())
+	if err != nil {
+		handleAuthError(c, err)
+		return
+	}
+	response.Success(c, entries)
+}
+
 // GenerateAuthCode 为当前用户生成 SSO 授权码。
 //
 // @Summary      生成授权码

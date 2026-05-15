@@ -3,12 +3,9 @@ package router
 import (
 	"fmt"
 
-	"aevo/internal/modules/system/handler"
-	"aevo/internal/modules/system/repository"
-	"aevo/internal/modules/system/service"
 	"aevons-grpc/log_grpc"
-	authHandler "auth-service/handler"
-	credRepo "auth-service/repository"
+	authHandler "auth-service/hander"
+	authRepo "auth-service/repository"
 	authService "auth-service/service"
 
 	"github.com/calmlax/aevons-framework/auth"
@@ -71,11 +68,9 @@ func Setup(app *core.App) (*gin.Engine, error) {
 // RegisterRoutes 将认证模块的所有路由注册到指定路由组。
 func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB, client *redis.Client, cfg *config.Config, logWriter log_grpc.LoginLogWriter) {
 	store := auth.NewRedisTokenStore(client)
-	userRepo := repository.NewUserRepository(db)
-	clientRepo := repository.NewOauthClientRepository(db)
-	clientSvc := service.NewOauthClientService(clientRepo)
+	repo := authRepo.NewAuthRepository(db)
 	notifier := auth.NewHttpSLONotifier()
-	svc := authService.NewAuthService(store, userRepo, clientSvc, cfg.Auth, notifier, logWriter)
+	svc := authService.NewAuthService(store, repo, cfg.Auth, notifier, logWriter)
 
 	h := authHandler.NewAuthHandler(svc)
 
@@ -101,7 +96,6 @@ func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB, client *redis.Client, cfg 
 	rg.PUT("/auth/user/profile", h.UpdateProfile)
 	rg.PUT("/auth/user/password", h.UpdatePassword)
 
-	credRepository := credRepo.NewCredentialRepository(db)
 	rpId := cfg.WebAuthn.RPID
 	if rpId == "" {
 		rpId = "localhost"
@@ -114,7 +108,7 @@ func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB, client *redis.Client, cfg 
 	if rpName == "" {
 		rpName = "Aevons Admin"
 	}
-	passkeySvc, err := authService.NewPasskeyService(rpId, rpOrigins, rpName, store, userRepo, credRepository, svc)
+	passkeySvc, err := authService.NewPasskeyService(rpId, rpOrigins, rpName, store, repo, svc)
 	if err != nil {
 		xlog.Error("passkey service init failed: %v", err)
 	}
@@ -128,6 +122,5 @@ func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB, client *redis.Client, cfg 
 	rg.GET("/auth/passkey/credentials", p.ListCredentials)
 	rg.DELETE("/auth/passkey/credentials/:id", p.RevokeCredential)
 
-	loginLogHandler := handler.NewLoginLogHandler(service.NewLoginLogService(repository.NewLoginLogRepository(db)))
-	rg.GET("/auth/user/login-logs", loginLogHandler.GetProfileLoginLog)
+	rg.GET("/auth/user/login-logs", h.GetLatestLoginLog)
 }

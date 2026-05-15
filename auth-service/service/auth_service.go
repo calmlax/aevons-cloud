@@ -4,6 +4,7 @@ package service
 import (
 	"aevons-grpc/log_grpc"
 	"auth-service/dto"
+	authRepo "auth-service/repository"
 	"context"
 	"crypto/rand"
 	"errors"
@@ -12,9 +13,7 @@ import (
 	"strings"
 	"time"
 
-	// "aevo/internal/modules/system/model"
-	// "aevo/internal/modules/system/repository"
-	// "aevo/internal/modules/system/service"
+	"auth-service/model"
 
 	"github.com/calmlax/aevons-framework/auth"
 	"github.com/calmlax/aevons-framework/config"
@@ -74,13 +73,14 @@ type AuthService interface {
 	// LoginByUserId 直接为指定用户颁发令牌对（Passkey 等无密码登录使用）
 	LoginByUserId(ctx context.Context, userId int64, clientId string) (*auth.TokenPair, error)
 	// RecordLoginLog 记录登录日志（供外部服务调用）
-	RecordLoginLog(ctx context.Context, username, clientId, grantType string, status int16, msg, userAgent, ip string)
+	RecordLoginLog(ctx context.Context, username string, clientId string, grantType string, status int16, msg, userAgent, ip string)
+	// GetLatestLoginLog 查询指定用户最近的登录日志（供外部服务调用）
+	GetLatestLoginLog(ctx context.Context) ([]*log_grpc.LoginEntry, error)
 }
 
 type authService struct {
 	store     auth.TokenStore
-	userRepo  repository.UserRepository
-	clientSvc service.OauthClientService
+	authRepo  authRepo.AuthRepository
 	cfg       config.AuthConfig
 	notifier  auth.SLONotifier
 	logWriter log_grpc.LoginLogWriter
@@ -89,16 +89,14 @@ type authService struct {
 // NewAuthService 创建 AuthService 实例。
 func NewAuthService(
 	store auth.TokenStore,
-	userRepo repository.UserRepository,
-	clientSvc service.OauthClientService,
+	authRepo authRepo.AuthRepository,
 	cfg config.AuthConfig,
 	notifier auth.SLONotifier,
 	logWriter log_grpc.LoginLogWriter,
 ) AuthService {
 	return &authService{
 		store:     store,
-		userRepo:  userRepo,
-		clientSvc: clientSvc,
+		authRepo:  authRepo,
 		cfg:       cfg,
 		notifier:  notifier,
 		logWriter: logWriter,
@@ -148,7 +146,7 @@ func (s *authService) ValidateEmailCode(ctx context.Context, email, code string)
 		return 0, &AuthError{Code: consts.ErrInvalidCode, HTTPStatus: 400}
 	}
 
-	user, err := s.userRepo.GetByEmail(email)
+	user, err := s.authRepo.GetUserByEmail(email)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return 0, &AuthError{Code: consts.ErrUserNotFound, HTTPStatus: 404}
@@ -201,7 +199,7 @@ func (s *authService) Login(ctx context.Context, req *auth.LoginRequest) (*auth.
 		logUsername = req.ClientId
 	}
 
-	client, err := s.clientSvc.ValidateClient(ctx, req.ClientId, req.ClientSecret, req.GrantType)
+	client, err := s.authRepo.ValidateClient(req.ClientId, req.ClientSecret, req.GrantType)
 	if err != nil {
 		s.recordLoginLog(ctx, logUsername, req.ClientId, req.GrantType, 0, consts.ErrOAuthInvalidClient, req.UserAgent, req.ClientIP)
 		return nil, err
@@ -246,7 +244,7 @@ func (s *authService) Login(ctx context.Context, req *auth.LoginRequest) (*auth.
 }
 
 func (s *authService) loginByPassword(ctx context.Context, req *auth.LoginRequest, client *model.OauthClient) (*auth.TokenPair, error) {
-	user, err := s.userRepo.GetByUsername(req.Username)
+	user, err := s.authRepo.GetUserByUsername(req.Username)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, &AuthError{Code: consts.ErrInvalidCredentials, HTTPStatus: 401}
@@ -292,7 +290,7 @@ func (s *authService) loginByEmailCode(ctx context.Context, req *auth.LoginReque
 		return nil, &AuthError{Code: consts.ErrInvalidCode, HTTPStatus: 400}
 	}
 
-	user, err := s.userRepo.GetByEmail(req.Email)
+	user, err := s.authRepo.GetUserByEmail(req.Email)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, &AuthError{Code: consts.ErrUserNotFound, HTTPStatus: 404}
@@ -319,7 +317,7 @@ func (s *authService) loginByAuthCode(ctx context.Context, req *auth.LoginReques
 	}
 	_ = s.store.DeleteAuthCode(ctx, req.Code)
 
-	user, err := s.userRepo.GetById(userId)
+	user, err := s.authRepo.GetUserByUserId(userId)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, &AuthError{Code: consts.ErrUserNotFound, HTTPStatus: 404}
@@ -524,7 +522,7 @@ func (s *authService) Register(ctx context.Context, name, email, password, code 
 	}
 	_ = s.store.DeleteEmailCode(ctx, email, "register")
 
-	_, err = s.userRepo.GetByEmail(email)
+	_, err = s.authRepo.GetUserByEmail(email)
 	if err == nil {
 		return nil, &AuthError{Code: "auth.emailAlreadyRegistered", HTTPStatus: 400}
 	}
@@ -542,7 +540,7 @@ func (s *authService) Register(ctx context.Context, name, email, password, code 
 		Status:   0, // Active
 	}
 
-	if err := s.userRepo.Create(user); err != nil {
+	if err := s.authRepo.RegisterUser(user); err != nil {
 		return nil, err
 	}
 
@@ -551,7 +549,7 @@ func (s *authService) Register(ctx context.Context, name, email, password, code 
 
 // UpdateProfile 用户修改自己资料。同步更新缓存和数据库。
 func (s *authService) UpdateProfile(ctx context.Context, userId int64, accessToken string, req *dto.UpdateProfileDTO) error {
-	_, err := s.userRepo.Update(userId, map[string]any{
+	err := s.authRepo.UpdateProfile(userId, map[string]any{
 		"nickname":  req.Nickname,
 		"email":     req.Email,
 		"mobile":    req.Mobile,
@@ -582,7 +580,7 @@ func (s *authService) UpdateProfile(ctx context.Context, userId int64, accessTok
 
 // UpdatePassword 用户修改自己密码。
 func (s *authService) UpdatePassword(ctx context.Context, userId int64, req *auth.UpdatePasswordRequest) error {
-	user, err := s.userRepo.GetById(userId)
+	user, err := s.authRepo.GetUserByUserId(userId)
 	if err != nil {
 		return err
 	}
@@ -598,7 +596,7 @@ func (s *authService) UpdatePassword(ctx context.Context, userId int64, req *aut
 		return err
 	}
 
-	_, err = s.userRepo.Update(userId, map[string]any{"password": string(hashed)})
+	_ = s.authRepo.UpdateProfile(userId, map[string]any{"password": string(hashed)})
 	if err != nil {
 		return err
 	}
@@ -616,7 +614,7 @@ func (s *authService) ResetPassword(ctx context.Context, email, password, code s
 	}
 	_ = s.store.DeleteEmailCode(ctx, email, "reset-password")
 
-	user, err := s.userRepo.GetByEmail(email)
+	user, err := s.authRepo.GetUserByEmail(email)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return &AuthError{Code: "auth.emailNotFound", HTTPStatus: 404}
@@ -629,7 +627,7 @@ func (s *authService) ResetPassword(ctx context.Context, email, password, code s
 		return err
 	}
 
-	_, err = s.userRepo.Update(user.Id, map[string]any{"password": string(hashed)})
+	_ = s.authRepo.UpdateProfile(user.Id, map[string]any{"password": string(hashed)})
 	return err
 }
 
@@ -657,12 +655,12 @@ func (s *authService) issueTokenPairWithScopes(ctx context.Context, userId int64
 		refreshTTL = s.cfg.RefreshTokenTTL
 	}
 
-	user, err := s.userRepo.GetById(userId)
+	user, err := s.authRepo.GetUserByUserId(userId)
 	if err != nil {
 		return nil, err
 	}
 
-	dbRoles, err := s.userRepo.GetRolesByUserId(userId)
+	dbRoles, err := s.authRepo.GetRolesByUserId(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -672,7 +670,7 @@ func (s *authService) issueTokenPairWithScopes(ctx context.Context, userId int64
 		roleIds[i] = role.Id
 	}
 
-	userDepts, err := s.userRepo.GetUserDeptsByUserId(userId)
+	userDepts, err := s.authRepo.GetUserDeptsByUserId(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -686,7 +684,7 @@ func (s *authService) issueTokenPairWithScopes(ctx context.Context, userId int64
 		}
 		//自定义权限
 		if role.DataScope == 2 {
-			deptIds, err := s.userRepo.GetRoleDeptIdsByRoleId(role.Id)
+			deptIds, err := s.authRepo.GetRoleDeptIdsByRoleId(role.Id)
 			if err != nil {
 				return nil, err
 			}
@@ -706,7 +704,7 @@ func (s *authService) issueTokenPairWithScopes(ctx context.Context, userId int64
 	if userId == consts.SuperAdminId {
 		permissions = []string{consts.AllPermission}
 	} else {
-		permissions, err = s.userRepo.GetPermissionsByRoleIds(roleIds)
+		permissions, err = s.authRepo.GetPermissionsByRoleIds(roleIds)
 		if err != nil {
 			return nil, err
 		}
@@ -748,7 +746,7 @@ func (s *authService) issueTokenPairWithScopes(ctx context.Context, userId int64
 
 // Authorize 校验客户端参数，生成 state 存入 Redis，返回授权页展示信息。
 func (s *authService) Authorize(ctx context.Context, clientId, redirectURI string) (*AuthorizeInfo, error) {
-	client, err := s.clientSvc.GetByClientId(ctx, clientId)
+	client, err := s.authRepo.GetByClientId(clientId)
 	if err != nil {
 		return nil, &AuthError{Code: consts.ErrOAuthInvalidClient, HTTPStatus: 401}
 	}
@@ -796,7 +794,7 @@ func (s *authService) ApproveAuthorize(ctx context.Context, userId int64, state 
 		redirectURI = parts[1]
 	}
 	if redirectURI == "" {
-		client, err := s.clientSvc.GetByClientId(ctx, clientId)
+		client, err := s.authRepo.GetByClientId(clientId)
 		if err != nil {
 			return "", &AuthError{Code: consts.ErrOAuthInvalidClient, HTTPStatus: 401}
 		}
@@ -837,12 +835,12 @@ func (s *authService) Callback(ctx context.Context, code, state string) (*auth.T
 	}
 	_ = s.store.DeleteAuthCode(ctx, code)
 
-	client, err := s.clientSvc.GetByClientId(ctx, clientId)
+	client, err := s.authRepo.GetByClientId(clientId)
 	if err != nil {
 		return nil, &AuthError{Code: consts.ErrOAuthInvalidClient, HTTPStatus: 401}
 	}
 
-	user, err := s.userRepo.GetById(userId)
+	user, err := s.authRepo.GetUserByUserId(userId)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, &AuthError{Code: consts.ErrUserNotFound, HTTPStatus: 404}
@@ -859,7 +857,7 @@ func (s *authService) Callback(ctx context.Context, code, state string) (*auth.T
 
 // IssueShortToken 为指定用户颁发短期 access token（TTL 10 分钟，授权页登录用）。
 func (s *authService) IssueShortToken(ctx context.Context, userId int64) (string, error) {
-	user, err := s.userRepo.GetById(userId)
+	user, err := s.authRepo.GetUserByUserId(userId)
 	if err != nil {
 		return "", err
 	}
@@ -885,7 +883,7 @@ func (s *authService) GetLoginUser(ctx context.Context, accessToken string) (*au
 
 // ValidateUserPassword 校验用户名密码，返回 userId。
 func (s *authService) ValidateUserPassword(ctx context.Context, username, password, keyId string) (int64, error) {
-	user, err := s.userRepo.GetByUsername(username)
+	user, err := s.authRepo.GetUserByUsername(username)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return 0, &AuthError{Code: consts.ErrInvalidCredentials, HTTPStatus: 401}
@@ -923,7 +921,7 @@ func (s *authService) GetRouters(ctx context.Context, langCode string) ([]auth.M
 	}
 	var menus []dto.MenuDTO
 	if user.UserId == consts.SuperAdminId {
-		menus, err = s.userRepo.GetAllMenus(langCode)
+		menus, err = s.authRepo.GetAllMenus(langCode)
 		if err != nil {
 			return nil, err
 		}
@@ -933,7 +931,7 @@ func (s *authService) GetRouters(ctx context.Context, langCode string) ([]auth.M
 			return nil, err
 		}
 		// 这里也必须捕获错误！
-		menus, err = s.userRepo.GetMenusByRoleIds(roleIds, langCode)
+		menus, err = s.authRepo.GetMenusByRoleIds(roleIds, langCode)
 		if err != nil {
 			return nil, err
 		}
@@ -1011,13 +1009,13 @@ func (s *authService) GetPublicKey(ctx context.Context) (*auth.PublicKeyResponse
 
 // GetProfile 获取当前登录用户的详尽档案信息。
 func (s *authService) GetProfile(id int64) (*dto.UserProfile, error) {
-	user, err := s.userRepo.GetById(id)
+	user, err := s.authRepo.GetUserByUserId(id)
 	if err != nil {
 		return nil, err
 	}
 
-	roles, _ := s.userRepo.GetRolesByUserId(id)
-	deptPosts, _ := s.userRepo.GetProfileDeptPosts(id)
+	roles, _ := s.authRepo.GetRolesByUserId(id)
+	deptPosts, _ := s.authRepo.GetProfileDeptPosts(id)
 
 	var profileRoles []dto.ProfileRole
 	for _, role := range roles {
@@ -1032,7 +1030,7 @@ func (s *authService) GetProfile(id int64) (*dto.UserProfile, error) {
 	for i, role := range roles {
 		roleIds[i] = role.Id
 	}
-	permissions, _ := s.userRepo.GetPermissionsByRoleIds(roleIds)
+	permissions, _ := s.authRepo.GetPermissionsByRoleIds(roleIds)
 
 	return &dto.UserProfile{
 		User:        *user,
@@ -1046,7 +1044,7 @@ func (s *authService) GetProfile(id int64) (*dto.UserProfile, error) {
 // TTL 优先从 oauth_client 表读取；若客户端不存在或未配置，回退到 config.yaml 中的兜底值。
 func (s *authService) LoginByUserId(ctx context.Context, userId int64, clientId string) (*auth.TokenPair, error) {
 	var accessTTL, refreshTTL int64
-	if client, err := s.clientSvc.GetByClientId(ctx, clientId); err == nil {
+	if client, err := s.authRepo.GetByClientId(clientId); err == nil {
 		accessTTL, refreshTTL = client.GetTTL()
 	}
 	if accessTTL <= 0 {
@@ -1059,6 +1057,24 @@ func (s *authService) LoginByUserId(ctx context.Context, userId int64, clientId 
 }
 
 // RecordLoginLog 记录登录日志（供外部服务调用）。
-func (s *authService) RecordLoginLog(ctx context.Context, username, clientId, grantType string, status int16, msg, userAgent, ip string) {
+func (s *authService) RecordLoginLog(ctx context.Context, username, clientId string, grantType string, status int16, msg, userAgent, ip string) {
 	s.recordLoginLog(ctx, username, clientId, grantType, status, msg, userAgent, ip)
+}
+
+func (s *authService) GetLatestLoginLog(ctx context.Context) ([]*log_grpc.LoginEntry, error) {
+	user, err := auth.GetCurrentUser(ctx)
+	if err != nil {
+		return nil, err
+	}
+	entries, err := s.logWriter.GetLatestLoginLog(ctx, user.Username, 10)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]*log_grpc.LoginEntry, 0, len(entries))
+	for i := range entries {
+		entry := entries[i]
+		result = append(result, &entry)
+	}
+	return result, nil
 }
