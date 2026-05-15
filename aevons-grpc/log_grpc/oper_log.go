@@ -17,7 +17,7 @@ const (
 	WriteOperLogMethodFullName = "/" + OperLogServiceName + "/" + WriteOperLogMethodName
 )
 
-// Entry 定义通用操作日志载荷，供各业务服务同步写入 log-server。
+// Entry 定义通用操作日志载荷，供各业务服务同步写入 log-service。
 type Entry struct {
 	Module      string    `json:"module"`
 	Type        string    `json:"type"`
@@ -56,7 +56,7 @@ type OperLogWriter interface {
 	Close() error
 }
 
-// Service 定义 log-server 需要实现的操作日志 gRPC 服务接口。
+// Service 定义 log-service 需要实现的操作日志 gRPC 服务接口。
 type Service interface {
 	WriteOperLog(ctx context.Context, req *WriteRequest) (*WriteResponse, error)
 }
@@ -81,7 +81,7 @@ func NewOperLogClient(target string, opts ...grpc.DialOption) (*OperLogClient, e
 	return &OperLogClient{conn: conn}, nil
 }
 
-// Write 调用远端 log-server 写入操作日志。
+// Write 调用远端 log-service 写入操作日志。
 func (c *OperLogClient) Write(ctx context.Context, entry Entry) error {
 	resp := &WriteResponse{}
 	return c.conn.Invoke(ctx, WriteOperLogMethodFullName, &WriteRequest{Entry: entry}, resp)

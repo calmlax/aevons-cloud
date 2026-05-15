@@ -48,7 +48,7 @@ type LoginLogWriter interface {
 	Close() error
 }
 
-// LoginService 定义 log-server 需要实现的登录日志 gRPC 服务接口。
+// LoginService 定义 log-service 需要实现的登录日志 gRPC 服务接口。
 type LoginService interface {
 	WriteLoginLog(ctx context.Context, req *WriteLoginRequest) (*WriteLoginResponse, error)
 }
@@ -73,7 +73,7 @@ func NewLoginLogClient(target string, opts ...grpc.DialOption) (*LoginLogClient,
 	return &LoginLogClient{conn: conn}, nil
 }
 
-// WriteLogin 调用远端 log-server 写入登录日志。
+// WriteLogin 调用远端 log-service 写入登录日志。
 func (c *LoginLogClient) WriteLogin(ctx context.Context, entry LoginEntry) error {
 	resp := &WriteLoginResponse{}
 	return c.conn.Invoke(ctx, WriteLoginLogMethodFullName, &WriteLoginRequest{Entry: entry}, resp)
