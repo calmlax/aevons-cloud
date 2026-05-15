@@ -10,12 +10,11 @@
 package handler
 
 import (
-	"log-service/dto"
-	"log-service/model"
-	"log-service/service"
+	"system-service/dto"
+	"system-service/model"
+	"system-service/service"
 
 	apperr "github.com/calmlax/aevons-framework/errors"
-
 	"github.com/calmlax/aevons-framework/response"
 
 	"github.com/calmlax/aevons-framework/core/base"

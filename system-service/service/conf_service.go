@@ -23,7 +23,7 @@ import (
 	"github.com/calmlax/aevons-framework/utils"
 
 	"github.com/calmlax/aevons-framework/core/base"
-	errdef "github.com/calmlax/aevons-framework/err"
+	apperr "github.com/calmlax/aevons-framework/errors"
 
 	"gorm.io/gorm"
 )
@@ -90,7 +90,7 @@ func (s *confService) GetConfByKey(key string) (*model.Conf, error) {
 	dbConf, err := s.repo.GetByField("conf_key", key)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errdef.ErrNotFound
+			return nil, apperr.ErrNotFound
 		}
 		return nil, err
 	}

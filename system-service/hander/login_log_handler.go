@@ -10,14 +10,13 @@
 package handler
 
 import (
-	"log-service/dto"
-	"log-service/model"
-	"log-service/service"
 	"net/http"
+	"system-service/dto"
+	"system-service/model"
+	"system-service/service"
 
+	pkgauth "github.com/calmlax/aevons-framework/auth"
 	apperr "github.com/calmlax/aevons-framework/errors"
-
-	"github.com/calmlax/aevons-framework/auth"
 	"github.com/calmlax/aevons-framework/response"
 
 	"github.com/calmlax/aevons-framework/core/base"
@@ -38,7 +37,7 @@ func NewLoginLogHandler(svc service.LoginLogService) *LoginLogHandler {
 }
 
 func (h *LoginLogHandler) GetProfileLoginLog(c *gin.Context) {
-	user, err := auth.GetCurrentUser(c.Request.Context())
+	user, err := pkgauth.GetCurrentUser(c.Request.Context())
 	if err != nil {
 		response.Fail(c, http.StatusUnauthorized, 401, "err.sys.unauthorized")
 		return

@@ -63,7 +63,19 @@ func Setup(app *core.App, logServiceGRPCTarget string) (*gin.Engine, error) {
 
 	v1 := r.Group("/api/v1")
 	{
-		registerConfRoutes(v1, db, logWriter)
+		m := v1.Group("system")
+		{
+			registerUserRoutes(m, db, logWriter)
+			registerRoleRoutes(m, db, logWriter)
+			registerDeptRoutes(m, db, logWriter)
+			registerPostRoutes(m, db, logWriter)
+			registerConfRoutes(m, db, logWriter)
+			registerDictRoutes(m, db, logWriter)
+			registerMenuRoutes(m, db, logWriter)
+			registerLangRoutes(m, db, logWriter)
+			registerOAuthClientRoutes(m, db, logWriter)
+			registerNoticeRoutes(m, db, logWriter)
+		}
 		v1.GET("/ping", localmiddleware.OperLog(logWriter, "Ping", consts.OTHER), func(c *gin.Context) {
 			c.JSON(200, gin.H{"message": "ok"})
 		})
@@ -88,5 +100,185 @@ func registerConfRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.Ope
 		g.POST("/refresh-cache", middleware.HasPermission("sys:conf$edit"), localmiddleware.OperLog(logWriter, "参数配置", consts.CLEAN), h.RefreshCache)
 		g.PUT("/:id", middleware.HasPermission("sys:conf$edit"), localmiddleware.OperLog(logWriter, "参数配置", consts.UPDATE), h.UpdateConf)
 		g.DELETE("/:id", middleware.HasPermission("sys:conf$delete"), localmiddleware.OperLog(logWriter, "参数配置", consts.DELETE), h.Delete)
+	}
+}
+
+func registerUserRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.OperLogWriter) {
+	h := handler.NewUserHandler(service.NewUserService(repository.NewUserRepository(db)))
+	g := rg.Group("/user")
+	{
+		g.GET("/list", middleware.HasPermission("sys:user$list"), h.List)
+		g.GET("/page", middleware.HasPermission("sys:user$list"), h.Page)
+		g.GET("/:id", middleware.HasPermission("sys:user$query"), h.Get)
+		g.GET("/:id/relations", middleware.HasPermission("sys:user$query"), h.GetRelations)
+		g.POST("", middleware.HasPermission("sys:user$add"), localmiddleware.OperLog(logWriter, "User-[用户管理]", consts.INSERT), h.Create)
+		g.PUT("/:id", middleware.HasPermission("sys:user$edit"), localmiddleware.OperLog(logWriter, "User-[用户管理]", consts.UPDATE), h.Update)
+		g.PUT("/:id/status", middleware.HasPermission("sys:user$edit"), localmiddleware.OperLog(logWriter, "User-[用户管理]", consts.UPDATE), h.UpdateStatus)
+		g.PUT("/:id/reset-password", middleware.HasPermission("sys:user$edit"), localmiddleware.OperLog(logWriter, "User-[用户管理]", consts.UPDATE), h.ResetPassword)
+		g.DELETE("/:ids", middleware.HasPermission("sys:user$delete"), localmiddleware.OperLog(logWriter, "User-[用户管理]", consts.DELETE), h.BatchDelete)
+	}
+}
+
+func registerRoleRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.OperLogWriter) {
+	h := handler.NewRoleHandler(
+		service.NewRoleService(
+			repository.NewRoleRepository(db),
+		),
+	)
+	g := rg.Group("/role")
+	{
+		g.GET("/list", h.List)
+		g.GET("/page", h.Page)
+		g.GET("/:id", middleware.HasPermission("sys:role$query"), h.Get)
+		g.GET("/:id/menu", middleware.HasPermission("sys:role$query"), h.GetMenuIds)
+		g.POST("", middleware.HasPermission("sys:role$add"), localmiddleware.OperLog(logWriter, "Role-[角色信息表]", consts.INSERT), h.Create)
+		g.PUT("/:id", middleware.HasPermission("sys:role$edit"), localmiddleware.OperLog(logWriter, "Role-[角色信息表]", consts.UPDATE), h.Update)
+		g.DELETE("/:ids", middleware.HasPermission("sys:role$delete"), localmiddleware.OperLog(logWriter, "Role-[角色信息表]", consts.DELETE), h.BatchDelete)
+	}
+}
+
+func registerDeptRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.OperLogWriter) {
+	h := handler.NewDeptHandler(
+		service.NewDeptService(
+			repository.NewDeptRepository(db),
+		),
+	)
+	g := rg.Group("/dept")
+	{
+		g.GET("/list", h.ListTree)
+		g.GET("/:id", middleware.HasPermission("sys:dept$query"), h.Get)
+		g.POST("", middleware.HasPermission("sys:dept$add"), localmiddleware.OperLog(logWriter, "Dept-[部门管理]", consts.INSERT), h.Create)
+		g.PUT("/:id", middleware.HasPermission("sys:dept$edit"), localmiddleware.OperLog(logWriter, "Dept-[部门管理]", consts.UPDATE), h.Update)
+		g.DELETE("/:id", middleware.HasPermission("sys:dept$delete"), localmiddleware.OperLog(logWriter, "Dept-[部门管理]", consts.DELETE), h.Delete)
+	}
+}
+
+func registerPostRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.OperLogWriter) {
+	h := handler.NewPostHandler(
+		service.NewPostService(
+			repository.NewPostRepository(db),
+		),
+	)
+	g := rg.Group("/post")
+	{
+		g.GET("/list", h.List)
+		g.GET("/page", h.Page)
+		g.GET("/:id", middleware.HasPermission("sys:post$query"), h.Get)
+		g.POST("", middleware.HasPermission("sys:post$add"), localmiddleware.OperLog(logWriter, "Post-[岗位信息表]", consts.INSERT), h.Create)
+		g.PUT("/:id", middleware.HasPermission("sys:post$edit"), localmiddleware.OperLog(logWriter, "Post-[岗位信息表]", consts.UPDATE), h.Update)
+		g.DELETE("/:ids", middleware.HasPermission("sys:post$delete"), localmiddleware.OperLog(logWriter, "Post-[岗位信息表]", consts.DELETE), h.BatchDelete)
+	}
+}
+
+func registerDictRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.OperLogWriter) {
+	dds := service.NewDictDataService(repository.NewDictDataRepository(db))
+	h := handler.NewDictHandler(service.NewDictService(repository.NewDictRepository(db)), dds)
+	ddh := handler.NewDictDataHandler(dds)
+	g := rg.Group("/dict")
+	{
+		g.GET("/list", h.AvailableList)
+		g.GET("/page", middleware.HasPermission("sys:dict$list"), h.Page)
+		g.GET("/:id", middleware.HasPermission("sys:dict$query"), h.Get)
+		g.POST("", middleware.HasPermission("sys:dict$add"), localmiddleware.OperLog(logWriter, "字典类型", consts.INSERT), h.CreateDict)
+		g.PUT("/:id", middleware.HasPermission("sys:dict$edit"), localmiddleware.OperLog(logWriter, "字典类型", consts.UPDATE), h.UpdateDict)
+		g.DELETE("/:id", middleware.HasPermission("sys:dict$delete"), localmiddleware.OperLog(logWriter, "字典类型", consts.DELETE), h.DeleteDict)
+		g.DELETE("/refresh-cache", middleware.HasPermission("sys:dict$refresh"), ddh.RefreshCache)
+		g.GET("/type/:id", ddh.GetDictDataCache)
+		data := g.Group("/data", middleware.HasPermission("sys:dict$design"))
+		{
+			data.GET("/list", ddh.ListByDictType)
+			data.GET("/:id", ddh.GetDetail)
+			data.POST("", localmiddleware.OperLog(logWriter, "字典数据", consts.INSERT), ddh.CreateDictData)
+			data.PUT("/sort", localmiddleware.OperLog(logWriter, "字典数据", consts.UPDATE), ddh.UpdateSort)
+			data.PUT("/:id", localmiddleware.OperLog(logWriter, "字典数据", consts.UPDATE), ddh.UpdateDictData)
+			data.DELETE("/:ids", localmiddleware.OperLog(logWriter, "字典数据", consts.DELETE), ddh.BatchDelete)
+		}
+	}
+}
+
+func registerMenuRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.OperLogWriter) {
+	h := handler.NewMenuHandler(
+		service.NewMenuService(
+			repository.NewMenuRepository(db),
+		),
+	)
+	g := rg.Group("/menu")
+	{
+		g.GET("/list", middleware.HasPermission("sys:menu$list"), h.ListByLangCode)
+		g.GET("/:id", middleware.HasPermission("sys:menu$query"), h.GetDetail)
+		g.POST("", middleware.HasPermission("sys:menu$add"), localmiddleware.OperLog(logWriter, "Menu-[菜单权限表]", consts.INSERT), h.CreateMenu)
+		g.PUT("/:id", middleware.HasPermission("sys:menu$edit"), localmiddleware.OperLog(logWriter, "Menu-[菜单权限表]", consts.UPDATE), h.UpdateMenu)
+		g.DELETE("/:ids", middleware.HasPermission("sys:menu$delete"), localmiddleware.OperLog(logWriter, "Menu-[菜单权限表]", consts.DELETE), h.BatchDelete)
+	}
+}
+
+func registerLangRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.OperLogWriter) {
+	h := handler.NewLangHandler(
+		service.NewLangService(
+			repository.NewLangRepository(db),
+		),
+	)
+	rh := handler.NewLangResourceHandler(
+		service.NewLangResourceService(
+			repository.NewLangResourceRepository(db),
+		),
+	)
+	g := rg.Group("/lang")
+	{
+		g.GET("", h.AvailableList)
+		g.GET("/list", middleware.HasPermission("sys:lang$list"), h.List)
+		g.GET("/page", middleware.HasPermission("sys:lang$list"), h.Page)
+		g.GET("/:id", middleware.HasPermission("sys:lang$query"), h.Get)
+		g.POST("", middleware.HasPermission("sys:lang$add"), localmiddleware.OperLog(logWriter, "Lang-[语言]", consts.INSERT), h.Create)
+		g.PUT("/:id", middleware.HasPermission("sys:lang$edit"), localmiddleware.OperLog(logWriter, "Lang-[语言]", consts.UPDATE), h.Update)
+		g.DELETE("/:ids", middleware.HasPermission("sys:lang$delete"), localmiddleware.OperLog(logWriter, "Lang-[语言]", consts.DELETE), h.BatchDelete)
+		res := g.Group("/resource")
+		{
+			res.GET("/list", middleware.HasPermission("sys:lang:resource$list"), rh.List)
+			res.GET("/page", middleware.HasPermission("sys:lang:resource$list"), rh.Page)
+			res.GET("/keys", middleware.HasPermission("sys:lang:resource$list"), rh.GetKeysByNamespace)
+			res.GET("/keys/page", middleware.HasPermission("sys:lang:resource$list"), rh.PageKeys)
+			res.GET("/translations", middleware.HasPermission("sys:lang:resource$list"), rh.GetTranslations)
+			res.GET("/:id", middleware.HasPermission("sys:lang:resource$query"), rh.Get)
+			res.POST("", middleware.HasPermission("sys:lang:resource$add"), localmiddleware.OperLog(logWriter, "LangResource-[语言资源]", consts.INSERT), rh.Create)
+			res.POST("/save-translations", middleware.HasPermission("sys:lang:resource$edit"), localmiddleware.OperLog(logWriter, "LangResource-[批量保存翻译]", consts.UPDATE), rh.SaveTranslations)
+			res.PUT("/:id", middleware.HasPermission("sys:lang:resource$edit"), localmiddleware.OperLog(logWriter, "LangResource-[语言资源]", consts.UPDATE), rh.Update)
+			res.DELETE("/:ids", middleware.HasPermission("sys:lang:resource$delete"), localmiddleware.OperLog(logWriter, "LangResource-[语言资源]", consts.DELETE), rh.BatchDelete)
+		}
+	}
+}
+
+func registerOAuthClientRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.OperLogWriter) {
+	h := handler.NewOauthClientHandler(
+		service.NewOauthClientService(
+			repository.NewOauthClientRepository(db),
+		),
+	)
+	g := rg.Group("/oauth/client")
+	{
+		g.GET("/list", middleware.HasPermission("sys:oauth:client$list"), h.List)
+		g.GET("/page", middleware.HasPermission("sys:oauth:client$list"), h.Page)
+		g.GET("/:id", middleware.HasPermission("sys:oauth:client$query"), h.Get)
+		g.POST("", middleware.HasPermission("sys:oauth:client$add"), localmiddleware.OperLog(logWriter, "OAuthClient-[终端应用]", consts.INSERT), h.CreateOAuthClient)
+		g.PUT("/:id", middleware.HasPermission("sys:oauth:client$edit"), localmiddleware.OperLog(logWriter, "OAuthClient-[终端应用]", consts.UPDATE), h.UpdateOAuthClient)
+		g.DELETE("/:ids", middleware.HasPermission("sys:oauth:client$delete"), localmiddleware.OperLog(logWriter, "OAuthClient-[终端应用]", consts.DELETE), h.BatchDelete)
+	}
+}
+
+// 在模块 router.go 的 RegisterRoutes 中最后添加 registerNoticeRoutes(rg, db, logWriter) 代码
+func registerNoticeRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.OperLogWriter) {
+	h := handler.NewNoticeHandler(
+		service.NewNoticeService(
+			repository.NewNoticeRepository(db),
+		),
+	)
+	g := rg.Group("/notice")
+	{
+		g.GET("/list", middleware.HasPermission("sys:notice$list"), h.List)
+		g.GET("/page", middleware.HasPermission("sys:notice$list"), h.Page)
+		g.GET("/:id", middleware.HasPermission("sys:notice$query"), h.Get)
+		g.POST("", middleware.HasPermission("sys:notice$add"), localmiddleware.OperLog(logWriter, "Notice-[通知公告]", consts.INSERT), h.Create)
+		g.PUT("/:id", middleware.HasPermission("sys:notice$edit"), localmiddleware.OperLog(logWriter, "Notice-[通知公告]", consts.UPDATE), h.Update)
+		g.DELETE("/:ids", middleware.HasPermission("sys:notice$delete"), localmiddleware.OperLog(logWriter, "Notice-[通知公告]", consts.DELETE), h.BatchDelete)
 	}
 }

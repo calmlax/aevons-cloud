@@ -21,7 +21,7 @@ import (
 	"github.com/calmlax/aevons-framework/utils"
 
 	"github.com/calmlax/aevons-framework/core/base"
-	errdef "github.com/calmlax/aevons-framework/err"
+	apperr "github.com/calmlax/aevons-framework/errors"
 
 	"github.com/gin-gonic/gin"
 )
@@ -59,8 +59,8 @@ func (h *ConfHandler) GetConfByKey(c *gin.Context) {
 	}
 	conf, err := h.svc.GetConfByKey(key)
 	if err != nil {
-		if errors.Is(err, errdef.ErrorNotFound) {
-			response.FailByErr(c, http.StatusNotFound, errdef.ErrDataNotFound)
+		if errors.Is(err, apperr.ErrorNotFound) {
+			response.FailByErr(c, http.StatusNotFound, apperr.ErrDataNotFound)
 			return
 		}
 		response.Fail(c, http.StatusInternalServerError, 1003, "err.api.failed_to_fetch_conf")
@@ -87,7 +87,7 @@ func (h *ConfHandler) Get(c *gin.Context) {
 
 	conf, err := h.svc.GetById(id)
 	if err != nil {
-		h.Fail(c, errdef.ErrQueryFailed)
+		h.Fail(c, apperr.ErrQueryFailed)
 		return
 	}
 	conf.ConfValue = h.svc.DecryptIfNeeded(conf.ConfValue, conf.IsSecret == 1)
@@ -98,7 +98,7 @@ func (h *ConfHandler) Get(c *gin.Context) {
 func (h *ConfHandler) CreateConf(c *gin.Context) {
 	var confDto dto.CreateConfDTO
 	if err := c.ShouldBindJSON(&confDto); err != nil {
-		response.FailBy(c, errdef.ErrInvalidBody)
+		response.FailBy(c, apperr.ErrInvalidBody)
 		return
 	}
 	isExist, err := h.svc.ExistField("conf_key", confDto.ConfKey)
@@ -111,7 +111,7 @@ func (h *ConfHandler) CreateConf(c *gin.Context) {
 	utils.Copy(&conf, confDto)
 
 	if err := h.svc.Create(&conf); err != nil {
-		response.FailBy(c, errdef.ErrCreateFailed, map[string]any{"error": err.Error()})
+		response.FailBy(c, apperr.ErrCreateFailed, map[string]any{"error": err.Error()})
 		return
 	}
 	response.Success(c, conf.Id)
@@ -125,7 +125,7 @@ func (h *ConfHandler) UpdateConf(c *gin.Context) {
 	}
 	var confDto dto.UpdateConfDTO
 	if err := c.ShouldBindJSON(&confDto); err != nil {
-		response.FailBy(c, errdef.ErrInvalidBody)
+		response.FailBy(c, apperr.ErrInvalidBody)
 		return
 	}
 	isExist, err := h.svc.ExistFieldExcludeId("conf_key", confDto.ConfKey, id)
@@ -141,7 +141,7 @@ func (h *ConfHandler) UpdateConf(c *gin.Context) {
 	mp := utils.StructToMapIgnoreNil(confDto)
 	_, err2 := h.svc.Update(id, mp)
 	if err2 != nil {
-		h.Fail(c, errdef.ErrUpdateFailed)
+		h.Fail(c, apperr.ErrUpdateFailed)
 		return
 	}
 	response.Success(c, nil)
