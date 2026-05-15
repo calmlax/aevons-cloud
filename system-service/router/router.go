@@ -63,22 +63,16 @@ func Setup(app *core.App, logServiceGRPCTarget string) (*gin.Engine, error) {
 
 	v1 := r.Group("/api/v1")
 	{
-		m := v1.Group("system")
-		{
-			registerUserRoutes(m, db, logWriter)
-			registerRoleRoutes(m, db, logWriter)
-			registerDeptRoutes(m, db, logWriter)
-			registerPostRoutes(m, db, logWriter)
-			registerConfRoutes(m, db, logWriter)
-			registerDictRoutes(m, db, logWriter)
-			registerMenuRoutes(m, db, logWriter)
-			registerLangRoutes(m, db, logWriter)
-			registerOAuthClientRoutes(m, db, logWriter)
-			registerNoticeRoutes(m, db, logWriter)
-		}
-		v1.GET("/ping", localmiddleware.OperLog(logWriter, "Ping", consts.OTHER), func(c *gin.Context) {
-			c.JSON(200, gin.H{"message": "ok"})
-		})
+		registerUserRoutes(v1, db, logWriter)
+		registerRoleRoutes(v1, db, logWriter)
+		registerDeptRoutes(v1, db, logWriter)
+		registerPostRoutes(v1, db, logWriter)
+		registerConfRoutes(v1, db, logWriter)
+		registerDictRoutes(v1, db, logWriter)
+		registerMenuRoutes(v1, db, logWriter)
+		registerLangRoutes(v1, db, logWriter)
+		registerOAuthClientRoutes(v1, db, logWriter)
+		registerNoticeRoutes(v1, db, logWriter)
 	}
 
 	return r, nil
