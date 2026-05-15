@@ -59,14 +59,13 @@ func Setup(app *core.App, logServiceGRPCTarget string) (*gin.Engine, error) {
 	r.Use(middleware.XSSMiddleware(cfg))
 	server.RegisterHealthRoute(r, cfg.Server.Name)
 	server.RegisterOpenApiRoute(r, cfg)
-	fmt.Printf("--------------cfg.Auth.Excludes = %v \n", cfg.Auth.Excludes)
 	r.Use(middleware.AuthMiddleware(auth.NewRedisTokenStore(redisClient), cfg.Auth.Excludes))
 
 	v1 := r.Group("/api/v1")
 	{
 		registerConfRoutes(v1, db, logWriter)
 		v1.GET("/ping", localmiddleware.OperLog(logWriter, "Ping", consts.OTHER), func(c *gin.Context) {
-			c.JSON(200, gin.H{"message": "pong"})
+			c.JSON(200, gin.H{"message": "ok"})
 		})
 	}
 
