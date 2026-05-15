@@ -11,5 +11,3 @@ auth-service/configs/config.production.yaml
 system-service/configs/config.production.yaml
 job-service/configs/config.production.yaml
 gen-service/configs/config.production.yaml
-
-auth-service/

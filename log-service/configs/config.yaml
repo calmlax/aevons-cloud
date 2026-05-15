@@ -1,8 +1,8 @@
 server:
   name: log-service
   host: 192.168.31.81
-  port: 8083
-  grpc_port: 9083
+  port: 10703
+  grpc_port: 10803
 
 consul:
   enabled: true

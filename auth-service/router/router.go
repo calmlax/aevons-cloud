@@ -1,0 +1,150 @@
+package router
+
+import (
+	"fmt"
+
+	authHandler "auth-service/handler"
+	credRepo "auth-service/repository"
+	authService "auth-service/service"
+
+	"github.com/calmlax/aevons-framework/auth"
+	"github.com/calmlax/aevons-framework/config"
+	"github.com/calmlax/aevons-framework/core"
+	"github.com/calmlax/aevons-framework/core/server"
+	"github.com/calmlax/aevons-framework/middleware"
+	"github.com/calmlax/aevons-framework/xlog"
+	"github.com/redis/go-redis/v9"
+	"gorm.io/gorm"
+
+	"github.com/gin-gonic/gin"
+)
+
+// Setup 配置 Gin 引擎，注册中间件和路由。
+func Setup(app *core.App, logServiceGRPCTarget string) (*gin.Engine, error) {
+	cfg, err := app.RawConfig()
+	if err != nil {
+		return nil, fmt.Errorf("router: 读取应用配置失败: %w", err)
+	}
+
+	redisClient, err := app.RawRedis()
+	if err != nil {
+		return nil, fmt.Errorf("router: 读取 Redis 客户端失败: %w", err)
+	}
+
+	db, err := app.RawDatabase()
+	if err != nil {
+		return nil, fmt.Errorf("router: 读取数据库连接失败: %w", err)
+	}
+
+	// logWriter := log_grpc.OperLogWriter(log_grpc.NopOperLogWriter{})
+	// if logServiceGRPCTarget != "" {
+	// 	client, err := log_grpc.NewOperLogClient(logServiceGRPCTarget)
+	// 	if err != nil {
+	// 		xlog.Warn("init oper log grpc client failed: %v", err)
+	// 	} else {
+	// 		logWriter = client
+	// 	}
+	// } else {
+	// 	xlog.Warn("log service grpc target is empty, oper log will be skipped")
+	// }
+
+	gin.SetMode(cfg.Server.Mode)
+
+	r := gin.New()
+	r.Use(middleware.Logger())
+	r.Use(gin.Recovery())
+	r.Use(middleware.RequestID())
+	r.Use(middleware.CORS(cfg.CORS.Enabled, cfg.CORS.AllowedOrigins))
+	r.Use(middleware.XSSMiddleware(cfg))
+	server.RegisterHealthRoute(r, cfg.Server.Name)
+	server.RegisterOpenApiRoute(r, cfg)
+	r.Use(middleware.AuthMiddleware(auth.NewRedisTokenStore(redisClient), cfg.Auth.Excludes))
+
+	v1 := r.Group("/api/v1")
+	{
+		RegisterRoutes(v1, db, redisClient, cfg)
+	}
+
+	return r, nil
+}
+
+// RegisterRoutes 将认证模块的所有路由注册到指定路由组。
+func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB, client *redis.Client, cfg *config.Config) {
+	h := ProvideAuthHandler(db, client, cfg)
+
+	// 公开路由，无需令牌
+	rg.POST("/auth/login", h.Login)
+	rg.POST("/auth/refresh", h.Refresh)
+	rg.POST("/auth/email/code", h.SendEmailCode)
+	rg.POST("/auth/register", h.Register)
+	rg.POST("/auth/reset-password", h.ResetPassword)
+	rg.GET("/auth/public-key", h.GetPublicKey)
+
+	// OAuth2 标准授权码流程端点
+	rg.GET("/auth/authorize", h.Authorize)
+	rg.POST("/auth/authorize", h.ApproveAuthorize)
+	rg.GET("/auth/callback", h.Callback)
+
+	// Passkey 公开端点（认证流程无需 token）
+	rg.POST("/auth/passkey/login/begin", h.Passkey.BeginAuthentication)
+	rg.POST("/auth/passkey/login/finish", h.Passkey.FinishAuthentication)
+
+	// 受保护路由，由全局 AuthMiddleware 验证令牌
+	rg.POST("/auth/code", h.GenerateAuthCode)
+	rg.POST("/auth/logout", h.Logout)
+	rg.GET("/auth/routers", h.Routers)
+	rg.GET("/auth/user", h.GetUserInfo)
+	rg.GET("/auth/user/profile", h.GetProfile)
+	rg.PUT("/auth/user/profile", h.UpdateProfile)
+	rg.PUT("/auth/user/password", h.UpdatePassword)
+
+	// Passkey 受保护端点（注册需要已登录）
+	rg.POST("/auth/passkey/register/begin", h.Passkey.BeginRegistration)
+	rg.POST("/auth/passkey/register/finish", h.Passkey.FinishRegistration)
+	rg.GET("/auth/passkey/credentials", h.Passkey.ListCredentials)
+	rg.DELETE("/auth/passkey/credentials/:id", h.Passkey.RevokeCredential)
+
+	loginLogHandler := handler.NewLoginLogHandler(service.NewLoginLogService(repository.NewLoginLogRepository(db)))
+	rg.GET("/auth/user/login-logs", loginLogHandler.GetProfileLoginLog)
+}
+
+// AuthHandlerBundle 包含 AuthHandler 和 PasskeyHandler。
+type AuthHandlerBundle struct {
+	*authHandler.AuthHandler
+	Passkey *authHandler.PasskeyHandler
+}
+
+// ProvideAuthHandler 组装 AuthHandler 及其所有依赖。
+func ProvideAuthHandler(db *gorm.DB, redisClient *redis.Client, cfg *config.Config) *AuthHandlerBundle {
+	store := auth.NewRedisTokenStore(redisClient)
+	userRepo := repository.NewUserRepository(db)
+	clientRepo := repository.NewOauthClientRepository(db)
+	clientSvc := service.NewOauthClientService(clientRepo)
+	notifier := auth.NewHttpSLONotifier()
+	logRepo := repository.NewLoginLogRepository(db)
+	svc := authService.NewAuthService(store, userRepo, clientSvc, cfg.Auth, notifier, logRepo)
+
+	credRepository := credRepo.NewCredentialRepository(db)
+	rpId := cfg.WebAuthn.RPID
+	if rpId == "" {
+		rpId = "localhost"
+	}
+	rpOrigins := cfg.WebAuthn.RPOrigins
+	if len(rpOrigins) == 0 {
+		rpOrigins = []string{"http://localhost:5173"}
+	}
+	rpName := cfg.WebAuthn.RPName
+	if rpName == "" {
+		rpName = "Aevons Admin"
+	}
+
+	passkeySvc, err := authService.NewPasskeyService(rpId, rpOrigins, rpName, store, userRepo, credRepository, svc)
+	if err != nil {
+		xlog.Error("passkey service init failed: %v", err)
+	}
+
+	return &AuthHandlerBundle{
+		AuthHandler: authHandler.NewAuthHandler(svc),
+		Passkey:     authHandler.NewPasskeyHandler(passkeySvc, svc),
+	}
+}
