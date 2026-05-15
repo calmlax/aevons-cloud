@@ -13,11 +13,9 @@ import (
 	"log-service/dto"
 	"log-service/model"
 	"log-service/service"
-	"net/http"
 
 	apperr "github.com/calmlax/aevons-framework/errors"
 
-	"github.com/calmlax/aevons-framework/auth"
 	"github.com/calmlax/aevons-framework/response"
 
 	"github.com/calmlax/aevons-framework/core/base"
@@ -35,20 +33,6 @@ func NewLoginLogHandler(svc service.LoginLogService) *LoginLogHandler {
 		BaseHandler: base.NewBaseHandler[model.LoginLog, *dto.LoginLogQuery, dto.CreateLoginLogDTO, dto.UpdateLoginLogDTO](svc),
 		svc:         svc,
 	}
-}
-
-func (h *LoginLogHandler) GetProfileLoginLog(c *gin.Context) {
-	user, err := auth.GetCurrentUser(c.Request.Context())
-	if err != nil {
-		response.Fail(c, http.StatusUnauthorized, 401, "err.sys.unauthorized")
-		return
-	}
-	result, err := h.svc.GetProfileLoginLogs(user.Username)
-	if err != nil {
-		response.Fail(c, http.StatusInternalServerError, 1001, "err.api.failed_to_query_login_logs")
-		return
-	}
-	response.Success(c, result)
 }
 
 // Clear 清空所有登录日志

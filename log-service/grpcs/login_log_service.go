@@ -47,8 +47,8 @@ func (s *LoginLogServiceServer) WriteLoginLog(ctx context.Context, req *log_grpc
 	}, nil
 }
 
-func (s *LoginLogServiceServer) GetLatestLoginLog(username string, limit int) ([]log_grpc.LoginEntry, error) {
-	records, err := s.svc.GetLatestLoginLog(username, limit)
+func (s *LoginLogServiceServer) GetLatestLoginLog(ctx context.Context, req *log_grpc.GetLatestLoginLogRequest) (*log_grpc.GetLatestLoginLogResponse, error) {
+	records, err := s.svc.GetLatestLoginLog(req.Username, req.Limit)
 	if err != nil {
 		return nil, err
 	}
@@ -70,5 +70,7 @@ func (s *LoginLogServiceServer) GetLatestLoginLog(username string, limit int) ([
 		}
 	}
 
-	return entries, nil
+	return &log_grpc.GetLatestLoginLogResponse{
+		Entries: entries,
+	}, nil
 }

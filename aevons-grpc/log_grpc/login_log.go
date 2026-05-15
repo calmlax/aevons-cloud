@@ -15,6 +15,10 @@ const (
 	WriteLoginLogMethodName = "WriteLoginLog"
 	// WriteLoginLogMethodFullName 是写入登录日志的完整 gRPC 方法名。
 	WriteLoginLogMethodFullName = "/" + LoginLogServiceName + "/" + WriteLoginLogMethodName
+	// GetLatestLoginLogMethodName 是查询最近登录日志的方法名。
+	GetLatestLoginLogMethodName = "GetLatestLoginLog"
+	// GetLatestLoginLogMethodFullName 是查询最近登录日志的完整 gRPC 方法名。
+	GetLatestLoginLogMethodFullName = "/" + LoginLogServiceName + "/" + GetLatestLoginLogMethodName
 )
 
 // LoginEntry 定义通用登录日志载荷。
@@ -43,6 +47,17 @@ type WriteLoginResponse struct {
 	Message string `json:"message"`
 }
 
+// GetLatestLoginLogRequest 是查询最近登录日志请求。
+type GetLatestLoginLogRequest struct {
+	Username string `json:"username"`
+	Limit    int    `json:"limit"`
+}
+
+// GetLatestLoginLogResponse 是查询最近登录日志响应。
+type GetLatestLoginLogResponse struct {
+	Entries []LoginEntry `json:"entries"`
+}
+
 // LoginLogWriter 定义登录日志写入器。
 type LoginLogWriter interface {
 	WriteLoginLog(ctx context.Context, entry LoginEntry) error
@@ -52,6 +67,7 @@ type LoginLogWriter interface {
 // LoginService 定义 log-service 需要实现的登录日志 gRPC 服务接口。
 type LoginService interface {
 	WriteLoginLog(ctx context.Context, req *WriteLoginRequest) (*WriteLoginResponse, error)
+	GetLatestLoginLog(ctx context.Context, req *GetLatestLoginLogRequest) (*GetLatestLoginLogResponse, error)
 }
 
 // NopLoginLogWriter 是登录日志空实现。
@@ -81,6 +97,19 @@ func (c *LoginLogClient) WriteLoginLog(ctx context.Context, entry LoginEntry) er
 	return invokeUnary(ctx, c.conn, WriteLoginLogMethodFullName, &WriteLoginRequest{Entry: entry}, resp)
 }
 
+// GetLatestLoginLog 调用远端 log-service 查询指定用户最近的登录日志。
+func (c *LoginLogClient) GetLatestLoginLog(ctx context.Context, username string, limit int) ([]LoginEntry, error) {
+	resp := &GetLatestLoginLogResponse{}
+	err := invokeUnary(ctx, c.conn, GetLatestLoginLogMethodFullName, &GetLatestLoginLogRequest{
+		Username: username,
+		Limit:    limit,
+	}, resp)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Entries, nil
+}
+
 // Close 关闭底层 gRPC 连接。
 func (c *LoginLogClient) Close() error {
 	if c == nil {
@@ -91,7 +120,22 @@ func (c *LoginLogClient) Close() error {
 
 // RegisterLoginService 注册登录日志 gRPC 服务。
 func RegisterLoginService(registrar grpc.ServiceRegistrar, srv LoginService) {
-	registerUnaryService(registrar, srv, LoginLogServiceName, (*LoginService)(nil), WriteLoginLogMethodName, writeLoginLogHandler, "login_log")
+	registrar.RegisterService(&grpc.ServiceDesc{
+		ServiceName: LoginLogServiceName,
+		HandlerType: (*LoginService)(nil),
+		Methods: []grpc.MethodDesc{
+			{
+				MethodName: WriteLoginLogMethodName,
+				Handler:    writeLoginLogHandler,
+			},
+			{
+				MethodName: GetLatestLoginLogMethodName,
+				Handler:    getLatestLoginLogHandler,
+			},
+		},
+		Streams:  []grpc.StreamDesc{},
+		Metadata: "login_log",
+	}, srv)
 }
 
 func writeLoginLogHandler(
@@ -114,6 +158,30 @@ func writeLoginLogHandler(
 	}
 	handler := func(ctx context.Context, req any) (any, error) {
 		return srv.(LoginService).WriteLoginLog(ctx, req.(*WriteLoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func getLatestLoginLogHandler(
+	srv any,
+	ctx context.Context,
+	dec func(any) error,
+	interceptor grpc.UnaryServerInterceptor,
+) (any, error) {
+	in := new(GetLatestLoginLogRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LoginService).GetLatestLoginLog(ctx, in)
+	}
+
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GetLatestLoginLogMethodFullName,
+	}
+	handler := func(ctx context.Context, req any) (any, error) {
+		return srv.(LoginService).GetLatestLoginLog(ctx, req.(*GetLatestLoginLogRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
