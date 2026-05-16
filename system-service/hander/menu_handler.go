@@ -13,7 +13,6 @@ import (
 	"errors"
 	"net/http"
 	"system-service/dto"
-	"system-service/model"
 	"system-service/service"
 
 	apperr "github.com/calmlax/aevons-framework/errors"
@@ -27,30 +26,26 @@ import (
 )
 
 type MenuHandler struct {
-	// 继承BaseHandler
-	*base.BaseHandler[
-		model.Menu,        // 模型
-		*dto.MenuQuery,    // 查询 DTO
-		dto.CreateMenuDTO, // 创建 DTO
-		dto.UpdateMenuDTO, // 更新 DTO
-	]
 	svc service.MenuService
 }
 
 // 构造函数
 func NewMenuHandler(svc service.MenuService) *MenuHandler {
 	return &MenuHandler{
-		BaseHandler: base.NewBaseHandler[
-			model.Menu,
-			*dto.MenuQuery,
-			dto.CreateMenuDTO,
-			dto.UpdateMenuDTO,
-		](svc),
 		svc: svc,
 	}
 }
 
 // CreateMenu 添加菜单
+//
+// @Summary      新增菜单
+// @Tags         菜单管理
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        request  body      dto.CreateMenuDTO  true  "新增菜单"
+// @Success      200      {object}  response.Response
+// @Router       /menu [post]
 func (h *MenuHandler) CreateMenu(c *gin.Context) {
 	var Menu dto.CreateMenuDTO
 	if err := c.ShouldBindJSON(&Menu); err != nil {
@@ -65,7 +60,17 @@ func (h *MenuHandler) CreateMenu(c *gin.Context) {
 	response.Success(c, MenuId)
 }
 
-// CreateMenu 添加菜单
+// UpdateMenu 修改菜单。
+//
+// @Summary      修改菜单
+// @Tags         菜单管理
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id       path      int               true  "菜单ID"
+// @Param        request  body      dto.UpdateMenuDTO true  "修改菜单"
+// @Success      200      {object}  response.Response
+// @Router       /menu/{id} [put]
 func (h *MenuHandler) UpdateMenu(c *gin.Context) {
 	var Menu dto.UpdateMenuDTO
 	if err := c.ShouldBindJSON(&Menu); err != nil {
@@ -80,6 +85,13 @@ func (h *MenuHandler) UpdateMenu(c *gin.Context) {
 }
 
 // ListByLangCode 菜单列表
+//
+// @Summary      按语言查询菜单列表
+// @Tags         菜单管理
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /menu/list [get]
 func (h *MenuHandler) ListByLangCode(c *gin.Context) {
 	langCode := c.GetHeader(consts.AcceptLanguage)
 
@@ -93,8 +105,16 @@ func (h *MenuHandler) ListByLangCode(c *gin.Context) {
 }
 
 // GetDetail 获取详情
+//
+// @Summary      获取菜单详情
+// @Tags         菜单管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "菜单ID"
+// @Success      200  {object}  response.Response
+// @Router       /menu/{id} [get]
 func (h *MenuHandler) GetDetail(c *gin.Context) {
-	id, ok := h.GetId(c)
+	id, ok := base.GetId(c)
 	if !ok {
 		return
 	}
@@ -107,8 +127,16 @@ func (h *MenuHandler) GetDetail(c *gin.Context) {
 }
 
 // Delete 删除
+//
+// @Summary      批量删除菜单
+// @Tags         菜单管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        ids   path      string  true  "逗号分隔的菜单ID"
+// @Success      200   {object}  response.Response
+// @Router       /menu/{ids} [delete]
 func (h *MenuHandler) BatchDelete(c *gin.Context) {
-	ids, ok := h.GetIds(c)
+	ids, ok := base.GetIds(c)
 	if !ok {
 		return
 	}
@@ -119,8 +147,8 @@ func (h *MenuHandler) BatchDelete(c *gin.Context) {
 			response.Fail(c, http.StatusInternalServerError, 5000, "err.sys.menu.exist_subordinate")
 			return
 		}
-		h.Fail(c, apperr.ErrDeleteFailed)
+		response.FailBy(c, apperr.ErrDeleteFailed)
 		return
 	}
-	h.Success(c, ids)
+	response.Success(c, ids)
 }

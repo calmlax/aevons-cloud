@@ -86,10 +86,10 @@ func registerConfRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.Ope
 		g.GET("/page", middleware.HasPermission("sys:conf$list"), h.Page)
 		g.GET("/:id", middleware.HasPermission("sys:conf$query"), h.Get)
 		g.GET("/key/:key", h.GetConfByKey)
-		g.POST("", middleware.HasPermission("sys:conf$add"), localmiddleware.OperLog(logWriter, "参数配置", consts.INSERT), h.CreateConf)
-		g.POST("/refresh-cache", middleware.HasPermission("sys:conf$edit"), localmiddleware.OperLog(logWriter, "参数配置", consts.CLEAN), h.RefreshCache)
-		g.PUT("/:id", middleware.HasPermission("sys:conf$edit"), localmiddleware.OperLog(logWriter, "参数配置", consts.UPDATE), h.UpdateConf)
-		g.DELETE("/:id", middleware.HasPermission("sys:conf$delete"), localmiddleware.OperLog(logWriter, "参数配置", consts.DELETE), h.Delete)
+		g.POST("", middleware.HasPermission("sys:conf$add"), localmiddleware.OperLog(logWriter, "Conf-[参数配置]", consts.INSERT), h.CreateConf)
+		g.POST("/refresh-cache", middleware.HasPermission("sys:conf$refresh"), localmiddleware.OperLog(logWriter, "Conf-[参数配置]", consts.CLEAN), h.RefreshCache)
+		g.PUT("/:id", middleware.HasPermission("sys:conf$edit"), localmiddleware.OperLog(logWriter, "Conf-[参数配置]", consts.UPDATE), h.UpdateConf)
+		g.DELETE("/:id", middleware.HasPermission("sys:conf$delete"), localmiddleware.OperLog(logWriter, "Conf-[参数配置]", consts.DELETE), h.Delete)
 	}
 }
 
@@ -169,19 +169,19 @@ func registerDictRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.Ope
 		g.GET("/list", h.AvailableList)
 		g.GET("/page", middleware.HasPermission("sys:dict$list"), h.Page)
 		g.GET("/:id", middleware.HasPermission("sys:dict$query"), h.Get)
-		g.POST("", middleware.HasPermission("sys:dict$add"), localmiddleware.OperLog(logWriter, "字典类型", consts.INSERT), h.CreateDict)
-		g.PUT("/:id", middleware.HasPermission("sys:dict$edit"), localmiddleware.OperLog(logWriter, "字典类型", consts.UPDATE), h.UpdateDict)
-		g.DELETE("/:id", middleware.HasPermission("sys:dict$delete"), localmiddleware.OperLog(logWriter, "字典类型", consts.DELETE), h.DeleteDict)
+		g.POST("", middleware.HasPermission("sys:dict$add"), localmiddleware.OperLog(logWriter, "Dict-[字典类型]", consts.INSERT), h.CreateDict)
+		g.PUT("/:id", middleware.HasPermission("sys:dict$edit"), localmiddleware.OperLog(logWriter, "Dict-[字典类型]", consts.UPDATE), h.UpdateDict)
+		g.DELETE("/:id", middleware.HasPermission("sys:dict$delete"), localmiddleware.OperLog(logWriter, "Dict-[字典类型]", consts.DELETE), h.DeleteDict)
 		g.DELETE("/refresh-cache", middleware.HasPermission("sys:dict$refresh"), ddh.RefreshCache)
 		g.GET("/type/:id", ddh.GetDictDataCache)
 		data := g.Group("/data", middleware.HasPermission("sys:dict$design"))
 		{
 			data.GET("/list", ddh.ListByDictType)
 			data.GET("/:id", ddh.GetDetail)
-			data.POST("", localmiddleware.OperLog(logWriter, "字典数据", consts.INSERT), ddh.CreateDictData)
-			data.PUT("/sort", localmiddleware.OperLog(logWriter, "字典数据", consts.UPDATE), ddh.UpdateSort)
-			data.PUT("/:id", localmiddleware.OperLog(logWriter, "字典数据", consts.UPDATE), ddh.UpdateDictData)
-			data.DELETE("/:ids", localmiddleware.OperLog(logWriter, "字典数据", consts.DELETE), ddh.BatchDelete)
+			data.POST("", localmiddleware.OperLog(logWriter, "Dict-[字典数据]", consts.INSERT), ddh.CreateDictData)
+			data.PUT("/sort", localmiddleware.OperLog(logWriter, "Dict-[字典数据]", consts.UPDATE), ddh.UpdateSort)
+			data.PUT("/:id", localmiddleware.OperLog(logWriter, "Dict-[字典数据]", consts.UPDATE), ddh.UpdateDictData)
+			data.DELETE("/:ids", localmiddleware.OperLog(logWriter, "Dict-[字典数据]", consts.DELETE), ddh.BatchDelete)
 		}
 	}
 }

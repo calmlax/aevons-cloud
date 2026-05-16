@@ -26,13 +26,7 @@ import (
 )
 
 type DictHandler struct {
-	// 继承BaseHandler
-	*base.BaseHandler[
-		model.Dict,        // 模型
-		*dto.DictQuery,    // 查询 DTO
-		dto.CreateDictDTO, // 创建 DTO
-		dto.UpdateDictDTO, // 更新 DTO
-	]
+	crud *base.BaseHandler[model.Dict, *dto.DictQuery, dto.CreateDictDTO, dto.UpdateDictDTO]
 	svc   service.DictService
 	ddsve service.DictDataService
 }
@@ -40,18 +34,20 @@ type DictHandler struct {
 // 构造函数
 func NewDictHandler(svc service.DictService, ddsve service.DictDataService) *DictHandler {
 	return &DictHandler{
-		BaseHandler: base.NewBaseHandler[
-			model.Dict,
-			*dto.DictQuery,
-			dto.CreateDictDTO,
-			dto.UpdateDictDTO,
-		](svc),
+		crud:  base.NewBaseHandler[model.Dict, *dto.DictQuery, dto.CreateDictDTO, dto.UpdateDictDTO](svc),
 		svc:   svc,
 		ddsve: ddsve,
 	}
 }
 
 // AvailableList 获取可用列表
+//
+// @Summary      查询可用字典类型列表
+// @Tags         字典管理
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /dict/list [get]
 func (h *DictHandler) AvailableList(c *gin.Context) {
 	status := int16(0)
 	list, err := h.svc.List(&dto.DictQuery{
@@ -64,9 +60,44 @@ func (h *DictHandler) AvailableList(c *gin.Context) {
 	response.Success(c, list)
 }
 
+// Page 分页查询字典类型。
+//
+// @Summary      分页查询字典类型
+// @Tags         字典管理
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /dict/page [get]
+func (h *DictHandler) Page(c *gin.Context) {
+	h.crud.HandlePage(c)
+}
+
+// Get 获取字典类型详情。
+//
+// @Summary      获取字典类型详情
+// @Tags         字典管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "字典类型ID"
+// @Success      200  {object}  response.Response
+// @Router       /dict/{id} [get]
+func (h *DictHandler) Get(c *gin.Context) {
+	h.crud.HandleGet(c)
+}
+
+// CreateDict 新增字典类型。
+//
+// @Summary      新增字典类型
+// @Tags         字典管理
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        request  body      dto.CreateDictDTO  true  "新增字典类型"
+// @Success      200      {object}  response.Response
+// @Router       /dict [post]
 func (h *DictHandler) CreateDict(c *gin.Context) {
 	var dictDto dto.CreateDictDTO
-	if !h.BindJSON(c, &dictDto) {
+	if !base.BindJSON(c, &dictDto) {
 		return
 	}
 	fmt.Printf("-----CreateDict----- DictType: %v \n", dictDto.DictType)
@@ -87,8 +118,19 @@ func (h *DictHandler) CreateDict(c *gin.Context) {
 	response.Success(c, m.Id)
 }
 
+// UpdateDict 修改字典类型。
+//
+// @Summary      修改字典类型
+// @Tags         字典管理
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id       path      int               true  "字典类型ID"
+// @Param        request  body      dto.UpdateDictDTO true  "修改字典类型"
+// @Success      200      {object}  response.Response
+// @Router       /dict/{id} [put]
 func (h *DictHandler) UpdateDict(c *gin.Context) {
-	id, ok := h.GetId(c)
+	id, ok := base.GetId(c)
 	if !ok {
 		return
 	}
@@ -106,8 +148,17 @@ func (h *DictHandler) UpdateDict(c *gin.Context) {
 	response.Success(c, nil)
 }
 
+// DeleteDict 删除字典类型。
+//
+// @Summary      删除字典类型
+// @Tags         字典管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "字典类型ID"
+// @Success      200  {object}  response.Response
+// @Router       /dict/{id} [delete]
 func (h *DictHandler) DeleteDict(c *gin.Context) {
-	id, ok := h.GetId(c)
+	id, ok := base.GetId(c)
 	if !ok {
 		return
 	}

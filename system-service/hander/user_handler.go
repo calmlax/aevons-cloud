@@ -24,28 +24,77 @@ import (
 )
 
 type UserHandler struct {
-	*base.BaseHandler[
-		model.User,
-		*dto.UserQuery,
-		dto.CreateUserDTO,
-		dto.UpdateUserDTO,
-	]
+	crud *base.BaseHandler[model.User, *dto.UserQuery, dto.CreateUserDTO, dto.UpdateUserDTO]
 	svc service.UserService
 }
 
 func NewUserHandler(svc service.UserService) *UserHandler {
 	return &UserHandler{
-		BaseHandler: base.NewBaseHandler[
-			model.User,
-			*dto.UserQuery,
-			dto.CreateUserDTO,
-			dto.UpdateUserDTO,
-		](svc),
+		crud: base.NewBaseHandler[model.User, *dto.UserQuery, dto.CreateUserDTO, dto.UpdateUserDTO](svc),
 		svc: svc,
 	}
 }
 
+// List 查询用户列表。
+//
+// @Summary      查询用户列表
+// @Tags         用户管理
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /user/list [get]
+func (h *UserHandler) List(c *gin.Context) {
+	h.crud.HandleList(c)
+}
+
+// Page 分页查询用户。
+//
+// @Summary      分页查询用户
+// @Tags         用户管理
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /user/page [get]
+func (h *UserHandler) Page(c *gin.Context) {
+	h.crud.HandlePage(c)
+}
+
+// Get 获取用户详情。
+//
+// @Summary      获取用户详情
+// @Tags         用户管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "用户ID"
+// @Success      200  {object}  response.Response
+// @Router       /user/{id} [get]
+func (h *UserHandler) Get(c *gin.Context) {
+	h.crud.HandleGet(c)
+}
+
+// BatchDelete 批量删除用户。
+//
+// @Summary      批量删除用户
+// @Tags         用户管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        ids   path      string  true  "逗号分隔的用户ID"
+// @Success      200   {object}  response.Response
+// @Router       /user/{ids} [delete]
+func (h *UserHandler) BatchDelete(c *gin.Context) {
+	h.crud.HandleBatchDelete(c)
+}
+
 // Create 新增用户（含角色、部门岗位，事务）
+//
+// @Summary      新增用户
+// @Tags         用户管理
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        request  body      dto.CreateUserDTO  true  "新增用户"
+// @Success      200      {object}  response.Response
+// @Router       /user [post]
 func (h *UserHandler) Create(c *gin.Context) {
 	var d dto.CreateUserDTO
 	if err := c.ShouldBindJSON(&d); err != nil {
@@ -61,6 +110,16 @@ func (h *UserHandler) Create(c *gin.Context) {
 }
 
 // Update 修改用户（含角色、部门岗位，事务）
+//
+// @Summary      修改用户
+// @Tags         用户管理
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id       path      int                true  "用户ID"
+// @Param        request  body      dto.UpdateUserDTO  true  "修改用户"
+// @Success      200      {object}  response.Response
+// @Router       /user/{id} [put]
 func (h *UserHandler) Update(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
@@ -81,6 +140,14 @@ func (h *UserHandler) Update(c *gin.Context) {
 }
 
 // GetRelations 获取用户已关联的角色ID和部门岗位
+//
+// @Summary      获取用户关联信息
+// @Tags         用户管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "用户ID"
+// @Success      200  {object}  response.Response
+// @Router       /user/{id}/relations [get]
 func (h *UserHandler) GetRelations(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
@@ -110,6 +177,16 @@ func (h *UserHandler) GetRelations(c *gin.Context) {
 }
 
 // ResetPassword 重置用户密码
+//
+// @Summary      重置用户密码
+// @Tags         用户管理
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id       path      int                   true  "用户ID"
+// @Param        request  body      dto.ResetPasswordDTO  true  "重置密码"
+// @Success      200      {object}  response.Response
+// @Router       /user/{id}/reset-password [put]
 func (h *UserHandler) ResetPassword(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
@@ -130,6 +207,16 @@ func (h *UserHandler) ResetPassword(c *gin.Context) {
 }
 
 // UpdateStatus 更新用户状态
+//
+// @Summary      更新用户状态
+// @Tags         用户管理
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id       path      int   true  "用户ID"
+// @Param        request  body      object  true  "状态信息"
+// @Success      200      {object}  response.Response
+// @Router       /user/{id}/status [put]
 func (h *UserHandler) UpdateStatus(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)

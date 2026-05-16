@@ -27,30 +27,51 @@ import (
 )
 
 type ConfHandler struct {
-	// 继承BaseHandler
-	*base.BaseHandler[
-		model.Conf,        // 模型
-		*dto.ConfQuery,    // 查询 DTO
-		dto.CreateConfDTO, // 创建 DTO
-		dto.UpdateConfDTO, // 更新 DTO
-	]
+	crud *base.BaseHandler[model.Conf, *dto.ConfQuery, dto.CreateConfDTO, dto.UpdateConfDTO]
 	svc service.ConfService
 }
 
 // 构造函数
 func NewConfHandler(svc service.ConfService) *ConfHandler {
 	return &ConfHandler{
-		BaseHandler: base.NewBaseHandler[
-			model.Conf,
-			*dto.ConfQuery,
-			dto.CreateConfDTO,
-			dto.UpdateConfDTO,
-		](svc),
+		crud: base.NewBaseHandler[model.Conf, *dto.ConfQuery, dto.CreateConfDTO, dto.UpdateConfDTO](svc),
 		svc: svc,
 	}
 }
 
+// List 查询参数配置列表。
+//
+// @Summary      查询参数配置列表
+// @Tags         参数配置
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /conf/list [get]
+func (h *ConfHandler) List(c *gin.Context) {
+	h.crud.HandleList(c)
+}
+
+// Page 分页查询参数配置。
+//
+// @Summary      分页查询参数配置
+// @Tags         参数配置
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /conf/page [get]
+func (h *ConfHandler) Page(c *gin.Context) {
+	h.crud.HandlePage(c)
+}
+
 // GetConfByKey 提供从 URL 动态参数提取由服务层按 key 读取（自动解密）的配置获取接口。
+//
+// @Summary      按配置键获取参数配置
+// @Tags         参数配置
+// @Produce      json
+// @Param        key   path      string  true  "配置键"
+// @Success      200   {object}  response.Response
+// @Failure      400   {object}  response.Response
+// @Router       /conf/key/{key} [get]
 func (h *ConfHandler) GetConfByKey(c *gin.Context) {
 	key := c.Param("key")
 	if key == "" {
@@ -70,6 +91,13 @@ func (h *ConfHandler) GetConfByKey(c *gin.Context) {
 }
 
 // RefreshCache 后台管理开放的清理配置缓存接口（全量清除关联键前缀缓存）。
+//
+// @Summary      刷新参数配置缓存
+// @Tags         参数配置
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /conf/refresh-cache [post]
 func (h *ConfHandler) RefreshCache(c *gin.Context) {
 	if err := h.svc.RefreshCache(); err != nil {
 		response.Fail(c, http.StatusInternalServerError, 1013, "err.api.failed_to_refresh_cache")
@@ -79,22 +107,52 @@ func (h *ConfHandler) RefreshCache(c *gin.Context) {
 }
 
 // Get 获取配置
+//
+// @Summary      获取参数配置详情
+// @Tags         参数配置
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "配置ID"
+// @Success      200  {object}  response.Response
+// @Router       /conf/{id} [get]
 func (h *ConfHandler) Get(c *gin.Context) {
-	id, ok := h.GetId(c)
+	id, ok := base.GetId(c)
 	if !ok {
 		return
 	}
 
 	conf, err := h.svc.GetById(id)
 	if err != nil {
-		h.Fail(c, apperr.ErrQueryFailed)
+		response.FailBy(c, apperr.ErrQueryFailed)
 		return
 	}
 	conf.ConfValue = h.svc.DecryptIfNeeded(conf.ConfValue, conf.IsSecret == 1)
 	response.Success(c, conf)
 }
 
+// Delete 删除参数配置。
+//
+// @Summary      删除参数配置
+// @Tags         参数配置
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "配置ID"
+// @Success      200  {object}  response.Response
+// @Router       /conf/{id} [delete]
+func (h *ConfHandler) Delete(c *gin.Context) {
+	h.crud.HandleDelete(c)
+}
+
 // CreateConf 添加配置
+//
+// @Summary      新增参数配置
+// @Tags         参数配置
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        request  body      dto.CreateConfDTO  true  "新增参数配置"
+// @Success      200      {object}  response.Response
+// @Router       /conf [post]
 func (h *ConfHandler) CreateConf(c *gin.Context) {
 	var confDto dto.CreateConfDTO
 	if err := c.ShouldBindJSON(&confDto); err != nil {
@@ -118,8 +176,18 @@ func (h *ConfHandler) CreateConf(c *gin.Context) {
 }
 
 // UpdateConf 修改配置
+//
+// @Summary      修改参数配置
+// @Tags         参数配置
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id       path      int                true  "配置ID"
+// @Param        request  body      dto.UpdateConfDTO  true  "修改参数配置"
+// @Success      200      {object}  response.Response
+// @Router       /conf/{id} [put]
 func (h *ConfHandler) UpdateConf(c *gin.Context) {
-	id, ok := h.GetId(c)
+	id, ok := base.GetId(c)
 	if !ok {
 		return
 	}
@@ -141,7 +209,7 @@ func (h *ConfHandler) UpdateConf(c *gin.Context) {
 	mp := utils.StructToMapIgnoreNil(confDto)
 	_, err2 := h.svc.Update(id, mp)
 	if err2 != nil {
-		h.Fail(c, apperr.ErrUpdateFailed)
+		response.FailBy(c, apperr.ErrUpdateFailed)
 		return
 	}
 	response.Success(c, nil)

@@ -14,28 +14,38 @@ import (
 )
 
 type DeptHandler struct {
-	*base.BaseHandler[
-		model.Dept,
-		*dto.DeptQuery,
-		dto.CreateDeptDTO,
-		dto.UpdateDeptDTO,
-	]
+	crud *base.BaseHandler[model.Dept, *dto.DeptQuery, dto.CreateDeptDTO, dto.UpdateDeptDTO]
 	svc service.DeptService
 }
 
 func NewDeptHandler(svc service.DeptService) *DeptHandler {
 	return &DeptHandler{
-		BaseHandler: base.NewBaseHandler[
-			model.Dept,
-			*dto.DeptQuery,
-			dto.CreateDeptDTO,
-			dto.UpdateDeptDTO,
-		](svc),
+		crud: base.NewBaseHandler[model.Dept, *dto.DeptQuery, dto.CreateDeptDTO, dto.UpdateDeptDTO](svc),
 		svc: svc,
 	}
 }
 
+// Get 获取部门详情。
+//
+// @Summary      获取部门详情
+// @Tags         部门管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "部门ID"
+// @Success      200  {object}  response.Response
+// @Router       /dept/{id} [get]
+func (h *DeptHandler) Get(c *gin.Context) {
+	h.crud.HandleGet(c)
+}
+
 // ListTree 返回树形部门列表
+//
+// @Summary      查询部门树
+// @Tags         部门管理
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /dept/list [get]
 func (h *DeptHandler) ListTree(c *gin.Context) {
 	var q dto.DeptQuery
 	_ = c.ShouldBindQuery(&q)
@@ -48,6 +58,15 @@ func (h *DeptHandler) ListTree(c *gin.Context) {
 }
 
 // Create 创建部门（自动计算 ancestors）
+//
+// @Summary      新增部门
+// @Tags         部门管理
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        request  body      dto.CreateDeptDTO  true  "新增部门"
+// @Success      200      {object}  response.Response
+// @Router       /dept [post]
 func (h *DeptHandler) Create(c *gin.Context) {
 	var d dto.CreateDeptDTO
 	if err := c.ShouldBindJSON(&d); err != nil {
@@ -63,8 +82,18 @@ func (h *DeptHandler) Create(c *gin.Context) {
 }
 
 // Update 更新部门（自动重算 ancestors）
+//
+// @Summary      修改部门
+// @Tags         部门管理
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id       path      int               true  "部门ID"
+// @Param        request  body      dto.UpdateDeptDTO true  "修改部门"
+// @Success      200      {object}  response.Response
+// @Router       /dept/{id} [put]
 func (h *DeptHandler) Update(c *gin.Context) {
-	id, ok := h.GetId(c)
+	id, ok := base.GetId(c)
 	if !ok {
 		return
 	}
@@ -81,8 +110,16 @@ func (h *DeptHandler) Update(c *gin.Context) {
 }
 
 // Delete 删除部门（检查是否有子部门）
+//
+// @Summary      删除部门
+// @Tags         部门管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "部门ID"
+// @Success      200  {object}  response.Response
+// @Router       /dept/{id} [delete]
 func (h *DeptHandler) Delete(c *gin.Context) {
-	id, ok := h.GetId(c)
+	id, ok := base.GetId(c)
 	if !ok {
 		return
 	}

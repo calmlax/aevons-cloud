@@ -24,28 +24,77 @@ import (
 )
 
 type RoleHandler struct {
-	*base.BaseHandler[
-		model.Role,
-		*dto.RoleQuery,
-		dto.CreateRoleDTO,
-		dto.UpdateRoleDTO,
-	]
+	crud *base.BaseHandler[model.Role, *dto.RoleQuery, dto.CreateRoleDTO, dto.UpdateRoleDTO]
 	svc service.RoleService
 }
 
 func NewRoleHandler(svc service.RoleService) *RoleHandler {
 	return &RoleHandler{
-		BaseHandler: base.NewBaseHandler[
-			model.Role,
-			*dto.RoleQuery,
-			dto.CreateRoleDTO,
-			dto.UpdateRoleDTO,
-		](svc),
+		crud: base.NewBaseHandler[model.Role, *dto.RoleQuery, dto.CreateRoleDTO, dto.UpdateRoleDTO](svc),
 		svc: svc,
 	}
 }
 
+// List 查询角色列表。
+//
+// @Summary      查询角色列表
+// @Tags         角色管理
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /role/list [get]
+func (h *RoleHandler) List(c *gin.Context) {
+	h.crud.HandleList(c)
+}
+
+// Page 分页查询角色。
+//
+// @Summary      分页查询角色
+// @Tags         角色管理
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /role/page [get]
+func (h *RoleHandler) Page(c *gin.Context) {
+	h.crud.HandlePage(c)
+}
+
+// Get 获取角色详情。
+//
+// @Summary      获取角色详情
+// @Tags         角色管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "角色ID"
+// @Success      200  {object}  response.Response
+// @Router       /role/{id} [get]
+func (h *RoleHandler) Get(c *gin.Context) {
+	h.crud.HandleGet(c)
+}
+
+// BatchDelete 批量删除角色。
+//
+// @Summary      批量删除角色
+// @Tags         角色管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        ids   path      string  true  "逗号分隔的角色ID"
+// @Success      200   {object}  response.Response
+// @Router       /role/{ids} [delete]
+func (h *RoleHandler) BatchDelete(c *gin.Context) {
+	h.crud.HandleBatchDelete(c)
+}
+
 // Create 创建角色（含菜单，事务）
+//
+// @Summary      新增角色
+// @Tags         角色管理
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        request  body      dto.CreateRoleDTO  true  "新增角色"
+// @Success      200      {object}  response.Response
+// @Router       /role [post]
 func (h *RoleHandler) Create(c *gin.Context) {
 	var d dto.CreateRoleDTO
 	if err := c.ShouldBindJSON(&d); err != nil {
@@ -61,6 +110,16 @@ func (h *RoleHandler) Create(c *gin.Context) {
 }
 
 // Update 更新角色（含菜单，事务）
+//
+// @Summary      修改角色
+// @Tags         角色管理
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id       path      int                true  "角色ID"
+// @Param        request  body      dto.UpdateRoleDTO  true  "修改角色"
+// @Success      200      {object}  response.Response
+// @Router       /role/{id} [put]
 func (h *RoleHandler) Update(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
@@ -81,6 +140,14 @@ func (h *RoleHandler) Update(c *gin.Context) {
 }
 
 // GetMenuIds 获取角色已关联的菜单ID列表
+//
+// @Summary      获取角色菜单ID列表
+// @Tags         角色管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "角色ID"
+// @Success      200  {object}  response.Response
+// @Router       /role/{id}/menu [get]
 func (h *RoleHandler) GetMenuIds(c *gin.Context) {
 	idStr := c.Param("id")
 	roleId, err := strconv.ParseInt(idStr, 10, 64)

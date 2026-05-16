@@ -26,30 +26,78 @@ import (
 )
 
 type OauthClientHandler struct {
-	// 继承BaseHandler
-	*base.BaseHandler[
-		model.OauthClient,        // 模型
-		*dto.OauthClientQuery,    // 查询 DTO
-		dto.CreateOauthClientDTO, // 创建 DTO
-		dto.UpdateOauthClientDTO, // 更新 DTO
-	]
+	crud *base.BaseHandler[model.OauthClient, *dto.OauthClientQuery, dto.CreateOauthClientDTO, dto.UpdateOauthClientDTO]
 	svc service.OauthClientService
 }
 
 // 构造函数
 func NewOauthClientHandler(svc service.OauthClientService) *OauthClientHandler {
 	return &OauthClientHandler{
-		BaseHandler: base.NewBaseHandler[
-			model.OauthClient,
-			*dto.OauthClientQuery,
-			dto.CreateOauthClientDTO,
-			dto.UpdateOauthClientDTO,
-		](svc),
+		crud: base.NewBaseHandler[model.OauthClient, *dto.OauthClientQuery, dto.CreateOauthClientDTO, dto.UpdateOauthClientDTO](svc),
 		svc: svc,
 	}
 }
 
+// List 查询终端应用列表。
+//
+// @Summary      查询终端应用列表
+// @Tags         终端应用
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /oauth/client/list [get]
+func (h *OauthClientHandler) List(c *gin.Context) {
+	h.crud.HandleList(c)
+}
+
+// Page 分页查询终端应用。
+//
+// @Summary      分页查询终端应用
+// @Tags         终端应用
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /oauth/client/page [get]
+func (h *OauthClientHandler) Page(c *gin.Context) {
+	h.crud.HandlePage(c)
+}
+
+// Get 获取终端应用详情。
+//
+// @Summary      获取终端应用详情
+// @Tags         终端应用
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "终端应用ID"
+// @Success      200  {object}  response.Response
+// @Router       /oauth/client/{id} [get]
+func (h *OauthClientHandler) Get(c *gin.Context) {
+	h.crud.HandleGet(c)
+}
+
+// BatchDelete 批量删除终端应用。
+//
+// @Summary      批量删除终端应用
+// @Tags         终端应用
+// @Produce      json
+// @Security     BearerAuth
+// @Param        ids   path      string  true  "逗号分隔的终端应用ID"
+// @Success      200   {object}  response.Response
+// @Router       /oauth/client/{ids} [delete]
+func (h *OauthClientHandler) BatchDelete(c *gin.Context) {
+	h.crud.HandleBatchDelete(c)
+}
+
 // CreateOAuthClient 添加终端应用
+//
+// @Summary      新增终端应用
+// @Tags         终端应用
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        request  body      dto.CreateOauthClientDTO  true  "新增终端应用"
+// @Success      200      {object}  response.Response
+// @Router       /oauth/client [post]
 func (h *OauthClientHandler) CreateOAuthClient(c *gin.Context) {
 	var oauthClientDto dto.CreateOauthClientDTO
 	if err := c.ShouldBindJSON(&oauthClientDto); err != nil {
@@ -78,8 +126,18 @@ func (h *OauthClientHandler) CreateOAuthClient(c *gin.Context) {
 }
 
 // UpdateOAuthClient 修改终端应用
+//
+// @Summary      修改终端应用
+// @Tags         终端应用
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id       path      int                       true  "终端应用ID"
+// @Param        request  body      dto.UpdateOauthClientDTO  true  "修改终端应用"
+// @Success      200      {object}  response.Response
+// @Router       /oauth/client/{id} [put]
 func (h *OauthClientHandler) UpdateOAuthClient(c *gin.Context) {
-	id, ok := h.GetId(c)
+	id, ok := base.GetId(c)
 	if !ok {
 		return
 	}
@@ -107,7 +165,7 @@ func (h *OauthClientHandler) UpdateOAuthClient(c *gin.Context) {
 	mp := utils.StructToMapIgnoreNil(oauthClientDto)
 	_, err2 := h.svc.Update(id, mp)
 	if err2 != nil {
-		h.Fail(c, apperr.ErrUpdateFailed)
+		response.FailBy(c, apperr.ErrUpdateFailed)
 		return
 	}
 	response.Success(c, nil)

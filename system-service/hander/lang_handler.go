@@ -15,28 +15,75 @@ import (
 )
 
 type LangHandler struct {
-	*base.BaseHandler[
-		model.Lang,
-		*dto.LangQuery,
-		dto.CreateLangDTO,
-		dto.UpdateLangDTO,
-	]
+	crud *base.BaseHandler[model.Lang, *dto.LangQuery, dto.CreateLangDTO, dto.UpdateLangDTO]
 	svc service.LangService
 }
 
 func NewLangHandler(svc service.LangService) *LangHandler {
 	return &LangHandler{
-		BaseHandler: base.NewBaseHandler[
-			model.Lang,
-			*dto.LangQuery,
-			dto.CreateLangDTO,
-			dto.UpdateLangDTO,
-		](svc),
+		crud: base.NewBaseHandler[model.Lang, *dto.LangQuery, dto.CreateLangDTO, dto.UpdateLangDTO](svc),
 		svc: svc,
 	}
 }
 
+// List 查询语言列表。
+//
+// @Summary      查询语言列表
+// @Tags         语言管理
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /lang/list [get]
+func (h *LangHandler) List(c *gin.Context) {
+	h.crud.HandleList(c)
+}
+
+// Page 分页查询语言。
+//
+// @Summary      分页查询语言
+// @Tags         语言管理
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /lang/page [get]
+func (h *LangHandler) Page(c *gin.Context) {
+	h.crud.HandlePage(c)
+}
+
+// Get 获取语言详情。
+//
+// @Summary      获取语言详情
+// @Tags         语言管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "语言ID"
+// @Success      200  {object}  response.Response
+// @Router       /lang/{id} [get]
+func (h *LangHandler) Get(c *gin.Context) {
+	h.crud.HandleGet(c)
+}
+
+// BatchDelete 批量删除语言。
+//
+// @Summary      批量删除语言
+// @Tags         语言管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        ids   path      string  true  "逗号分隔的语言ID"
+// @Success      200   {object}  response.Response
+// @Router       /lang/{ids} [delete]
+func (h *LangHandler) BatchDelete(c *gin.Context) {
+	h.crud.HandleBatchDelete(c)
+}
+
 // AvailableList 获取可用语言列表
+//
+// @Summary      查询可用语言列表
+// @Tags         语言管理
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /lang [get]
 func (h *LangHandler) AvailableList(c *gin.Context) {
 	status := int16(0)
 	list, err := h.svc.List(&dto.LangQuery{Status: &status})
@@ -48,6 +95,15 @@ func (h *LangHandler) AvailableList(c *gin.Context) {
 }
 
 // Create 新增语言（若设为默认则清除其他默认）
+//
+// @Summary      新增语言
+// @Tags         语言管理
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        request  body      dto.CreateLangDTO  true  "新增语言"
+// @Success      200      {object}  response.Response
+// @Router       /lang [post]
 func (h *LangHandler) Create(c *gin.Context) {
 	var d dto.CreateLangDTO
 	if err := c.ShouldBindJSON(&d); err != nil {
@@ -63,6 +119,16 @@ func (h *LangHandler) Create(c *gin.Context) {
 }
 
 // Update 修改语言（若设为默认则清除其他默认）
+//
+// @Summary      修改语言
+// @Tags         语言管理
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id       path      int               true  "语言ID"
+// @Param        request  body      dto.UpdateLangDTO true  "修改语言"
+// @Success      200      {object}  response.Response
+// @Router       /lang/{id} [put]
 func (h *LangHandler) Update(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)

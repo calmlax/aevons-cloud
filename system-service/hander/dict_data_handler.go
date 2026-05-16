@@ -13,7 +13,6 @@ import (
 	"errors"
 	"net/http"
 	"system-service/dto"
-	"system-service/model"
 	"system-service/service"
 
 	apperr "github.com/calmlax/aevons-framework/errors"
@@ -27,30 +26,24 @@ import (
 )
 
 type DictDataHandler struct {
-	// 继承BaseHandler
-	*base.BaseHandler[
-		model.DictData,        // 模型
-		*dto.DictDataQuery,    // 查询 DTO
-		dto.CreateDictDataDTO, // 创建 DTO
-		dto.UpdateDictDataDTO, // 更新 DTO
-	]
 	svc service.DictDataService
 }
 
 // 构造函数
 func NewDictDataHandler(svc service.DictDataService) *DictDataHandler {
 	return &DictDataHandler{
-		BaseHandler: base.NewBaseHandler[
-			model.DictData,
-			*dto.DictDataQuery,
-			dto.CreateDictDataDTO,
-			dto.UpdateDictDataDTO,
-		](svc),
 		svc: svc,
 	}
 }
 
 // GetDictDataCache 获取字典数据
+//
+// @Summary      按字典类型查询字典数据
+// @Tags         字典数据
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /dict/data/list [get]
 func (h *DictDataHandler) ListByDictType(c *gin.Context) {
 	dictType := c.Query("dictType")
 	langCode := c.GetHeader(consts.AcceptLanguage)
@@ -63,6 +56,15 @@ func (h *DictDataHandler) ListByDictType(c *gin.Context) {
 }
 
 // CreateDictData 添加字典数据
+//
+// @Summary      新增字典数据
+// @Tags         字典数据
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        request  body      dto.CreateDictDataDTO  true  "新增字典数据"
+// @Success      200      {object}  response.Response
+// @Router       /dict/data [post]
 func (h *DictDataHandler) CreateDictData(c *gin.Context) {
 	var dictData dto.CreateDictDataDTO
 	if err := c.ShouldBindJSON(&dictData); err != nil {
@@ -82,6 +84,16 @@ func (h *DictDataHandler) CreateDictData(c *gin.Context) {
 }
 
 // UpdateDictData 修改字典数据
+//
+// @Summary      修改字典数据
+// @Tags         字典数据
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id       path      int                    true  "字典数据ID"
+// @Param        request  body      dto.UpdateDictDataDTO  true  "修改字典数据"
+// @Success      200      {object}  response.Response
+// @Router       /dict/data/{id} [put]
 func (h *DictDataHandler) UpdateDictData(c *gin.Context) {
 	var dictData dto.UpdateDictDataDTO
 	if err := c.ShouldBindJSON(&dictData); err != nil {
@@ -96,6 +108,14 @@ func (h *DictDataHandler) UpdateDictData(c *gin.Context) {
 }
 
 // GetDictDataCache 获取字典数据
+//
+// @Summary      获取字典缓存
+// @Tags         字典数据
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      string  true  "字典类型"
+// @Success      200  {object}  response.Response
+// @Router       /dict/type/{id} [get]
 func (h *DictDataHandler) GetDictDataCache(c *gin.Context) {
 	dictType := c.Param("id")
 	dictData, err := h.svc.GetDictDataCache(dictType)
@@ -107,6 +127,13 @@ func (h *DictDataHandler) GetDictDataCache(c *gin.Context) {
 }
 
 // RefreshCache 刷新字典数据
+//
+// @Summary      刷新字典缓存
+// @Tags         字典数据
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /dict/refresh-cache [delete]
 func (h *DictDataHandler) RefreshCache(c *gin.Context) {
 	if err := h.svc.RefreshCache(); err != nil {
 		response.Fail(c, http.StatusInternalServerError, 1013, "err.api.failed_to_refresh_cache")
@@ -116,8 +143,16 @@ func (h *DictDataHandler) RefreshCache(c *gin.Context) {
 }
 
 // GetDetail 获取字典数据详情
+//
+// @Summary      获取字典数据详情
+// @Tags         字典数据
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "字典数据ID"
+// @Success      200  {object}  response.Response
+// @Router       /dict/data/{id} [get]
 func (h *DictDataHandler) GetDetail(c *gin.Context) {
-	id, ok := h.GetId(c)
+	id, ok := base.GetId(c)
 	if !ok {
 		return
 	}
@@ -130,21 +165,38 @@ func (h *DictDataHandler) GetDetail(c *gin.Context) {
 }
 
 // Delete 删除
+//
+// @Summary      批量删除字典数据
+// @Tags         字典数据
+// @Produce      json
+// @Security     BearerAuth
+// @Param        ids   path      string  true  "逗号分隔的字典数据ID"
+// @Success      200   {object}  response.Response
+// @Router       /dict/data/{ids} [delete]
 func (h *DictDataHandler) BatchDelete(c *gin.Context) {
-	ids, ok := h.GetIds(c)
+	ids, ok := base.GetIds(c)
 	if !ok {
 		return
 	}
 	err := h.svc.DeleteByIds(c, ids)
 
 	if err != nil {
-		h.Fail(c, apperr.ErrDeleteFailed)
+		response.FailBy(c, apperr.ErrDeleteFailed)
 		return
 	}
-	h.Success(c, ids)
+	response.Success(c, ids)
 }
 
 // UpdateSort 批量更新排序
+//
+// @Summary      批量更新字典数据排序
+// @Tags         字典数据
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        request  body      []dto.SortItemDTO  true  "排序项"
+// @Success      200      {object}  response.Response
+// @Router       /dict/data/sort [put]
 func (h *DictDataHandler) UpdateSort(c *gin.Context) {
 	var items []dto.SortItemDTO
 	if err := c.ShouldBindJSON(&items); err != nil {

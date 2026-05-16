@@ -15,28 +15,77 @@ import (
 )
 
 type PostHandler struct {
-	*base.BaseHandler[
-		model.Post,
-		*dto.PostQuery,
-		dto.CreatePostDTO,
-		dto.UpdatePostDTO,
-	]
+	crud *base.BaseHandler[model.Post, *dto.PostQuery, dto.CreatePostDTO, dto.UpdatePostDTO]
 	svc service.PostService
 }
 
 func NewPostHandler(svc service.PostService) *PostHandler {
 	return &PostHandler{
-		BaseHandler: base.NewBaseHandler[
-			model.Post,
-			*dto.PostQuery,
-			dto.CreatePostDTO,
-			dto.UpdatePostDTO,
-		](svc),
+		crud: base.NewBaseHandler[model.Post, *dto.PostQuery, dto.CreatePostDTO, dto.UpdatePostDTO](svc),
 		svc: svc,
 	}
 }
 
+// List 查询岗位列表。
+//
+// @Summary      查询岗位列表
+// @Tags         岗位管理
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /post/list [get]
+func (h *PostHandler) List(c *gin.Context) {
+	h.crud.HandleList(c)
+}
+
+// Page 分页查询岗位。
+//
+// @Summary      分页查询岗位
+// @Tags         岗位管理
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /post/page [get]
+func (h *PostHandler) Page(c *gin.Context) {
+	h.crud.HandlePage(c)
+}
+
+// Get 获取岗位详情。
+//
+// @Summary      获取岗位详情
+// @Tags         岗位管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "岗位ID"
+// @Success      200  {object}  response.Response
+// @Router       /post/{id} [get]
+func (h *PostHandler) Get(c *gin.Context) {
+	h.crud.HandleGet(c)
+}
+
+// BatchDelete 批量删除岗位。
+//
+// @Summary      批量删除岗位
+// @Tags         岗位管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        ids   path      string  true  "逗号分隔的岗位ID"
+// @Success      200   {object}  response.Response
+// @Router       /post/{ids} [delete]
+func (h *PostHandler) BatchDelete(c *gin.Context) {
+	h.crud.HandleBatchDelete(c)
+}
+
 // Create 创建岗位，校验 postKey 唯一性
+//
+// @Summary      新增岗位
+// @Tags         岗位管理
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        request  body      dto.CreatePostDTO  true  "新增岗位"
+// @Success      200      {object}  response.Response
+// @Router       /post [post]
 func (h *PostHandler) Create(c *gin.Context) {
 	var d dto.CreatePostDTO
 	if err := c.ShouldBindJSON(&d); err != nil {
@@ -62,8 +111,18 @@ func (h *PostHandler) Create(c *gin.Context) {
 }
 
 // Update 更新岗位，校验 postKey 唯一性（排除自身）
+//
+// @Summary      修改岗位
+// @Tags         岗位管理
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id       path      int               true  "岗位ID"
+// @Param        request  body      dto.UpdatePostDTO true  "修改岗位"
+// @Success      200      {object}  response.Response
+// @Router       /post/{id} [put]
 func (h *PostHandler) Update(c *gin.Context) {
-	id, ok := h.GetId(c)
+	id, ok := base.GetId(c)
 	if !ok {
 		return
 	}
