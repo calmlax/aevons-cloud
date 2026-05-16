@@ -57,7 +57,7 @@ func Setup(app *core.App) (*gin.Engine, error) {
 	server.RegisterOpenApiRoute(r, cfg)
 	r.Use(middleware.AuthMiddleware(auth.NewRedisTokenStore(redisClient), cfg.Auth.Excludes))
 
-	v1 := r.Group("/api/v1")
+	v1 := r.Group("/api/v1/auth")
 	{
 		RegisterRoutes(v1, db, redisClient, cfg, logStore)
 	}
@@ -75,26 +75,26 @@ func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB, client *redis.Client, cfg 
 	h := authHandler.NewAuthHandler(svc)
 
 	// 公开路由，无需令牌
-	rg.POST("/auth/login", h.Login)
-	rg.POST("/auth/refresh", h.Refresh)
-	rg.POST("/auth/email/code", h.SendEmailCode)
-	rg.POST("/auth/register", h.Register)
-	rg.POST("/auth/reset-password", h.ResetPassword)
-	rg.GET("/auth/public-key", h.GetPublicKey)
+	rg.POST("/login", h.Login)
+	rg.POST("/refresh", h.Refresh)
+	rg.POST("/email/code", h.SendEmailCode)
+	rg.POST("/register", h.Register)
+	rg.POST("/reset-password", h.ResetPassword)
+	rg.GET("/public-key", h.GetPublicKey)
 
 	// OAuth2 标准授权码流程端点
-	rg.GET("/auth/authorize", h.Authorize)
-	rg.POST("/auth/authorize", h.ApproveAuthorize)
-	rg.GET("/auth/callback", h.Callback)
+	rg.GET("/authorize", h.Authorize)
+	rg.POST("/authorize", h.ApproveAuthorize)
+	rg.GET("/callback", h.Callback)
 
 	// 受保护路由，由全局 AuthMiddleware 验证令牌
-	rg.POST("/auth/code", h.GenerateAuthCode)
-	rg.POST("/auth/logout", h.Logout)
-	rg.GET("/auth/routers", h.Routers)
-	rg.GET("/auth/user", h.GetUserInfo)
-	rg.GET("/auth/user/profile", h.GetProfile)
-	rg.PUT("/auth/user/profile", h.UpdateProfile)
-	rg.PUT("/auth/user/password", h.UpdatePassword)
+	rg.POST("/code", h.GenerateAuthCode)
+	rg.POST("/logout", h.Logout)
+	rg.GET("/routers", h.Routers)
+	rg.GET("/user", h.GetUserInfo)
+	rg.GET("/user/profile", h.GetProfile)
+	rg.PUT("/user/profile", h.UpdateProfile)
+	rg.PUT("/user/password", h.UpdatePassword)
 
 	rpId := cfg.WebAuthn.RPID
 	if rpId == "" {
@@ -114,13 +114,13 @@ func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB, client *redis.Client, cfg 
 	}
 	p := authHandler.NewPasskeyHandler(passkeySvc, svc)
 	// Passkey 公开端点（认证流程无需 token）
-	rg.POST("/auth/passkey/login/begin", p.BeginAuthentication)
-	rg.POST("/auth/passkey/login/finish", p.FinishAuthentication)
+	rg.POST("/passkey/login/begin", p.BeginAuthentication)
+	rg.POST("/passkey/login/finish", p.FinishAuthentication)
 	// Passkey 受保护端点（注册需要已登录）
-	rg.POST("/auth/passkey/register/begin", p.BeginRegistration)
-	rg.POST("/auth/passkey/register/finish", p.FinishRegistration)
-	rg.GET("/auth/passkey/credentials", p.ListCredentials)
-	rg.DELETE("/auth/passkey/credentials/:id", p.RevokeCredential)
+	rg.POST("/passkey/register/begin", p.BeginRegistration)
+	rg.POST("/passkey/register/finish", p.FinishRegistration)
+	rg.GET("/passkey/credentials", p.ListCredentials)
+	rg.DELETE("/passkey/credentials/:id", p.RevokeCredential)
 
-	rg.GET("/auth/user/login-logs", h.GetLatestLoginLog)
+	rg.GET("/user/login-logs", h.GetLatestLoginLog)
 }

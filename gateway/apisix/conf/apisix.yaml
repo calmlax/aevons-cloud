@@ -1,0 +1,44 @@
+routes:
+  - id: auth-route
+    uri: /api/v1/auth/*
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+    plugins:
+      client-resource-auth: {}
+      jwt-enterprise-auth: {}
+    upstream:
+      type: roundrobin
+      nodes:
+        "127.0.0.1:10601": 1
+
+  - id: system-route
+    uri: /api/v1/system/*
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+    plugins:
+      client-resource-auth: {}
+      jwt-enterprise-auth: {}
+    upstream:
+      type: roundrobin
+      nodes:
+        "127.0.0.1:10702": 1
+
+  - id: log-route
+    uri: /api/v1/log/*
+    methods:
+      - GET
+      - POST
+      - DELETE
+    plugins:
+      audit-log: {}
+      jwt-enterprise-auth: {}
+    upstream:
+      type: roundrobin
+      nodes:
+        "127.0.0.1:10803": 1

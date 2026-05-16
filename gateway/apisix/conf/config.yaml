@@ -1,0 +1,20 @@
+deployment:
+  role: traditional
+  role_traditional:
+    config_provider: yaml
+
+apisix:
+  node_listen: 9080
+  enable_admin: true
+  enable_admin_cors: true
+  admin_key:
+    - name: admin
+      key: replace-with-real-admin-key
+      role: admin
+
+plugins:
+  - client-resource-auth
+  - jwt-enterprise-auth
+  - tenant-isolation
+  - audit-log
+  - ai-risk-control

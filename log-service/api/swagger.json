@@ -11,7 +11,7 @@
         "version": "1.0.0"
     },
     "host": "localhost:8021",
-    "basePath": "/api/v1",
+    "basePath": "/api/v1/log",
     "paths": {
         "/login/log": {
             "delete": {

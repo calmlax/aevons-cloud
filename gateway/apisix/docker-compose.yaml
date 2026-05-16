@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  apisix:
+    image: apache/apisix:3.9.1-debian
+    container_name: aevons-apisix
+    restart: unless-stopped
+    ports:
+      - "9080:9080"
+      - "9180:9180"
+    volumes:
+      - ./conf/config.yaml:/usr/local/apisix/conf/config.yaml:ro
+      - ./conf/apisix.yaml:/usr/local/apisix/conf/apisix.yaml:ro
+      - ./plugins:/usr/local/apisix/apisix/plugins:ro
+    environment:
+      APISIX_STAND_ALONE: "true"
