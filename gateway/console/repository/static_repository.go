@@ -51,7 +51,7 @@ func (r *StaticRepository) Upstreams() []model.Upstream {
 			Discovery:    "consul",
 			LoadBalance:  "round_robin",
 			HealthPolicy: "healthy_only",
-			Nodes: map[string]int{
+			StaticNodesBackup: map[string]int{
 				"127.0.0.1:10601": 1,
 			},
 		},
@@ -61,7 +61,7 @@ func (r *StaticRepository) Upstreams() []model.Upstream {
 			Discovery:    "consul",
 			LoadBalance:  "round_robin",
 			HealthPolicy: "healthy_only",
-			Nodes: map[string]int{
+			StaticNodesBackup: map[string]int{
 				"127.0.0.1:10702": 1,
 			},
 		},
@@ -71,7 +71,7 @@ func (r *StaticRepository) Upstreams() []model.Upstream {
 			Discovery:    "consul",
 			LoadBalance:  "round_robin",
 			HealthPolicy: "healthy_only",
-			Nodes: map[string]int{
+			StaticNodesBackup: map[string]int{
 				"127.0.0.1:10803": 1,
 			},
 		},
@@ -108,6 +108,26 @@ func (r *StaticRepository) Policies() []model.Policy {
 			ClientID:  "portal-web",
 			Enabled:   true,
 			Resources: []string{"POST:/api/v1/auth/login", "POST:/api/v1/auth/refresh", "GET:/api/v1/auth/user"},
+		},
+	}
+}
+
+func (r *StaticRepository) SwaggerSources() []model.SwaggerSource {
+	return []model.SwaggerSource{
+		{
+			Name:      "auth-service",
+			Service:   "auth-service",
+			TargetURL: "http://127.0.0.1:10701/api/swagger.json",
+		},
+		{
+			Name:      "system-service",
+			Service:   "system-service",
+			TargetURL: "http://127.0.0.1:10702/api/swagger.json",
+		},
+		{
+			Name:      "log-service",
+			Service:   "log-service",
+			TargetURL: "http://127.0.0.1:10703/api/swagger.json",
 		},
 	}
 }

@@ -13,12 +13,13 @@ type Route struct {
 }
 
 type Upstream struct {
-	ID           string         `json:"id"`
-	ServiceName  string         `json:"service_name"`
-	Discovery    string         `json:"discovery"`
-	LoadBalance  string         `json:"load_balance"`
-	HealthPolicy string         `json:"health_policy"`
-	Nodes        map[string]int `json:"nodes"`
+	ID                string         `json:"id"`
+	ServiceName       string         `json:"service_name"`
+	Discovery         string         `json:"discovery"`
+	LoadBalance       string         `json:"load_balance"`
+	HealthPolicy      string         `json:"health_policy"`
+	Nodes             map[string]int `json:"nodes,omitempty"`
+	StaticNodesBackup map[string]int `json:"static_nodes_fallback,omitempty"`
 }
 
 type Consumer struct {
@@ -41,6 +42,13 @@ type Policy struct {
 	ClientID  string   `json:"client_id"`
 	Enabled   bool     `json:"enabled"`
 	Resources []string `json:"resources"`
+}
+
+type SwaggerSource struct {
+	Name      string `json:"name"`
+	Service   string `json:"service"`
+	TargetURL string `json:"target_url"`
+	ProxyURL  string `json:"proxy_url,omitempty"`
 }
 
 type Overview struct {

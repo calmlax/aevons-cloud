@@ -1,9 +1,13 @@
 package handler
 
 import (
+	"io"
 	"net/http"
+	"time"
 
 	"aevons-cloud/gateway/console/dto"
+	consoleconfig "aevons-cloud/gateway/console/internal/config"
+	"aevons-cloud/gateway/console/internal/model"
 	"aevons-cloud/gateway/console/service"
 
 	frameworkresp "github.com/calmlax/aevons-framework/response"
@@ -14,13 +18,19 @@ type CatalogHandler struct {
 	catalog     *service.CatalogService
 	publish     *service.PublishService
 	serviceName string
+	consoleCfg  consoleconfig.Settings
+	httpClient  *http.Client
 }
 
-func NewCatalogHandler(catalog *service.CatalogService, publish *service.PublishService, serviceName string) *CatalogHandler {
+func NewCatalogHandler(catalog *service.CatalogService, publish *service.PublishService, serviceName string, consoleCfg consoleconfig.Settings) *CatalogHandler {
 	return &CatalogHandler{
 		catalog:     catalog,
 		publish:     publish,
 		serviceName: serviceName,
+		consoleCfg:  consoleCfg,
+		httpClient: &http.Client{
+			Timeout: 5 * time.Second,
+		},
 	}
 }
 
@@ -51,6 +61,62 @@ func (h *CatalogHandler) Policies(c *gin.Context) {
 	frameworkresp.Success(c, h.catalog.Policies())
 }
 
+func (h *CatalogHandler) SwaggerSources(c *gin.Context) {
+	sources := h.catalog.SwaggerSources()
+	for i := range sources {
+		sources[i].ProxyURL = "/api/v1/gateway/swagger/" + sources[i].Service + "/swagger.json"
+	}
+
+	frameworkresp.Success(c, gin.H{
+		"ui_url":  h.consoleCfg.SwaggerUIURL,
+		"sources": sources,
+	})
+}
+
+func (h *CatalogHandler) ProxySwagger(c *gin.Context) {
+	serviceName := c.Param("service")
+	source, ok := h.lookupSwaggerSource(serviceName)
+	if !ok {
+		frameworkresp.Fail(c, http.StatusNotFound, http.StatusNotFound, "gateway.swagger_source_not_found", map[string]any{
+			"service": serviceName,
+		})
+		return
+	}
+
+	req, err := http.NewRequestWithContext(c.Request.Context(), http.MethodGet, source.TargetURL, nil)
+	if err != nil {
+		frameworkresp.FailServerError(c, "gateway.swagger_proxy_failed", map[string]any{"error": err.Error()})
+		return
+	}
+
+	resp, err := h.httpClient.Do(req)
+	if err != nil {
+		frameworkresp.Fail(c, http.StatusBadGateway, http.StatusBadGateway, "gateway.swagger_proxy_failed", map[string]any{
+			"service": serviceName,
+			"error":   err.Error(),
+		})
+		return
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		frameworkresp.FailServerError(c, "gateway.swagger_proxy_failed", map[string]any{"error": err.Error()})
+		return
+	}
+
+	if resp.StatusCode >= 300 {
+		c.Data(resp.StatusCode, "application/json; charset=utf-8", body)
+		return
+	}
+
+	contentType := resp.Header.Get("Content-Type")
+	if contentType == "" {
+		contentType = "application/json; charset=utf-8"
+	}
+	c.Data(resp.StatusCode, contentType, body)
+}
+
 func (h *CatalogHandler) PublishPlan(c *gin.Context) {
 	frameworkresp.Success(c, gin.H{
 		"message": "gateway publish plan",
@@ -59,9 +125,17 @@ func (h *CatalogHandler) PublishPlan(c *gin.Context) {
 }
 
 func (h *CatalogHandler) PublishSnapshot(c *gin.Context) {
+	snapshot, err := h.publish.Snapshot()
+	if err != nil {
+		frameworkresp.Fail(c, http.StatusBadGateway, http.StatusBadGateway, "gateway.snapshot_failed", map[string]any{
+			"error": err.Error(),
+		})
+		return
+	}
+
 	frameworkresp.Success(c, gin.H{
 		"message": "apisix publish snapshot",
-		"data":    h.publish.Snapshot(),
+		"data":    snapshot,
 	})
 }
 
@@ -83,4 +157,13 @@ func (h *CatalogHandler) ControlPlaneHealth(c *gin.Context) {
 		"status": "ok",
 		"name":   h.serviceName,
 	})
+}
+
+func (h *CatalogHandler) lookupSwaggerSource(serviceName string) (source model.SwaggerSource, ok bool) {
+	for _, source := range h.catalog.SwaggerSources() {
+		if source.Service == serviceName {
+			return source, true
+		}
+	}
+	return model.SwaggerSource{}, false
 }

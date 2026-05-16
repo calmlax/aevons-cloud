@@ -14,3 +14,5 @@ job-service/configs/config.production.yaml
 gen-service/configs/config.production.yaml
 
 gateway-service
+
+gateway/console/ui/node_modules

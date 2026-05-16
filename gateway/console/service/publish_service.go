@@ -29,8 +29,13 @@ func (s *PublishService) Plan() model.PublishPlan {
 	}
 }
 
-func (s *PublishService) Snapshot() apisixadmin.PublishSnapshot {
+func (s *PublishService) Snapshot() (apisixadmin.PublishSnapshot, error) {
 	plan := s.Plan()
+	resolvedUpstreams, err := s.catalog.ResolvedUpstreams()
+	if err != nil {
+		return apisixadmin.PublishSnapshot{}, err
+	}
+	plan.Upstreams = resolvedUpstreams
 	snapshot := apisixadmin.PublishSnapshot{
 		Routes:        make([]apisixadmin.RouteResource, 0, len(plan.Routes)),
 		Upstreams:     make([]apisixadmin.UpstreamResource, 0, len(plan.Upstreams)),
@@ -102,7 +107,7 @@ func (s *PublishService) Snapshot() apisixadmin.PublishSnapshot {
 		})
 	}
 
-	return snapshot
+	return snapshot, nil
 }
 
 func (s *PublishService) Publish(ctx context.Context) error {
@@ -110,7 +115,10 @@ func (s *PublishService) Publish(ctx context.Context) error {
 		return nil
 	}
 
-	snapshot := s.Snapshot()
+	snapshot, err := s.Snapshot()
+	if err != nil {
+		return err
+	}
 	for _, upstream := range snapshot.Upstreams {
 		if err := s.client.PutUpstream(ctx, upstream.ID, upstream); err != nil {
 			return err

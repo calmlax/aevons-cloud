@@ -1,0 +1,12 @@
+{
+  "name": "gateway-console-ui",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Static Swagger UI assets for Aevons Gateway Console",
+  "scripts": {
+    "sync:swagger-ui": "mkdir -p swagger && cp node_modules/swagger-ui-dist/swagger-ui.css swagger/ && cp node_modules/swagger-ui-dist/swagger-ui-bundle.js swagger/ && cp node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js swagger/ && cp node_modules/swagger-ui-dist/favicon-16x16.png swagger/ && cp node_modules/swagger-ui-dist/favicon-32x32.png swagger/"
+  },
+  "dependencies": {
+    "swagger-ui-dist": "^5.28.1"
+  }
+}
