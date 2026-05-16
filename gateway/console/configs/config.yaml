@@ -1,12 +1,21 @@
-service:
+server:
   name: gateway-console
   host: 0.0.0.0
   port: 10900
   env: development
+  mode: debug
 
 consul:
   address: http://127.0.0.1:8500
   enabled: true
+
+cors:
+  enabled: true
+  allowed_origins:
+    - "*"
+
+xss:
+  enabled: false
 
 db:
   driver: mysql
