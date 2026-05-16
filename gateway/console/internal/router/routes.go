@@ -3,11 +3,12 @@ package router
 import (
 	"net/http"
 
-	"aevons-cloud/framework/web"
 	"aevons-cloud/gateway/console/handler"
 	"aevons-cloud/gateway/console/internal/apisixadmin"
 	"aevons-cloud/gateway/console/repository"
 	"aevons-cloud/gateway/console/service"
+
+	"github.com/calmlax/aevons-framework/web"
 )
 
 type Routes struct {

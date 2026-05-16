@@ -4,10 +4,10 @@ import (
 	"context"
 	"log"
 
-	"aevons-cloud/framework/core"
-	"aevons-cloud/framework/xjson"
 	"aevons-cloud/gateway/console/internal/router"
 
+	"github.com/calmlax/aevons-framework/core"
+	"github.com/calmlax/aevons-framework/xjson"
 	"github.com/gin-gonic/gin/binding"
 )
 

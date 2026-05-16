@@ -1,7 +1,7 @@
 module aevons-cloud/gateway/console
 
-go 1.22.0
+go 1.25.0
 
-require aevons-cloud/framework v0.0.0
+require github.com/calmlax/aevons-framework v0.0.0
 
-replace aevons-cloud/framework => ../../../framework
+replace github.com/calmlax/aevons-framework => ../../../aevons-framework
