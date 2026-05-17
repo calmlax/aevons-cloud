@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"aevons-grpc/log_grpc"
-	authHandler "auth-service/internal/hander"
+	authHandler "auth-service/internal/handler"
 	authRepo "auth-service/internal/repository"
 	authService "auth-service/internal/service"
 

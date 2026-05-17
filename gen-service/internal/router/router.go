@@ -5,7 +5,7 @@ import (
 
 	"aevons-grpc/log_grpc"
 
-	handler "gen-service/internal/hander"
+	handler "gen-service/internal/handler"
 	localmiddleware "gen-service/internal/middleware"
 	"gen-service/internal/repository"
 	"gen-service/internal/service"

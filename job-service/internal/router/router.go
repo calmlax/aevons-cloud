@@ -5,7 +5,7 @@ import (
 
 	"aevons-grpc/log_grpc"
 
-	handler "job-service/internal/hander"
+	handler "job-service/internal/handler"
 	"job-service/internal/repository"
 	"job-service/internal/service"
 
