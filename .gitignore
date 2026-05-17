@@ -16,3 +16,5 @@ gen-service/configs/config.production.yaml
 gateway-service
 
 gateway/console/ui/node_modules
+
+sys-service/logs

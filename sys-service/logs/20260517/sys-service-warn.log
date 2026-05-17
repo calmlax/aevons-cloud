@@ -1,3 +1,0 @@
-2026-05-17 22:07:53 [WARN] init oper log grpc client from consul failed: no healthy service instance found: log-service
-2026-05-17 22:08:49 [WARN] init oper log grpc client from consul failed: no healthy service instance found: log-service
-2026-05-17 22:09:24 [WARN] init oper log grpc client from consul failed: no healthy service instance found: log-service
