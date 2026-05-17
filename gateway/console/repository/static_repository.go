@@ -120,5 +120,15 @@ func (r *StaticRepository) SwaggerSources() []model.SwaggerSource {
 			Service:   "log-service",
 			TargetURL: "http://127.0.0.1:10703/api/swagger.json",
 		},
+		{
+			Name:      "gen-service",
+			Service:   "gen-service",
+			TargetURL: "http://127.0.0.1:10704/api/swagger.json",
+		},
+		{
+			Name:      "job-service",
+			Service:   "job-service",
+			TargetURL: "http://127.0.0.1:10705/api/swagger.json",
+		},
 	}
 }
