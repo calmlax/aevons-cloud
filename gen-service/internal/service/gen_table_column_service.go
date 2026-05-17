@@ -13,9 +13,9 @@ import (
 	apperr "github.com/calmlax/aevons-framework/errors"
 
 	"fmt"
-	"gen-service/dto"
-	"gen-service/model"
-	"gen-service/repository"
+	"gen-service/internal/dto"
+	"gen-service/internal/model"
+	"gen-service/internal/repository"
 
 	"github.com/calmlax/aevons-framework/utils"
 

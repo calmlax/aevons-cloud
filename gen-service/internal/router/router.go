@@ -5,10 +5,10 @@ import (
 
 	"aevons-grpc/log_grpc"
 
-	handler "gen-service/hander"
-	localmiddleware "gen-service/middleware"
-	"gen-service/repository"
-	"gen-service/service"
+	handler "gen-service/internal/hander"
+	localmiddleware "gen-service/internal/middleware"
+	"gen-service/internal/repository"
+	"gen-service/internal/service"
 
 	"github.com/calmlax/aevons-framework/auth"
 	"github.com/calmlax/aevons-framework/config"

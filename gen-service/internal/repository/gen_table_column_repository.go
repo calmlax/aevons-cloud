@@ -11,8 +11,8 @@ package repository
 
 import (
 	"errors"
-	"gen-service/dto"
-	"gen-service/model"
+	"gen-service/internal/dto"
+	"gen-service/internal/model"
 
 	apperr "github.com/calmlax/aevons-framework/errors"
 

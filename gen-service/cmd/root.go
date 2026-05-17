@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"gen-service/repository"
-	"gen-service/service"
+	"gen-service/internal/repository"
+	"gen-service/internal/service"
 	"os"
 
 	"github.com/calmlax/aevons-framework/config"

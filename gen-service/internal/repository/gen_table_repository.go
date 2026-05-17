@@ -11,7 +11,7 @@ package repository
 
 import (
 	"fmt"
-	"gen-service/model"
+	"gen-service/internal/model"
 	"regexp"
 	"strconv"
 	"strings"

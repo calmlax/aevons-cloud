@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"gen-service/dto"
-	"gen-service/model"
-	"gen-service/service"
+	"gen-service/internal/dto"
+	"gen-service/internal/model"
+	"gen-service/internal/service"
 
 	"github.com/calmlax/aevons-framework/core/base"
 	apperr "github.com/calmlax/aevons-framework/errors"

@@ -15,7 +15,7 @@ import (
 	"context"
 	"fmt"
 	"gen-service/cmd"
-	"gen-service/router"
+	"gen-service/internal/router"
 	"net"
 	"net/http"
 	"os"
