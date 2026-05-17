@@ -2,9 +2,9 @@ package middleware
 
 import (
 	"context"
-	"log-service/model"
-	"log-service/repository"
-	"log-service/service"
+	"log-service/internal/model"
+	"log-service/internal/repository"
+	"log-service/internal/service"
 
 	"gorm.io/gorm"
 )

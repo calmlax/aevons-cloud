@@ -10,9 +10,9 @@
 package handler
 
 import (
-	"log-service/dto"
-	"log-service/model"
-	"log-service/service"
+	"log-service/internal/dto"
+	"log-service/internal/model"
+	"log-service/internal/service"
 
 	apperr "github.com/calmlax/aevons-framework/errors"
 
@@ -25,13 +25,13 @@ import (
 
 type OperLogHandler struct {
 	crud *base.BaseHandler[model.OperLog, *dto.OperLogQuery, dto.CreateOperLogDTO, dto.UpdateOperLogDTO]
-	svc service.OperLogService
+	svc  service.OperLogService
 }
 
 func NewOperLogHandler(svc service.OperLogService) *OperLogHandler {
 	return &OperLogHandler{
 		crud: base.NewBaseHandler[model.OperLog, *dto.OperLogQuery, dto.CreateOperLogDTO, dto.UpdateOperLogDTO](svc),
-		svc: svc,
+		svc:  svc,
 	}
 }
 

@@ -2,9 +2,9 @@ package grpcs
 
 import (
 	"context"
-	"log-service/model"
-	"log-service/repository"
-	"log-service/service"
+	"log-service/internal/model"
+	"log-service/internal/repository"
+	"log-service/internal/service"
 
 	"aevons-grpc/log_grpc"
 

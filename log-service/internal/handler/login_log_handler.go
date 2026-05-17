@@ -10,9 +10,9 @@
 package handler
 
 import (
-	"log-service/dto"
-	"log-service/model"
-	"log-service/service"
+	"log-service/internal/dto"
+	"log-service/internal/model"
+	"log-service/internal/service"
 
 	apperr "github.com/calmlax/aevons-framework/errors"
 
@@ -25,13 +25,13 @@ import (
 
 type LoginLogHandler struct {
 	crud *base.BaseHandler[model.LoginLog, *dto.LoginLogQuery, dto.CreateLoginLogDTO, dto.UpdateLoginLogDTO]
-	svc service.LoginLogService
+	svc  service.LoginLogService
 }
 
 func NewLoginLogHandler(svc service.LoginLogService) *LoginLogHandler {
 	return &LoginLogHandler{
 		crud: base.NewBaseHandler[model.LoginLog, *dto.LoginLogQuery, dto.CreateLoginLogDTO, dto.UpdateLoginLogDTO](svc),
-		svc: svc,
+		svc:  svc,
 	}
 }
 

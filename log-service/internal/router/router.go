@@ -2,10 +2,10 @@ package router
 
 import (
 	"fmt"
-	handler "log-service/hander"
-	openlog "log-service/middleware"
-	"log-service/repository"
-	"log-service/service"
+	handler "log-service/internal/handler"
+	openlog "log-service/internal/middleware"
+	"log-service/internal/repository"
+	"log-service/internal/service"
 
 	"github.com/calmlax/aevons-framework/auth"
 	"github.com/calmlax/aevons-framework/consts"

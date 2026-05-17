@@ -10,7 +10,7 @@
 package repository
 
 import (
-	"log-service/model"
+	"log-service/internal/model"
 
 	"github.com/calmlax/aevons-framework/core/base"
 

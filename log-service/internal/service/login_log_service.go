@@ -10,9 +10,9 @@
 package service
 
 import (
-	"log-service/dto"
-	"log-service/model"
-	"log-service/repository"
+	"log-service/internal/dto"
+	"log-service/internal/model"
+	"log-service/internal/repository"
 
 	"github.com/calmlax/aevons-framework/core/base"
 )

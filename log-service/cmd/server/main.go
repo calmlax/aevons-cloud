@@ -14,7 +14,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"log-service/router"
+	"log-service/internal/router"
 	"net"
 	"net/http"
 	"os"
@@ -23,7 +23,7 @@ import (
 	"time"
 
 	"aevons-grpc/log_grpc"
-	"log-service/grpcs"
+	"log-service/internal/grpcs"
 
 	"github.com/calmlax/aevons-framework/config"
 	"github.com/calmlax/aevons-framework/core"
