@@ -184,7 +184,9 @@ gateway/
 
 ```bash
 cd /home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/apisix
-docker compose up -d --force-recreate
+sudo docker compose down
+sudo docker compose up -d --force-recreate
+sudo docker compose restart apisix
 ```
 
 注意：
