@@ -27,8 +27,8 @@ routes:
       discovery_type: consul
       type: roundrobin
 
-  - id: system-route
-    uri: /api/v1/system/*
+  - id: sys-route
+    uri: /api/v1/sys/*
     methods:
       - GET
       - POST
@@ -38,7 +38,7 @@ routes:
       client-resource-auth: {}
       jwt-enterprise-auth: {}
     upstream:
-      service_name: system-service
+      service_name: sys-service
       discovery_type: consul
       type: roundrobin
 

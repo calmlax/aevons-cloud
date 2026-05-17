@@ -269,75 +269,75 @@ func (s *genTableService) GetGens(isFrontend bool) []dto.CodeDTO {
 	gens = append(gens, dto.CodeDTO{
 		Name:         "Model",
 		FileName:     "model.tpl",
-		SaveFileName: "internal/modules/%s/model/%s.go",
+		SaveFileName: "../%s-service/internal/model/%s.go",
 		FileType:     "go",
 	})
 	gens = append(gens, dto.CodeDTO{
 		Name:         "DTO",
 		FileName:     "dto.tpl",
-		SaveFileName: "internal/modules/%s/dto/%s_dto.go",
+		SaveFileName: "../%s-service/internal/dto/%s_dto.go",
 		FileType:     "go",
 	})
 	gens = append(gens, dto.CodeDTO{
 		Name:         "Service",
 		FileName:     "service.tpl",
-		SaveFileName: "internal/modules/%s/service/%s_service.go",
+		SaveFileName: "../%s-service/internal/service/%s_service.go",
 		FileType:     "go",
 	})
 	gens = append(gens, dto.CodeDTO{
 		Name:         "Repository",
 		FileName:     "repository.tpl",
-		SaveFileName: "internal/modules/%s/repository/%s_repository.go",
+		SaveFileName: "../%s-service/internal/repository/%s_repository.go",
 		FileType:     "go",
 	})
 	gens = append(gens, dto.CodeDTO{
 		Name:         "Handler",
 		FileName:     "handler.tpl",
-		SaveFileName: "internal/modules/%s/handler/%s_handler.go",
+		SaveFileName: "../%s-service/internal/handler/%s_handler.go",
 		FileType:     "go",
 	})
 	gens = append(gens, dto.CodeDTO{
 		Name:         "Router",
 		FileName:     "router.tpl",
-		SaveFileName: "internal/modules/%s/%s_router.go",
+		SaveFileName: "../%s-service/internal/router/%s_router.go",
 		FileType:     "go",
 	})
 	if !isFrontend {
 		gens = append(gens, dto.CodeDTO{
 			Name:         "SQL",
 			FileName:     "sql.tpl",
-			SaveFileName: "temp/%s/sql/%s.sql",
+			SaveFileName: "../%s-service/gen_code/sql/%s.sql",
 			FileType:     "sql",
 		})
 		gens = append(gens, dto.CodeDTO{
 			Name:         "API",
 			FileName:     "api.tpl",
-			SaveFileName: "temp/%s/api/%s.ts",
+			SaveFileName: "../%s-service/gen_code/api/%s.ts",
 			FileType:     "ts",
 		})
 		gens = append(gens, dto.CodeDTO{
 			Name:         "Vue",
 			FileName:     "vue.tpl",
-			SaveFileName: "temp/%s/vue/%s.vue",
+			SaveFileName: "../%s-service/gen_code/vue/%s.vue",
 			FileType:     "vue",
 		})
 	} else {
 		gens = append(gens, dto.CodeDTO{
 			Name:         "sql",
 			FileName:     "sql.tpl",
-			SaveFileName: "sql/%s.%s.menu.sql",
+			SaveFileName: "../%s-service/gen_code/sql/%s.%s.menu.sql",
 			FileType:     "sql",
 		})
 		gens = append(gens, dto.CodeDTO{
 			Name:         "api",
 			FileName:     "api.tpl",
-			SaveFileName: "web/src/api/%s/%s.ts",
+			SaveFileName: "../%s-service/gen_code/api/%s/%s.ts",
 			FileType:     "ts",
 		})
 		gens = append(gens, dto.CodeDTO{
 			Name:         "vue",
 			FileName:     "vue.tpl",
-			SaveFileName: "web/src/views/%s/%s/index.vue",
+			SaveFileName: "../%s-service/gen_code/vue/%s.vue",
 			FileType:     "vue",
 		})
 	}

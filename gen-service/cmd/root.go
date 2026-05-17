@@ -30,7 +30,7 @@ Aevons 代码生成工具
   gen <表名> <归属模块名称>
   gen <表名1,表名2...> <归属模块名称>
 示例:
-  gen sys_test system       # 生成 sys_test 表，归属 system 模块
+  gen sys_test sys       # 生成 sys_test 表，归属 sys 模块
 ==================================================
 `,
 	SilenceUsage:  false,
@@ -48,7 +48,7 @@ func runGenerate(cmd *cobra.Command, args []string) {
 		fmt.Println("  gen <表名1,表名2...> <归属模块名称>")
 		fmt.Println()
 		fmt.Println("示例:")
-		fmt.Println("  gen sys_test system")
+		fmt.Println("  gen sys_test sys")
 		fmt.Println("==================================================")
 		return
 	}

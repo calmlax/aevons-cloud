@@ -78,7 +78,7 @@ gateway/
 - APISIX 容器部署骨架
 - 三个服务的网关路由接入：
   - `auth-service`
-  - `system-service`
+  - `sys-service`
   - `log-service`
 - Gateway Console 启动与运行
 - Swagger/OpenAPI 聚合页面
@@ -104,14 +104,14 @@ gateway/
 - Consul
 - 已注册到 Consul 的业务服务：
   - `auth-service`
-  - `system-service`
+  - `sys-service`
   - `log-service`
 
 如果要完整体验 Swagger 聚合和 upstream 发现，建议先启动：
 
 1. Consul
 2. `auth-service`
-3. `system-service`
+3. `sys-service`
 4. `log-service`
 5. `gateway-console`
 6. APISIX
@@ -271,7 +271,7 @@ APISIX 默认地址：
 已接入的文档源：
 
 - `auth-service`
-- `system-service`
+- `sys-service`
 - `log-service`
 
 聚合方式：

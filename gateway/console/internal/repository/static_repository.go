@@ -21,13 +21,13 @@ func (r *StaticRepository) Routes() []model.Route {
 			Enabled:    true,
 		},
 		{
-			ID:         "system-route",
-			Name:       "system-service route",
-			URI:        "/api/v1/system/*",
+			ID:         "sys-route",
+			Name:       "sys-service route",
+			URI:        "/api/v1/sys/*",
 			Methods:    []string{"GET", "POST", "PUT", "DELETE"},
-			Predicates: []string{"Path=/api/v1/system/**"},
+			Predicates: []string{"Path=/api/v1/sys/**"},
 			Filters:    []string{"jwt-enterprise-auth", "client-resource-auth"},
-			UpstreamID: "system-service-upstream",
+			UpstreamID: "sys-service-upstream",
 			Enabled:    true,
 		},
 		{
@@ -53,8 +53,8 @@ func (r *StaticRepository) Upstreams() []model.Upstream {
 			HealthPolicy: "healthy_only",
 		},
 		{
-			ID:           "system-service-upstream",
-			ServiceName:  "system-service",
+			ID:           "sys-service-upstream",
+			ServiceName:  "sys-service",
 			Discovery:    "consul",
 			LoadBalance:  "round_robin",
 			HealthPolicy: "healthy_only",
@@ -111,8 +111,8 @@ func (r *StaticRepository) SwaggerSources() []model.SwaggerSource {
 			TargetURL: "http://127.0.0.1:10701/api/swagger.json",
 		},
 		{
-			Name:      "system-service",
-			Service:   "system-service",
+			Name:      "sys-service",
+			Service:   "sys-service",
 			TargetURL: "http://127.0.0.1:10702/api/swagger.json",
 		},
 		{

@@ -1,0 +1,3994 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Aevons 系统服务接口文档，提供用户、角色、部门、岗位、菜单、字典、语言、配置、通知公告和终端应用等系统管理能力",
+        "title": "Aevons System Service API",
+        "contact": {},
+        "version": "1.0.0"
+    },
+    "host": "localhost:8021",
+    "basePath": "/api/v1/sys",
+    "paths": {
+        "/conf": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "参数配置"
+                ],
+                "summary": "新增参数配置",
+                "parameters": [
+                    {
+                        "description": "新增参数配置",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateConfDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/conf/key/{key}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "参数配置"
+                ],
+                "summary": "按配置键获取参数配置",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "配置键",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/conf/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "参数配置"
+                ],
+                "summary": "查询参数配置列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/conf/page": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "参数配置"
+                ],
+                "summary": "分页查询参数配置",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/conf/refresh-cache": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "参数配置"
+                ],
+                "summary": "刷新参数配置缓存",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/conf/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "参数配置"
+                ],
+                "summary": "获取参数配置详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "配置ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "参数配置"
+                ],
+                "summary": "修改参数配置",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "配置ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "修改参数配置",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateConfDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "参数配置"
+                ],
+                "summary": "删除参数配置",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "配置ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/dept": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "部门管理"
+                ],
+                "summary": "新增部门",
+                "parameters": [
+                    {
+                        "description": "新增部门",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateDeptDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/dept/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "部门管理"
+                ],
+                "summary": "查询部门树",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/dept/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "部门管理"
+                ],
+                "summary": "获取部门详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "部门ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "部门管理"
+                ],
+                "summary": "修改部门",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "部门ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "修改部门",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateDeptDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "部门管理"
+                ],
+                "summary": "删除部门",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "部门ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/dict": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "字典管理"
+                ],
+                "summary": "新增字典类型",
+                "parameters": [
+                    {
+                        "description": "新增字典类型",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateDictDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/dict/data": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "字典数据"
+                ],
+                "summary": "新增字典数据",
+                "parameters": [
+                    {
+                        "description": "新增字典数据",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateDictDataDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/dict/data/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "字典数据"
+                ],
+                "summary": "按字典类型查询字典数据",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/dict/data/sort": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "字典数据"
+                ],
+                "summary": "批量更新字典数据排序",
+                "parameters": [
+                    {
+                        "description": "排序项",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.SortItemDTO"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/dict/data/{ids}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "字典数据"
+                ],
+                "summary": "批量删除字典数据",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "逗号分隔的字典数据ID",
+                        "name": "ids",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/dict/data/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "字典数据"
+                ],
+                "summary": "获取字典数据详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "字典数据ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "字典数据"
+                ],
+                "summary": "修改字典数据",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "字典数据ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "修改字典数据",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateDictDataDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/dict/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "字典管理"
+                ],
+                "summary": "查询可用字典类型列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/dict/page": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "字典管理"
+                ],
+                "summary": "分页查询字典类型",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/dict/refresh-cache": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "字典数据"
+                ],
+                "summary": "刷新字典缓存",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/dict/type/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "字典数据"
+                ],
+                "summary": "获取字典缓存",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "字典类型",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/dict/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "字典管理"
+                ],
+                "summary": "获取字典类型详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "字典类型ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "字典管理"
+                ],
+                "summary": "修改字典类型",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "字典类型ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "修改字典类型",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateDictDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "字典管理"
+                ],
+                "summary": "删除字典类型",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "字典类型ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/lang": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言管理"
+                ],
+                "summary": "查询可用语言列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言管理"
+                ],
+                "summary": "新增语言",
+                "parameters": [
+                    {
+                        "description": "新增语言",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateLangDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/lang/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言管理"
+                ],
+                "summary": "查询语言列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/lang/page": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言管理"
+                ],
+                "summary": "分页查询语言",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/lang/resource": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言资源"
+                ],
+                "summary": "新增语言资源",
+                "parameters": [
+                    {
+                        "description": "新增语言资源",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateLangResourceDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/lang/resource/keys": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言资源"
+                ],
+                "summary": "获取命名空间下的资源键",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/lang/resource/keys/page": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言资源"
+                ],
+                "summary": "分页查询资源键",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/lang/resource/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言资源"
+                ],
+                "summary": "查询语言资源列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/lang/resource/page": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言资源"
+                ],
+                "summary": "分页查询语言资源",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/lang/resource/save-translations": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言资源"
+                ],
+                "summary": "批量保存翻译",
+                "parameters": [
+                    {
+                        "description": "翻译内容",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.SaveTranslationsDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/lang/resource/translations": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言资源"
+                ],
+                "summary": "获取翻译内容",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/lang/resource/{ids}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言资源"
+                ],
+                "summary": "批量删除语言资源",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "逗号分隔的语言资源ID",
+                        "name": "ids",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/lang/resource/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言资源"
+                ],
+                "summary": "获取语言资源详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "语言资源ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言资源"
+                ],
+                "summary": "修改语言资源",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "语言资源ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "修改语言资源",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateLangResourceDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/lang/{ids}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言管理"
+                ],
+                "summary": "批量删除语言",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "逗号分隔的语言ID",
+                        "name": "ids",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/lang/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言管理"
+                ],
+                "summary": "获取语言详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "语言ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "语言管理"
+                ],
+                "summary": "修改语言",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "语言ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "修改语言",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateLangDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/menu": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "菜单管理"
+                ],
+                "summary": "新增菜单",
+                "parameters": [
+                    {
+                        "description": "新增菜单",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateMenuDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "菜单管理"
+                ],
+                "summary": "按语言查询菜单列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/{ids}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "菜单管理"
+                ],
+                "summary": "批量删除菜单",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "逗号分隔的菜单ID",
+                        "name": "ids",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "菜单管理"
+                ],
+                "summary": "获取菜单详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "菜单ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "菜单管理"
+                ],
+                "summary": "修改菜单",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "菜单ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "修改菜单",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateMenuDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/notice": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通知公告"
+                ],
+                "summary": "新增通知公告",
+                "parameters": [
+                    {
+                        "description": "新增通知公告",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateNoticeDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/notice/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通知公告"
+                ],
+                "summary": "查询通知公告列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/notice/page": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通知公告"
+                ],
+                "summary": "分页查询通知公告",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/notice/{ids}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通知公告"
+                ],
+                "summary": "批量删除通知公告",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "逗号分隔的通知公告ID",
+                        "name": "ids",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/notice/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通知公告"
+                ],
+                "summary": "获取通知公告详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "通知公告ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通知公告"
+                ],
+                "summary": "修改通知公告",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "通知公告ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "修改通知公告",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateNoticeDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/oauth/client": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "终端应用"
+                ],
+                "summary": "新增终端应用",
+                "parameters": [
+                    {
+                        "description": "新增终端应用",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateOauthClientDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/oauth/client/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "终端应用"
+                ],
+                "summary": "查询终端应用列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/oauth/client/page": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "终端应用"
+                ],
+                "summary": "分页查询终端应用",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/oauth/client/{ids}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "终端应用"
+                ],
+                "summary": "批量删除终端应用",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "逗号分隔的终端应用ID",
+                        "name": "ids",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/oauth/client/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "终端应用"
+                ],
+                "summary": "获取终端应用详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "终端应用ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "终端应用"
+                ],
+                "summary": "修改终端应用",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "终端应用ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "修改终端应用",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateOauthClientDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/post": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "岗位管理"
+                ],
+                "summary": "新增岗位",
+                "parameters": [
+                    {
+                        "description": "新增岗位",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreatePostDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/post/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "岗位管理"
+                ],
+                "summary": "查询岗位列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/post/page": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "岗位管理"
+                ],
+                "summary": "分页查询岗位",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/post/{ids}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "岗位管理"
+                ],
+                "summary": "批量删除岗位",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "逗号分隔的岗位ID",
+                        "name": "ids",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/post/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "岗位管理"
+                ],
+                "summary": "获取岗位详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "岗位ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "岗位管理"
+                ],
+                "summary": "修改岗位",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "岗位ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "修改岗位",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdatePostDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/role": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色管理"
+                ],
+                "summary": "新增角色",
+                "parameters": [
+                    {
+                        "description": "新增角色",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateRoleDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/role/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色管理"
+                ],
+                "summary": "查询角色列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/role/page": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色管理"
+                ],
+                "summary": "分页查询角色",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/role/{ids}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色管理"
+                ],
+                "summary": "批量删除角色",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "逗号分隔的角色ID",
+                        "name": "ids",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/role/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色管理"
+                ],
+                "summary": "获取角色详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "角色ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色管理"
+                ],
+                "summary": "修改角色",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "角色ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "修改角色",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateRoleDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/role/{id}/menu": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色管理"
+                ],
+                "summary": "获取角色菜单ID列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "角色ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "新增用户",
+                "parameters": [
+                    {
+                        "description": "新增用户",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateUserDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "查询用户列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/page": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "分页查询用户",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{ids}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "批量删除用户",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "逗号分隔的用户ID",
+                        "name": "ids",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "获取用户详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "修改用户",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "修改用户",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateUserDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{id}/relations": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "获取用户关联信息",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{id}/reset-password": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "重置用户密码",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "重置密码",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ResetPasswordDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{id}/status": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "更新用户状态",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "状态信息",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.CreateConfDTO": {
+            "type": "object",
+            "required": [
+                "confKey",
+                "confValue",
+                "name"
+            ],
+            "properties": {
+                "confKey": {
+                    "description": "配置KEY",
+                    "type": "string",
+                    "maxLength": 64
+                },
+                "confValue": {
+                    "description": "配置值",
+                    "type": "string"
+                },
+                "isSecret": {
+                    "description": "是否加密/脱敏（0否 1是）",
+                    "type": "integer"
+                },
+                "isSys": {
+                    "description": "是否系统内置（0否 1是）",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "scope": {
+                    "description": "范围（0公开配置，1登录配置，2后台服务配置）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.CreateDeptDTO": {
+            "type": "object",
+            "required": [
+                "deptName",
+                "deptType",
+                "parentId",
+                "sort",
+                "status"
+            ],
+            "properties": {
+                "deptName": {
+                    "description": "部门名称",
+                    "type": "string",
+                    "maxLength": 30
+                },
+                "deptType": {
+                    "description": "类型（1机构，2部门）",
+                    "type": "integer"
+                },
+                "parentId": {
+                    "description": "父级编号",
+                    "type": "string",
+                    "example": "0"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "sort": {
+                    "description": "顺序",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态（0正常 1停用）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.CreateDictDTO": {
+            "type": "object",
+            "properties": {
+                "dictName": {
+                    "description": "字典名称",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "dictType": {
+                    "description": "字典类型",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "isSys": {
+                    "description": "系统内置（0否 1是）",
+                    "type": "integer"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "status": {
+                    "description": "状态（0正常 1停用）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.CreateDictDataDTO": {
+            "type": "object",
+            "required": [
+                "dictType",
+                "dictValue",
+                "sort",
+                "translations"
+            ],
+            "properties": {
+                "dictType": {
+                    "description": "字典类型",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "dictValue": {
+                    "description": "字典键值",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "sort": {
+                    "description": "顺序",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态（0正常 1停用）",
+                    "type": "integer"
+                },
+                "tagClass": {
+                    "description": "样式类名",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "tagType": {
+                    "description": "标签风格",
+                    "type": "string",
+                    "maxLength": 10
+                },
+                "translations": {
+                    "description": "语言字典信息",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/dto.DictDataTlDTO"
+                    }
+                }
+            }
+        },
+        "dto.CreateLangDTO": {
+            "type": "object",
+            "required": [
+                "isDefault",
+                "langCode",
+                "langName",
+                "sort",
+                "status"
+            ],
+            "properties": {
+                "isDefault": {
+                    "description": "是否默认语言（0否，1是）",
+                    "type": "integer"
+                },
+                "langCode": {
+                    "description": "语言编码（如zh-CN、en-US）",
+                    "type": "string",
+                    "maxLength": 10
+                },
+                "langName": {
+                    "description": "语言名称（如简体中文、English）",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "sort": {
+                    "description": "排序值（升序）",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态（0正常,1停用）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.CreateLangResourceDTO": {
+            "type": "object",
+            "required": [
+                "content",
+                "langCode",
+                "namespace",
+                "resourceKey",
+                "status"
+            ],
+            "properties": {
+                "content": {
+                    "description": "内容",
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "langCode": {
+                    "description": "语言编码（如zh）",
+                    "type": "string",
+                    "maxLength": 10
+                },
+                "namespace": {
+                    "description": "命名空间（default）",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "resourceKey": {
+                    "description": "资源标识",
+                    "type": "string",
+                    "maxLength": 128
+                },
+                "status": {
+                    "description": "状态（0正常,1停用）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.CreateMenuDTO": {
+            "type": "object",
+            "required": [
+                "isFrame",
+                "parentId",
+                "sort",
+                "status",
+                "translations",
+                "type",
+                "visible"
+            ],
+            "properties": {
+                "activeId": {
+                    "description": "激活ID",
+                    "type": "string",
+                    "example": "0"
+                },
+                "component": {
+                    "description": "组件路径",
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "icon": {
+                    "description": "图标",
+                    "type": "string",
+                    "maxLength": 64
+                },
+                "isFrame": {
+                    "description": "是否为外链（0否 1是）",
+                    "type": "integer"
+                },
+                "parentId": {
+                    "description": "父级菜单Id",
+                    "type": "string",
+                    "example": "0"
+                },
+                "path": {
+                    "description": "路由地址",
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "permission": {
+                    "description": "权限标识",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "query": {
+                    "description": "路由参数",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "sort": {
+                    "description": "顺序",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态（0正常 1停用）",
+                    "type": "integer"
+                },
+                "translations": {
+                    "description": "语言信息",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "type": {
+                    "description": "类型（1目录 2菜单 3按钮）",
+                    "type": "integer"
+                },
+                "visible": {
+                    "description": "是否可见（0隐藏 1显示）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.CreateNoticeDTO": {
+            "type": "object",
+            "required": [
+                "content",
+                "status",
+                "title",
+                "type"
+            ],
+            "properties": {
+                "content": {
+                    "description": "公告内容",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "status": {
+                    "description": "状态（0正常 1关闭）",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "公告标题",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "type": {
+                    "description": "公告类型（1通知 2公告）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.CreateOauthClientDTO": {
+            "type": "object",
+            "required": [
+                "clientId"
+            ],
+            "properties": {
+                "accessTokenValidity": {
+                    "description": "访问令牌有效期（秒）",
+                    "type": "integer"
+                },
+                "authorizedGrantTypes": {
+                    "description": "授权类型",
+                    "type": "string",
+                    "maxLength": 256
+                },
+                "autoapprove": {
+                    "description": "自动授权（0否，1是）",
+                    "type": "integer"
+                },
+                "clientId": {
+                    "description": "客户端ID",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "clientName": {
+                    "description": "客户端名称",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "clientSecret": {
+                    "description": "客户端秘钥",
+                    "type": "string",
+                    "maxLength": 256
+                },
+                "logoUri": {
+                    "description": "客户端LOGO",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "refreshTokenValidity": {
+                    "description": "刷新令牌有效期（秒）",
+                    "type": "integer"
+                },
+                "scope": {
+                    "description": "授权范围",
+                    "type": "string",
+                    "maxLength": 256
+                },
+                "webServerRedirectUri": {
+                    "description": "回调地址",
+                    "type": "string",
+                    "maxLength": 256
+                }
+            }
+        },
+        "dto.CreatePostDTO": {
+            "type": "object",
+            "required": [
+                "postKey",
+                "postName",
+                "sort",
+                "status"
+            ],
+            "properties": {
+                "postKey": {
+                    "description": "岗位标识",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "postName": {
+                    "description": "岗位名称",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "sort": {
+                    "description": "顺序",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态（0正常 1停用）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.CreateRoleDTO": {
+            "type": "object",
+            "required": [
+                "roleName",
+                "sort"
+            ],
+            "properties": {
+                "dataScope": {
+                    "description": "数据范围",
+                    "type": "integer"
+                },
+                "menuIds": {
+                    "description": "菜单ID列表",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "roleKey": {
+                    "description": "角色权限字符串",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "roleName": {
+                    "description": "角色名称",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "sort": {
+                    "description": "显示顺序",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态（0正常 1停用）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.CreateUserDTO": {
+            "type": "object",
+            "required": [
+                "nickname",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "autograph": {
+                    "description": "电子签名",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "avatar": {
+                    "description": "头像",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "deptPosts": {
+                    "description": "部门岗位列表",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.UserDeptPostDTO"
+                    }
+                },
+                "email": {
+                    "description": "邮箱",
+                    "type": "string",
+                    "maxLength": 64
+                },
+                "mobile": {
+                    "description": "手机号",
+                    "type": "string",
+                    "maxLength": 11
+                },
+                "nickname": {
+                    "description": "呢称",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "password": {
+                    "description": "密码",
+                    "type": "string",
+                    "maxLength": 128
+                },
+                "roleIds": {
+                    "description": "角色ID列表",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "sex": {
+                    "description": "性别（0未知 1男 2女）",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态（0正常 1停用）",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "用户类型",
+                    "type": "integer"
+                },
+                "username": {
+                    "description": "用户名",
+                    "type": "string",
+                    "maxLength": 32
+                }
+            }
+        },
+        "dto.DictDataTlDTO": {
+            "type": "object",
+            "required": [
+                "label"
+            ],
+            "properties": {
+                "label": {
+                    "description": "标签翻译",
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "tip": {
+                    "description": "提示翻译",
+                    "type": "string",
+                    "maxLength": 200
+                }
+            }
+        },
+        "dto.ResetPasswordDTO": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "maxLength": 128
+                }
+            }
+        },
+        "dto.SaveTranslationsDTO": {
+            "type": "object",
+            "required": [
+                "items",
+                "namespace",
+                "resourceKey"
+            ],
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.TranslationItem"
+                    }
+                },
+                "namespace": {
+                    "type": "string"
+                },
+                "resourceKey": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.SortItemDTO": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "sort": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.TranslationItem": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "langCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UpdateConfDTO": {
+            "type": "object",
+            "required": [
+                "confKey",
+                "confValue",
+                "id",
+                "name"
+            ],
+            "properties": {
+                "confKey": {
+                    "description": "配置KEY",
+                    "type": "string",
+                    "maxLength": 64
+                },
+                "confValue": {
+                    "description": "配置值",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "编号",
+                    "type": "integer"
+                },
+                "isSecret": {
+                    "description": "是否加密/脱敏（0否 1是）",
+                    "type": "integer"
+                },
+                "isSys": {
+                    "description": "是否系统内置（0否 1是）",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "scope": {
+                    "description": "范围（0公开配置，1登录配置，2后台服务配置）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UpdateDeptDTO": {
+            "type": "object",
+            "required": [
+                "deptName",
+                "deptType",
+                "id",
+                "parentId",
+                "sort",
+                "status"
+            ],
+            "properties": {
+                "deptName": {
+                    "description": "部门名称",
+                    "type": "string",
+                    "maxLength": 30
+                },
+                "deptType": {
+                    "description": "类型（1机构，2部门）",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "部门编号",
+                    "type": "string",
+                    "example": "0"
+                },
+                "parentId": {
+                    "description": "父级编号",
+                    "type": "string",
+                    "example": "0"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "sort": {
+                    "description": "顺序",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态（0正常 1停用）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UpdateDictDTO": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "dictName": {
+                    "description": "字典名称",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "dictType": {
+                    "description": "字典类型",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "id": {
+                    "description": "字典主键",
+                    "type": "string",
+                    "example": "0"
+                },
+                "isSys": {
+                    "description": "系统内置（0否 1是）",
+                    "type": "integer"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "status": {
+                    "description": "状态（0正常 1停用）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UpdateDictDataDTO": {
+            "type": "object",
+            "required": [
+                "dictType",
+                "dictValue",
+                "id",
+                "sort",
+                "translations"
+            ],
+            "properties": {
+                "dictType": {
+                    "description": "字典类型",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "dictValue": {
+                    "description": "字典键值",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "id": {
+                    "description": "字典编号",
+                    "type": "string",
+                    "example": "0"
+                },
+                "sort": {
+                    "description": "顺序",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态（0正常 1停用）",
+                    "type": "integer"
+                },
+                "tagClass": {
+                    "description": "样式类名",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "tagType": {
+                    "description": "标签风格",
+                    "type": "string",
+                    "maxLength": 10
+                },
+                "translations": {
+                    "description": "语言字典信息",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/dto.DictDataTlDTO"
+                    }
+                }
+            }
+        },
+        "dto.UpdateLangDTO": {
+            "type": "object",
+            "required": [
+                "id",
+                "isDefault",
+                "langCode",
+                "langName",
+                "sort",
+                "status"
+            ],
+            "properties": {
+                "id": {
+                    "description": "编号",
+                    "type": "string",
+                    "example": "0"
+                },
+                "isDefault": {
+                    "description": "是否默认语言（0否，1是）",
+                    "type": "integer"
+                },
+                "langCode": {
+                    "description": "语言编码（如zh-CN、en-US）",
+                    "type": "string",
+                    "maxLength": 10
+                },
+                "langName": {
+                    "description": "语言名称（如简体中文、English）",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "sort": {
+                    "description": "排序值（升序）",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态（0正常,1停用）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UpdateLangResourceDTO": {
+            "type": "object",
+            "required": [
+                "content",
+                "id",
+                "langCode",
+                "namespace",
+                "resourceKey",
+                "status"
+            ],
+            "properties": {
+                "content": {
+                    "description": "内容",
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "id": {
+                    "description": "主键ID",
+                    "type": "string",
+                    "example": "0"
+                },
+                "langCode": {
+                    "description": "语言编码（如zh）",
+                    "type": "string",
+                    "maxLength": 10
+                },
+                "namespace": {
+                    "description": "命名空间（default）",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "resourceKey": {
+                    "description": "资源标识",
+                    "type": "string",
+                    "maxLength": 128
+                },
+                "status": {
+                    "description": "状态（0正常,1停用）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UpdateMenuDTO": {
+            "type": "object",
+            "required": [
+                "id",
+                "isFrame",
+                "parentId",
+                "sort",
+                "status",
+                "translations",
+                "type",
+                "visible"
+            ],
+            "properties": {
+                "activeId": {
+                    "description": "激活ID",
+                    "type": "string",
+                    "example": "0"
+                },
+                "component": {
+                    "description": "组件路径",
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "icon": {
+                    "description": "图标",
+                    "type": "string",
+                    "maxLength": 64
+                },
+                "id": {
+                    "description": "菜单ID",
+                    "type": "string",
+                    "example": "0"
+                },
+                "isFrame": {
+                    "description": "是否为外链（0否 1是）",
+                    "type": "integer"
+                },
+                "parentId": {
+                    "description": "父级菜单Id",
+                    "type": "string",
+                    "example": "0"
+                },
+                "path": {
+                    "description": "路由地址",
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "permission": {
+                    "description": "权限标识",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "query": {
+                    "description": "路由参数",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "sort": {
+                    "description": "顺序",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态（0正常 1停用）",
+                    "type": "integer"
+                },
+                "translations": {
+                    "description": "语言信息",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "type": {
+                    "description": "类型（1目录 2菜单 3按钮）",
+                    "type": "integer"
+                },
+                "visible": {
+                    "description": "是否可见（0隐藏 1显示）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UpdateNoticeDTO": {
+            "type": "object",
+            "required": [
+                "content",
+                "id",
+                "status",
+                "title",
+                "type"
+            ],
+            "properties": {
+                "content": {
+                    "description": "公告内容",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "id": {
+                    "description": "公告ID",
+                    "type": "integer"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "status": {
+                    "description": "状态（0正常 1关闭）",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "公告标题",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "type": {
+                    "description": "公告类型（1通知 2公告）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UpdateOauthClientDTO": {
+            "type": "object",
+            "required": [
+                "clientId",
+                "id"
+            ],
+            "properties": {
+                "accessTokenValidity": {
+                    "description": "访问令牌有效期（秒）",
+                    "type": "integer"
+                },
+                "authorizedGrantTypes": {
+                    "description": "授权类型",
+                    "type": "string",
+                    "maxLength": 256
+                },
+                "autoapprove": {
+                    "description": "自动授权（0否，1是）",
+                    "type": "integer"
+                },
+                "clientId": {
+                    "description": "客户端ID",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "clientName": {
+                    "description": "客户端名称",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "clientSecret": {
+                    "description": "客户端秘钥",
+                    "type": "string",
+                    "maxLength": 256
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "integer"
+                },
+                "logoUri": {
+                    "description": "客户端LOGO",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "refreshTokenValidity": {
+                    "description": "刷新令牌有效期（秒）",
+                    "type": "integer"
+                },
+                "scope": {
+                    "description": "授权范围",
+                    "type": "string",
+                    "maxLength": 256
+                },
+                "webServerRedirectUri": {
+                    "description": "回调地址",
+                    "type": "string",
+                    "maxLength": 256
+                }
+            }
+        },
+        "dto.UpdatePostDTO": {
+            "type": "object",
+            "required": [
+                "id",
+                "postKey",
+                "postName",
+                "sort",
+                "status"
+            ],
+            "properties": {
+                "id": {
+                    "description": "岗位编号",
+                    "type": "string",
+                    "example": "0"
+                },
+                "postKey": {
+                    "description": "岗位标识",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "postName": {
+                    "description": "岗位名称",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "sort": {
+                    "description": "顺序",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态（0正常 1停用）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UpdateRoleDTO": {
+            "type": "object",
+            "required": [
+                "id",
+                "roleName",
+                "sort"
+            ],
+            "properties": {
+                "dataScope": {
+                    "description": "数据范围",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "角色ID",
+                    "type": "string",
+                    "example": "0"
+                },
+                "menuIds": {
+                    "description": "菜单ID列表",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "roleKey": {
+                    "description": "角色权限字符串",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "roleName": {
+                    "description": "角色名称",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "sort": {
+                    "description": "显示顺序",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态（0正常 1停用）",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UpdateUserDTO": {
+            "type": "object",
+            "required": [
+                "id",
+                "nickname",
+                "username"
+            ],
+            "properties": {
+                "autograph": {
+                    "description": "电子签名",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "avatar": {
+                    "description": "头像",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "deptPosts": {
+                    "description": "部门岗位列表",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.UserDeptPostDTO"
+                    }
+                },
+                "email": {
+                    "description": "邮箱",
+                    "type": "string",
+                    "maxLength": 64
+                },
+                "id": {
+                    "description": "用户编号",
+                    "type": "string",
+                    "example": "0"
+                },
+                "mobile": {
+                    "description": "手机号",
+                    "type": "string",
+                    "maxLength": 11
+                },
+                "nickname": {
+                    "description": "呢称",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "password": {
+                    "description": "密码（为空则不修改）",
+                    "type": "string",
+                    "maxLength": 128
+                },
+                "roleIds": {
+                    "description": "角色ID列表",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "sex": {
+                    "description": "性别（0未知 1男 2女）",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态（0正常 1停用）",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "用户类型",
+                    "type": "integer"
+                },
+                "username": {
+                    "description": "用户名",
+                    "type": "string",
+                    "maxLength": 32
+                }
+            }
+        },
+        "dto.UserDeptPostDTO": {
+            "type": "object",
+            "properties": {
+                "deptId": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "postId": {
+                    "type": "string",
+                    "example": "0"
+                }
+            }
+        },
+        "response.Response": {
+            "type": "object",
+            "properties": {
+                "args": {
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Bearer 访问令牌，格式：Bearer {token}",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

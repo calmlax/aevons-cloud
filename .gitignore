@@ -9,7 +9,7 @@ frontend/dist.zip
 # 生产/预发布环境配置含敏感信息，不提交到版本库
 log-service/configs/config.production.yaml
 auth-service/configs/config.production.yaml
-system-service/configs/config.production.yaml
+sys-service/configs/config.production.yaml
 job-service/configs/config.production.yaml
 gen-service/configs/config.production.yaml
 

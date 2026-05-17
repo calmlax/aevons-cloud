@@ -1,8 +1,8 @@
 server:
-  name: log-service
+  name: sys-service
   host: 192.168.0.108
-  port: 10703
-  grpc_port: 10803
+  port: 10702
+  grpc_port: 10802
 
 consul:
   enabled: true
@@ -83,3 +83,15 @@ xss:
   enabled: true
   excludes:
     - 
+
+rocketmq:
+  enabled: false
+  name_servers:
+    - "127.0.0.1:9876"
+  producer:
+    group: "aevo_producer"
+    retry_times: 2
+    send_timeout: 3
+  consumer:
+    group: "aevo_consumer"
+    concurrency: 8
