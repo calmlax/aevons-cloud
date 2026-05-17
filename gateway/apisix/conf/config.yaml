@@ -6,8 +6,12 @@ deployment:
 discovery:
   consul:
     servers:
-      - "http://host.docker.internal:8500"
-    keepalive: true
+      - "http://127.0.0.1:8500"
+    timeout:
+      connect: 1000
+      read: 1000
+      wait: 60
+    keepalive: false
     fetch_interval: 5
     weight: 1
 
@@ -15,7 +19,7 @@ apisix:
   node_listen: 9080
   enable_admin: true
   enable_admin_cors: true
-  extra_lua_path: "/opt/aevons/apisix/?.lua;/opt/aevons/apisix/?/init.lua"
+  extra_lua_path: "/opt/aevons/?.lua;/opt/aevons/?/init.lua"
   admin_key:
     - name: admin
       key: replace-with-real-admin-key

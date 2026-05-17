@@ -168,6 +168,12 @@ gateway/
 - `9180`
   - APISIX Admin API
 
+当前本地 Linux 环境采用 `host network` 启动 APISIX：
+
+- APISIX 直接复用宿主机网络
+- Consul discovery 使用 `http://127.0.0.1:8500`
+- 业务服务和 Consul 都按宿主机地址暴露即可被 APISIX 访问
+
 启动命令：
 
 ```bash

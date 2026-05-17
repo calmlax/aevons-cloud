@@ -5,11 +5,7 @@ services:
     image: apache/apisix:3.9.1-debian
     container_name: aevons-apisix
     restart: unless-stopped
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    ports:
-      - "9080:9080"
-      - "9180:9180"
+    network_mode: host
     volumes:
       - ./conf/config.yaml:/usr/local/apisix/conf/config.yaml
       - ./conf/apisix.yaml:/usr/local/apisix/conf/apisix.yaml:ro
