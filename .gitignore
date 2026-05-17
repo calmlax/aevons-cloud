@@ -17,4 +17,9 @@ gateway-service
 
 gateway/console/ui/node_modules
 
+
+auth-service/logs
 sys-service/logs
+log-service/logs
+job-service/logs
+gen-service/logs
