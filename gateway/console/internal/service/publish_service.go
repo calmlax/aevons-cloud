@@ -4,8 +4,8 @@ import (
 	"context"
 	"strings"
 
-	"aevons-cloud/gateway/console/internal/apisixadmin"
-	"aevons-cloud/gateway/console/internal/model"
+	"gateway-console/internal/apisixadmin"
+	"gateway-console/internal/model"
 )
 
 type PublishService struct {

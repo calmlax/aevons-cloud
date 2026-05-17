@@ -1,4 +1,4 @@
-module aevons-cloud/gateway/console
+module gateway-console
 
 go 1.25.0
 

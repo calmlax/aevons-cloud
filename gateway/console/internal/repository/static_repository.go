@@ -1,6 +1,6 @@
 package repository
 
-import "aevons-cloud/gateway/console/internal/model"
+import "gateway-console/internal/model"
 
 type StaticRepository struct{}
 

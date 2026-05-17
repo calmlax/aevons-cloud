@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"aevons-cloud/gateway/console/handler"
-	"aevons-cloud/gateway/console/internal/apisixadmin"
-	consoleconfig "aevons-cloud/gateway/console/internal/config"
-	"aevons-cloud/gateway/console/repository"
-	"aevons-cloud/gateway/console/service"
+	"gateway-console/internal/apisixadmin"
+	consoleconfig "gateway-console/internal/config"
+	"gateway-console/internal/handler"
+	"gateway-console/internal/repository"
+	"gateway-console/internal/service"
 
 	"github.com/calmlax/aevons-framework/core"
 	frameworkconsul "github.com/calmlax/aevons-framework/core/consul"

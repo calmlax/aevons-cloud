@@ -1,8 +1,8 @@
 package service
 
 import (
-	"aevons-cloud/gateway/console/internal/model"
-	"aevons-cloud/gateway/console/repository"
+	"gateway-console/internal/model"
+	"gateway-console/internal/repository"
 
 	frameworkconsul "github.com/calmlax/aevons-framework/core/consul"
 )

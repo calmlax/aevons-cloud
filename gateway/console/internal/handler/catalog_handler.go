@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"time"
 
-	"aevons-cloud/gateway/console/dto"
-	consoleconfig "aevons-cloud/gateway/console/internal/config"
-	"aevons-cloud/gateway/console/internal/model"
-	"aevons-cloud/gateway/console/service"
+	consoleconfig "gateway-console/internal/config"
+	"gateway-console/internal/dto"
+	"gateway-console/internal/model"
+	"gateway-console/internal/service"
 
 	frameworkresp "github.com/calmlax/aevons-framework/response"
 	"github.com/gin-gonic/gin"

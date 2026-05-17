@@ -1,6 +1,6 @@
 package dto
 
-import "aevons-cloud/gateway/console/internal/model"
+import "gateway-console/internal/model"
 
 type OverviewResponse struct {
 	Message string         `json:"message"`

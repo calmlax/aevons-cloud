@@ -10,8 +10,8 @@ import (
 	"syscall"
 	"time"
 
-	consoleconfig "aevons-cloud/gateway/console/internal/config"
-	"aevons-cloud/gateway/console/internal/router"
+	consoleconfig "gateway-console/internal/config"
+	"gateway-console/internal/router"
 
 	"github.com/calmlax/aevons-framework/config"
 	"github.com/calmlax/aevons-framework/core"
