@@ -1,8 +1,8 @@
 // @title           Aevons System Service API
 // @version         1.0.0
 // @description     Aevons 系统服务接口文档，提供用户、角色、部门、岗位、菜单、字典、语言、配置、通知公告和终端应用等系统管理能力
-// @host            localhost:8021
-// @BasePath        /api/v1
+// @host            localhost:10702
+// @BasePath        /api/v1/system
 // @schemes         http https
 // @securityDefinitions.apikey  BearerAuth
 // @in                          header

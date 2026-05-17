@@ -14,7 +14,7 @@ APISIX + Aevons Plugin System + Gateway Console
 - `Aevons Plugins`：企业治理插件位点，承载鉴权、审计、租户、风控等能力
 - `Gateway Console`：控制面，负责查看、聚合、发布和后续治理扩展
 
-相关设计文档：
+设计参考文档：
 
 - [gateway-architecture.md](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/gateway-architecture.md:1)
 - [gateway-implementation.md](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/gateway-implementation.md:1)
@@ -50,10 +50,10 @@ gateway/
   - Aevons Lua 插件目录
 - `apisix/conf/config.yaml`
   - APISIX 基础配置
-  - 当前为 `traditional + yaml` 模式
+  - 当前为 `data_plane + yaml` 模式
 - `apisix/conf/apisix.yaml`
-  - 当前用于本地开发的静态路由示例
-  - 现阶段仍包含业务 route/upstream 兜底配置
+  - 当前用于 APISIX Standalone YAML 路由定义
+  - 路由 Upstream 通过 `service_name + discovery_type=consul` 走服务发现
 - `apisix/plugins/`
   - 企业插件实现位置
   - 当前已包含 `client-resource-auth`、`jwt-enterprise-auth`、`audit-log`、`tenant-isolation`、`ai-risk-control`
@@ -84,12 +84,15 @@ gateway/
 - Swagger/OpenAPI 聚合页面
 - 基于 Consul 的 upstream 发现与解析
 - APISIX 发布快照与发布接口
+- `jwt-enterprise-auth` 第一版认证插件
+- `client-resource-auth` 第一版资源权限插件
+- `audit-log` 第一版结构化审计日志插件
 
 当前仍处于第一阶段的内容：
 
-- APISIX Lua 企业插件多为占位实现
+- `tenant-isolation`、`ai-risk-control` 仍是占位实现
 - Console 仍以静态仓储数据为主，尚未演进为完整持久化管理面
-- APISIX 当前仍使用本地 YAML 兜底路由
+- APISIX 当前仍使用 Standalone YAML 路由，而非完全由 Console 下发
 - APISIX 与 Console 的“控制面完全接管数据面”模式还在继续收口
 
 **运行依赖**
@@ -122,19 +125,22 @@ gateway/
 
 当前关键配置：
 
-- `deployment.role: traditional`
-- `deployment.role_traditional.config_provider: yaml`
+- `deployment.role: data_plane`
+- `deployment.role_data_plane.config_provider: yaml`
 - 开启 `admin_key`
 - 注册 Aevons 自定义插件列表
+- 通过 `discovery.consul` 对接 `http://127.0.0.1:8500`
+- 通过 `extra_lua_path` 加载自定义 Lua 插件
 
 文件：
 [apisix/conf/apisix.yaml](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/apisix/conf/apisix.yaml:1)
 
 说明：
 
-- 当前文件仍保留本地开发阶段的静态 route/upstream
-- 长期目标是让业务 Route/Upstream 由 Gateway Console 通过 APISIX Admin API 下发
-- 其中 `nodes` 不应被视为权威服务配置，最终应以 `service_name + consul discovery` 为准
+- 当前文件定义业务 route
+- upstream 不再写静态 `nodes`
+- 当前统一采用 `service_name + discovery_type=consul`
+- 长期目标仍是让业务 Route/Upstream 由 Gateway Console 通过 APISIX Admin API 下发
 
 **2. Gateway Console**
 
@@ -178,7 +184,7 @@ gateway/
 
 ```bash
 cd /home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/apisix
-docker compose up -d
+docker compose up -d --force-recreate
 ```
 
 注意：
@@ -212,7 +218,7 @@ go run ./cmd/server
 ```bash
 # 1. 启动 APISIX
 cd /home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/apisix
-docker compose up -d
+docker compose up -d --force-recreate
 
 # 2. 启动 Gateway Console
 cd /home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/console
@@ -255,8 +261,8 @@ APISIX 默认地址：
 当前发布逻辑特性：
 
 - route / consumer / policy 来自 Console 当前目录模型
-- upstream 优先通过 Consul 发现健康实例
-- `static_nodes_fallback` 仅作为兜底，不作为权威服务定义
+- upstream 配置语义以 `service_name + discovery=consul` 为主
+- 运行时节点由 Consul 健康实例动态解析
 
 **Swagger 使用说明**
 

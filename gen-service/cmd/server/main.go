@@ -1,8 +1,8 @@
-// @title           Aevons Auth Service API
+// @title           Aevons Gen Service API
 // @version         1.0.0
-// @description     Aevons 认证服务接口文档，提供登录、令牌刷新、退出登录、邮箱验证码、注册、密码重置、SSO 授权码和通行密钥认证等能力
-// @host            localhost:10701
-// @BasePath        /api/v1/auth
+// @description     Aevons 代码生成服务接口文档，提供数据库表导入、字段设计、代码预览与代码下载等能力
+// @host            localhost:10704
+// @BasePath        /api/v1/gen
 // @schemes         http https
 // @securityDefinitions.apikey  BearerAuth
 // @in                          header
@@ -12,9 +12,10 @@
 package main
 
 import (
-	"auth-service/router"
 	"context"
 	"fmt"
+	"gen-service/cmd"
+	"gen-service/router"
 	"net"
 	"net/http"
 	"os"
@@ -76,6 +77,10 @@ func main() {
 	// App 仅作为装配层上下文使用，后续将显式拆出路由层需要的依赖。
 	app := core.NewApp(&cfg, redisClient, gdb)
 
+	if len(os.Args) > 1 {
+		cmd.Execute(cfg.Gen, db.DB)
+		return
+	}
 	// 构建 HTTP 路由与中间件链。
 	engine, err := router.Setup(app)
 	if err != nil {

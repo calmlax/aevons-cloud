@@ -1,0 +1,657 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Aevons 代码生成服务接口文档，提供数据库表导入、字段设计、代码预览与代码下载等能力",
+        "title": "Aevons Gen Service API",
+        "contact": {},
+        "version": "1.0.0"
+    },
+    "host": "localhost:10704",
+    "basePath": "/api/v1/gen",
+    "paths": {
+        "/table": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "代码生成"
+                ],
+                "summary": "新增代码生成表",
+                "parameters": [
+                    {
+                        "description": "新增代码生成表",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateGenTableDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/table/column/batch-update": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "代码生成字段"
+                ],
+                "summary": "批量更新代码生成字段",
+                "parameters": [
+                    {
+                        "description": "批量更新字段信息",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.UpdateGenTableColumnDTO"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/table/column/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "代码生成字段"
+                ],
+                "summary": "查询代码生成字段列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/table/db": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "代码生成"
+                ],
+                "summary": "查询可导入数据库表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/table/download": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "代码生成"
+                ],
+                "summary": "下载生成代码",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "逗号分隔的代码生成表ID",
+                        "name": "tableIds",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    }
+                }
+            }
+        },
+        "/table/import": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "代码生成"
+                ],
+                "summary": "导入数据库表",
+                "parameters": [
+                    {
+                        "description": "待导入的数据库表名列表",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/table/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "代码生成"
+                ],
+                "summary": "查询代码生成表列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/table/page": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "代码生成"
+                ],
+                "summary": "分页查询代码生成表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/table/preview": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "代码生成"
+                ],
+                "summary": "代码预览",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "代码生成表ID",
+                        "name": "tableId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/table/synch": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "代码生成"
+                ],
+                "summary": "同步数据库表结构",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "代码生成表ID",
+                        "name": "tableId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/table/{ids}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "代码生成"
+                ],
+                "summary": "批量删除代码生成表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "逗号分隔的代码生成表ID",
+                        "name": "ids",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/table/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "代码生成"
+                ],
+                "summary": "获取代码生成表详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "代码生成表ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "代码生成"
+                ],
+                "summary": "修改代码生成表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "代码生成表ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "修改代码生成表",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateGenTableDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.CreateGenTableDTO": {
+            "type": "object",
+            "required": [
+                "tableName"
+            ],
+            "properties": {
+                "author": {
+                    "description": "作者",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "className": {
+                    "description": "类名",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "menuId": {
+                    "description": "上级菜单编号",
+                    "type": "integer"
+                },
+                "moduleName": {
+                    "description": "模块名称",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "permission": {
+                    "description": "权限标识",
+                    "type": "string",
+                    "maxLength": 64
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "router": {
+                    "description": "路由",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "tableComment": {
+                    "description": "解释",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "tableName": {
+                    "description": "表名",
+                    "type": "string",
+                    "maxLength": 50
+                }
+            }
+        },
+        "dto.UpdateGenTableColumnDTO": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "columnComment": {
+                    "description": "DB字段注释",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "component": {
+                    "description": "UI组件",
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "condition": {
+                    "description": "查询条件",
+                    "type": "string",
+                    "maxLength": 10
+                },
+                "dataType": {
+                    "description": "数据类型",
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "defaultValue": {
+                    "description": "默认值",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "dictType": {
+                    "description": "字典类型",
+                    "type": "string",
+                    "maxLength": 64
+                },
+                "fieldName": {
+                    "description": "实体字段名",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "filterable": {
+                    "description": "列表筛选字段（0否，1是）",
+                    "type": "boolean"
+                },
+                "id": {
+                    "description": "主键ID 👈 改成 string 就好了",
+                    "type": "string",
+                    "example": "0"
+                },
+                "isEdit": {
+                    "description": "是否编辑字段",
+                    "type": "boolean"
+                },
+                "isInsert": {
+                    "description": "是否插入字段",
+                    "type": "boolean"
+                },
+                "isList": {
+                    "description": "是否列表字段（0否，1是）",
+                    "type": "boolean"
+                },
+                "isRequired": {
+                    "type": "boolean"
+                },
+                "json": {
+                    "description": "JSON",
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "sort": {
+                    "description": "排序",
+                    "type": "integer"
+                },
+                "sortable": {
+                    "description": "列表排序字段（0否，1是）",
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.UpdateGenTableDTO": {
+            "type": "object",
+            "required": [
+                "tableName"
+            ],
+            "properties": {
+                "author": {
+                    "description": "作者",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "className": {
+                    "description": "类名",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "id": {
+                    "description": "编号",
+                    "type": "string",
+                    "example": "0"
+                },
+                "menuId": {
+                    "description": "上级菜单编号",
+                    "type": "string",
+                    "example": "0"
+                },
+                "moduleName": {
+                    "description": "模块名称",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "permission": {
+                    "description": "权限标识",
+                    "type": "string",
+                    "maxLength": 64
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "router": {
+                    "description": "路由",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "tableComment": {
+                    "description": "解释",
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "tableName": {
+                    "description": "表名",
+                    "type": "string",
+                    "maxLength": 50
+                }
+            }
+        },
+        "response.Response": {
+            "type": "object",
+            "properties": {
+                "args": {
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Bearer 访问令牌，格式：Bearer {token}",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

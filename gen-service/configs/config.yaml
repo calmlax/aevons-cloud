@@ -1,8 +1,8 @@
 server:
-  name: log-service
+  name: gen-service
   host: 192.168.0.108
-  port: 10703
-  grpc_port: 10803
+  port: 10704
+  grpc_port: 10804
 
 consul:
   enabled: true
@@ -70,16 +70,16 @@ redis:
   # read_timeout_seconds: 3
   # write_timeout_seconds: 3
 
-auth:
-  access_token_ttl: 7200    # 单位：秒，2 小时
-  refresh_token_ttl: 604800 # 单位：秒，7 天
-  email_ttl: 300            # 单位：秒，5 分钟
-  excludes:
-    - /api/swagger.json
-    - /api/v1/system/ping
-    - /api/v1/system/lang
-
 xss:
   enabled: true
   excludes:
     - 
+
+gen:
+  api_prefix: /v1/
+  exclude_tables:
+    - qrtz_%
+    - act_%
+    - gen_%
+  clean_prefixs:
+    - sys_
