@@ -19,7 +19,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"system-service/router"
+	"system-service/internal/router"
 	"time"
 
 	"github.com/calmlax/aevons-framework/config"
