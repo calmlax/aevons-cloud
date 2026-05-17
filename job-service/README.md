@@ -1,5 +1,3 @@
-# System service
-
 ## OpenAPI
 
 生成 `api/swagger.json`：

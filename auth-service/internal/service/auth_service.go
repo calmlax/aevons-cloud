@@ -3,8 +3,8 @@ package service
 
 import (
 	"aevons-grpc/log_grpc"
-	"auth-service/dto"
-	authRepo "auth-service/repository"
+	"auth-service/internal/dto"
+	authRepo "auth-service/internal/repository"
 	"context"
 	"crypto/rand"
 	"errors"
@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"auth-service/model"
+	"auth-service/internal/model"
 
 	"github.com/calmlax/aevons-framework/auth"
 	"github.com/calmlax/aevons-framework/config"
@@ -79,11 +79,11 @@ type AuthService interface {
 }
 
 type authService struct {
-	store     auth.TokenStore
-	authRepo  authRepo.AuthRepository
-	cfg       config.AuthConfig
-	notifier  auth.SLONotifier
-	logStore  log_grpc.LoginLogStore
+	store    auth.TokenStore
+	authRepo authRepo.AuthRepository
+	cfg      config.AuthConfig
+	notifier auth.SLONotifier
+	logStore log_grpc.LoginLogStore
 }
 
 // NewAuthService 创建 AuthService 实例。
@@ -95,11 +95,11 @@ func NewAuthService(
 	logStore log_grpc.LoginLogStore,
 ) AuthService {
 	return &authService{
-		store:     store,
-		authRepo:  authRepo,
-		cfg:       cfg,
-		notifier:  notifier,
-		logStore:  logStore,
+		store:    store,
+		authRepo: authRepo,
+		cfg:      cfg,
+		notifier: notifier,
+		logStore: logStore,
 	}
 }
 

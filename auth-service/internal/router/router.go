@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"aevons-grpc/log_grpc"
-	authHandler "auth-service/hander"
-	authRepo "auth-service/repository"
-	authService "auth-service/service"
+	authHandler "auth-service/internal/hander"
+	authRepo "auth-service/internal/repository"
+	authService "auth-service/internal/service"
 
 	"github.com/calmlax/aevons-framework/auth"
 	"github.com/calmlax/aevons-framework/config"

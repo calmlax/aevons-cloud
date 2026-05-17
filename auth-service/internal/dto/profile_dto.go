@@ -1,6 +1,6 @@
 package dto
 
-import "auth-service/model"
+import "auth-service/internal/model"
 
 // UpdateProfileDTO 个人资料更新请求（仅允许修改自己的基本信息）
 type UpdateProfileDTO struct {

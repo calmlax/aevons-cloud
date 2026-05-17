@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"auth-service/dto"
-	"auth-service/model"
+	"auth-service/internal/dto"
+	"auth-service/internal/model"
 	"strings"
 	"time"
 

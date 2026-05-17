@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"auth-service/service"
+	"auth-service/internal/service"
 
 	pkgauth "github.com/calmlax/aevons-framework/auth"
 	"github.com/calmlax/aevons-framework/response"

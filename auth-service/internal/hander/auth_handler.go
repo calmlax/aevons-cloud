@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"auth-service/dto"
-	"auth-service/service"
+	"auth-service/internal/dto"
+	"auth-service/internal/service"
 
 	"github.com/calmlax/aevons-framework/auth"
 	"github.com/calmlax/aevons-framework/consts"

@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	credModel "auth-service/model"
-	authRepo "auth-service/repository"
+	credModel "auth-service/internal/model"
+	authRepo "auth-service/internal/repository"
 
 	pkgauth "github.com/calmlax/aevons-framework/auth"
 

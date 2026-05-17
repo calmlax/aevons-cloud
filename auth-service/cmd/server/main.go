@@ -12,7 +12,7 @@
 package main
 
 import (
-	"auth-service/router"
+	"auth-service/internal/router"
 	"context"
 	"fmt"
 	"net"
