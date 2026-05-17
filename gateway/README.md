@@ -14,11 +14,6 @@ APISIX + Aevons Plugin System + Gateway Console
 - `Aevons Plugins`：企业治理插件位点，承载鉴权、审计、租户、风控等能力
 - `Gateway Console`：控制面，负责查看、聚合、发布和后续治理扩展
 
-设计参考文档：
-
-- [gateway-architecture.md](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/gateway-architecture.md:1)
-- [gateway-implementation.md](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/gateway-implementation.md:1)
-
 **目录说明**
 
 ```text
@@ -121,7 +116,7 @@ gateway/
 **1. APISIX**
 
 文件：
-[apisix/conf/config.yaml](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/apisix/conf/config.yaml:1)
+[apisix/conf/config.yaml](gateway/apisix/conf/config.yaml:1)
 
 当前关键配置：
 
@@ -133,7 +128,7 @@ gateway/
 - 通过 `extra_lua_path` 加载自定义 Lua 插件
 
 文件：
-[apisix/conf/apisix.yaml](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/apisix/conf/apisix.yaml:1)
+[apisix/conf/apisix.yaml](gateway/apisix/conf/apisix.yaml:1)
 
 说明：
 
@@ -145,7 +140,7 @@ gateway/
 **2. Gateway Console**
 
 文件：
-[console/configs/config.yaml](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/console/configs/config.yaml:1)
+[console/configs/config.yaml](gateway/console/configs/config.yaml:1)
 
 关键配置项：
 
@@ -165,7 +160,7 @@ gateway/
 **1. APISIX 部署**
 
 文件：
-[apisix/docker-compose.yaml](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/apisix/docker-compose.yaml:1)
+[apisix/docker-compose.yaml](gateway/apisix/docker-compose.yaml:1)
 
 当前容器映射端口：
 
@@ -183,7 +178,7 @@ gateway/
 启动命令：
 
 ```bash
-cd /home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/apisix
+cd gateway/apisix
 sudo docker compose down
 sudo docker compose up -d --force-recreate
 sudo docker compose restart apisix
@@ -199,7 +194,7 @@ sudo docker compose restart apisix
 启动命令：
 
 ```bash
-cd /home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/console
+cd gateway/console
 go run ./cmd/server
 ```
 
@@ -213,17 +208,17 @@ go run ./cmd/server
 **启动说明**
 
 可参考脚本：
-[scripts/bootstrap.sh](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/scripts/bootstrap.sh:1)
+[scripts/bootstrap.sh](gateway/scripts/bootstrap.sh:1)
 
 推荐本地启动顺序：
 
 ```bash
 # 1. 启动 APISIX
-cd /home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/apisix
+cd gateway/apisix
 docker compose up -d --force-recreate
 
 # 2. 启动 Gateway Console
-cd /home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway/console
+cd gateway/console
 go run ./cmd/server
 ```
 
