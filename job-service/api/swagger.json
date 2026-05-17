@@ -1,0 +1,508 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Aevons 定时任务服务接口文档，提供任务配置、状态切换、手动触发以及任务执行日志查询等能力",
+        "title": "Aevons Job Service API",
+        "contact": {},
+        "version": "1.0.0"
+    },
+    "host": "localhost:10705",
+    "basePath": "/api/v1/job",
+    "paths": {
+        "/job": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "定时任务"
+                ],
+                "summary": "新增定时任务",
+                "parameters": [
+                    {
+                        "description": "新增定时任务",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateJobDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/job/log/page": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "任务日志"
+                ],
+                "summary": "分页查询任务执行日志",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/job/log/{ids}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "任务日志"
+                ],
+                "summary": "批量删除任务执行日志",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "逗号分隔的任务日志ID",
+                        "name": "ids",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/job/log/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "任务日志"
+                ],
+                "summary": "获取任务执行日志详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "任务日志ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/job/page": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "定时任务"
+                ],
+                "summary": "分页查询定时任务",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/job/{ids}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "定时任务"
+                ],
+                "summary": "批量删除定时任务",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "逗号分隔的定时任务ID",
+                        "name": "ids",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/job/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "定时任务"
+                ],
+                "summary": "获取定时任务详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "定时任务ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "定时任务"
+                ],
+                "summary": "修改定时任务",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "定时任务ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "修改定时任务",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateJobDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/job/{id}/status": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "定时任务"
+                ],
+                "summary": "修改任务状态",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "定时任务ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "任务状态",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/job/{id}/trigger": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "定时任务"
+                ],
+                "summary": "手动触发任务",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "定时任务ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.CreateJobDTO": {
+            "type": "object",
+            "required": [
+                "concurrent",
+                "cronExpr",
+                "jobKey",
+                "jobName",
+                "retryCount",
+                "status",
+                "timeout"
+            ],
+            "properties": {
+                "concurrent": {
+                    "description": "是否并发 0禁止 1允许",
+                    "type": "integer"
+                },
+                "cronExpr": {
+                    "description": "cron执行表达式",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "invokeTarget": {
+                    "description": "执行目标：服务.方法名",
+                    "type": "string",
+                    "maxLength": 128
+                },
+                "jobGroup": {
+                    "description": "任务分组",
+                    "type": "string",
+                    "maxLength": 64
+                },
+                "jobKey": {
+                    "description": "任务唯一标识(不可重复)",
+                    "type": "string",
+                    "maxLength": 64
+                },
+                "jobName": {
+                    "description": "任务名称",
+                    "type": "string",
+                    "maxLength": 64
+                },
+                "remark": {
+                    "description": "备注说明",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "retryCount": {
+                    "description": "失败重试次数",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态 0正常 1暂停",
+                    "type": "integer"
+                },
+                "timeout": {
+                    "description": "执行超时时间(秒)",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UpdateJobDTO": {
+            "type": "object",
+            "required": [
+                "concurrent",
+                "cronExpr",
+                "id",
+                "jobKey",
+                "jobName",
+                "retryCount",
+                "status",
+                "timeout"
+            ],
+            "properties": {
+                "concurrent": {
+                    "description": "是否并发 0禁止 1允许",
+                    "type": "integer"
+                },
+                "cronExpr": {
+                    "description": "cron执行表达式",
+                    "type": "string",
+                    "maxLength": 32
+                },
+                "id": {
+                    "description": "主键ID",
+                    "type": "string",
+                    "example": "0"
+                },
+                "invokeTarget": {
+                    "description": "执行目标：服务.方法名",
+                    "type": "string",
+                    "maxLength": 128
+                },
+                "jobGroup": {
+                    "description": "任务分组",
+                    "type": "string",
+                    "maxLength": 64
+                },
+                "jobKey": {
+                    "description": "任务唯一标识(不可重复)",
+                    "type": "string",
+                    "maxLength": 64
+                },
+                "jobName": {
+                    "description": "任务名称",
+                    "type": "string",
+                    "maxLength": 64
+                },
+                "remark": {
+                    "description": "备注说明",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "retryCount": {
+                    "description": "失败重试次数",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态 0正常 1暂停",
+                    "type": "integer"
+                },
+                "timeout": {
+                    "description": "执行超时时间(秒)",
+                    "type": "integer"
+                }
+            }
+        },
+        "response.Response": {
+            "type": "object",
+            "properties": {
+                "args": {
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Bearer 访问令牌，格式：Bearer {token}",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

@@ -1,0 +1,16 @@
+# 开发环境覆盖配置（APP_ENV=development）
+# 仅需填写与 config.yaml 不同的项
+
+server:
+  mode: debug
+
+log:
+  level: debug
+
+db:
+  driver: mysql
+  dsn: root:123456@tcp(127.0.0.1:3306)/aevo_db?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
+
+redis:
+  address: 127.0.0.1:6379
+  password: ""

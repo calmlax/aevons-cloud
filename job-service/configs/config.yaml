@@ -1,0 +1,76 @@
+server:
+  name: job-service
+  host: 192.168.0.108
+  port: 10705
+  grpc_port: 10805
+
+consul:
+  enabled: true
+  address: http://127.0.0.1:8500
+
+log:
+  level: info
+
+cors:
+  enabled: false
+  allowed_origins:
+    - "*"
+
+db:
+  driver: mysql
+  dsn: root:123456@tcp(127.0.0.1:3306)/aevo_db?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
+  max_open_conns: 20
+  max_idle_conns: 10
+  conn_max_lifetime_seconds: 3600
+  conn_max_idle_time_seconds: 1800
+
+redis:
+  # 支持模式：
+  # - standalone：单机模式
+  # - sentinel：哨兵模式
+  # - cluster：集群模式
+  mode: standalone
+  address: 127.0.0.1:6379
+  password: ""
+  db: 0
+  pool_size: 10
+  min_idle_conns: 2
+  max_retries: 3
+  dial_timeout_seconds: 5
+  read_timeout_seconds: 3
+  write_timeout_seconds: 3
+
+  # 哨兵模式示例：
+  # mode: sentinel
+  # master_name: mymaster
+  # addresses:
+  #   - 127.0.0.1:26379
+  #   - 127.0.0.1:26380
+  #   - 127.0.0.1:26381
+  # password: ""
+  # db: 0
+  # pool_size: 10
+  # min_idle_conns: 2
+  # max_retries: 3
+  # dial_timeout_seconds: 5
+  # read_timeout_seconds: 3
+  # write_timeout_seconds: 3
+
+  # 集群模式示例：
+  # mode: cluster
+  # addresses:
+  #   - 127.0.0.1:7000
+  #   - 127.0.0.1:7001
+  #   - 127.0.0.1:7002
+  # password: ""
+  # pool_size: 20
+  # min_idle_conns: 4
+  # max_retries: 3
+  # dial_timeout_seconds: 5
+  # read_timeout_seconds: 3
+  # write_timeout_seconds: 3
+
+xss:
+  enabled: true
+  excludes:
+    - 

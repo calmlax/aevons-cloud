@@ -1,0 +1,20 @@
+# 预发布/测试环境覆盖配置（APP_ENV=staging）
+
+server:
+  mode: release
+
+log:
+  level: info
+
+cors:
+  enabled: true
+  allowed_origins:
+    - "https://staging.your-domain.com"
+
+db:
+  driver: mysql
+  dsn: root:changeme@tcp(127.0.0.1:3306)/aevo_db_staging?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
+
+redis:
+  address: 127.0.0.1:6379
+  password: ""
