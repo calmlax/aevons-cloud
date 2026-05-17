@@ -8,7 +8,7 @@ import (
 
 	"aevons-grpc/log_grpc"
 
-	frameworkauth "github.com/calmlax/aevons-framework/auth"
+	authctx "github.com/calmlax/aevons-framework/auth/context"
 	"github.com/calmlax/aevons-framework/consts"
 	"github.com/calmlax/aevons-framework/utils"
 	"github.com/calmlax/aevons-framework/xlog"
@@ -41,7 +41,7 @@ func OperLog(writer log_grpc.OperLogWriter, module string, bizType consts.BizTyp
 		}
 
 		agent := utils.ParseClientAgent(req.UserAgent())
-		userID, username, _ := frameworkauth.GetCurrentIdentity(c.Request.Context())
+		userID, username, _ := authctx.GetCurrentIdentity(c.Request.Context())
 
 		ctx, cancel := context.WithTimeout(c.Request.Context(), 3*time.Second)
 		defer cancel()

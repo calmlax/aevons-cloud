@@ -15,7 +15,10 @@ import (
 
 	"auth-service/internal/model"
 
-	"github.com/calmlax/aevons-framework/auth"
+	authctx "github.com/calmlax/aevons-framework/auth/context"
+	authmodel "github.com/calmlax/aevons-framework/auth/model"
+	authnotifier "github.com/calmlax/aevons-framework/auth/notifier"
+	authstore "github.com/calmlax/aevons-framework/auth/store"
 	"github.com/calmlax/aevons-framework/config"
 	"github.com/calmlax/aevons-framework/consts"
 	"github.com/calmlax/aevons-framework/utils"
@@ -39,16 +42,16 @@ type AuthorizeInfo struct {
 
 // AuthService 定义认证业务逻辑接口。
 type AuthService interface {
-	AuthorizeLogin(ctx context.Context, req *auth.LoginRequest) (string, error)
-	Login(ctx context.Context, req *auth.LoginRequest) (*auth.TokenPair, error)
-	Refresh(ctx context.Context, refreshToken, clientId string) (*auth.TokenPair, error)
+	AuthorizeLogin(ctx context.Context, req *authmodel.LoginRequest) (string, error)
+	Login(ctx context.Context, req *authmodel.LoginRequest) (*authmodel.TokenPair, error)
+	Refresh(ctx context.Context, refreshToken, clientId string) (*authmodel.TokenPair, error)
 	Logout(ctx context.Context, accessToken string) error
 	// GlobalLogout 全局登出：清除该用户所有客户端会话并发送 SLO 通知。
 	GlobalLogout(ctx context.Context, userId int64) error
 	// UpdateProfile 修改当前登录用户的档案信息
 	UpdateProfile(ctx context.Context, userId int64, accessToken string, req *dto.UpdateProfileDTO) error
 	// UpdatePassword 修改当前登录用户密码
-	UpdatePassword(ctx context.Context, userId int64, req *auth.UpdatePasswordRequest) error
+	UpdatePassword(ctx context.Context, userId int64, req *authmodel.UpdatePasswordRequest) error
 
 	SendEmailCode(ctx context.Context, email, purpose string) error
 	Register(ctx context.Context, name, email, password, code string) (*model.User, error)
@@ -59,19 +62,19 @@ type AuthService interface {
 	// ApproveAuthorize 用户确认授权：校验 state，生成授权码，返回回调 URL。
 	ApproveAuthorize(ctx context.Context, userId int64, state string, scopes []string) (callbackURL string, err error)
 	// GetLoginUser 根据 access token 获取登录用户信息。
-	GetLoginUser(ctx context.Context, accessToken string) (*auth.LoginUser, error)
+	GetLoginUser(ctx context.Context, accessToken string) (*authmodel.LoginUser, error)
 	// ValidateUserPassword 校验用户名密码，返回 userId。
 	ValidateUserPassword(ctx context.Context, username, password, keyId string) (int64, error)
 	// IssueShortToken 为指定用户颁发短期 access token（授权页登录用）。
 	IssueShortToken(ctx context.Context, userId int64) (string, error)
 	// Callback 处理授权回调：校验 state，使用 oauth2.Config.Exchange 换取令牌（Requirements 1.2, 1.4, 6.1, 6.2）。
-	Callback(ctx context.Context, code, state string) (*auth.TokenPair, error)
+	Callback(ctx context.Context, code, state string) (*authmodel.TokenPair, error)
 	// GetRouters 获取当前用户的动态路由菜单。
-	GetRouters(ctx context.Context, langCode string) ([]auth.Menu, error)
-	GetPublicKey(ctx context.Context) (*auth.PublicKeyResponse, error)
+	GetRouters(ctx context.Context, langCode string) ([]authmodel.Menu, error)
+	GetPublicKey(ctx context.Context) (*authmodel.PublicKeyResponse, error)
 	GetProfile(id int64) (*dto.UserProfile, error)
 	// LoginByUserId 直接为指定用户颁发令牌对（Passkey 等无密码登录使用）
-	LoginByUserId(ctx context.Context, userId int64, clientId string) (*auth.TokenPair, error)
+	LoginByUserId(ctx context.Context, userId int64, clientId string) (*authmodel.TokenPair, error)
 	// RecordLoginLog 记录登录日志（供外部服务调用）
 	RecordLoginLog(ctx context.Context, username string, clientId string, grantType string, status int16, msg, userAgent, ip string)
 	// GetLatestLoginLog 查询指定用户最近的登录日志（供外部服务调用）
@@ -79,19 +82,19 @@ type AuthService interface {
 }
 
 type authService struct {
-	store    auth.TokenStore
+	store    authstore.TokenStore
 	authRepo authRepo.AuthRepository
 	cfg      config.AuthConfig
-	notifier auth.SLONotifier
+	notifier authnotifier.SLONotifier
 	logStore log_grpc.LoginLogStore
 }
 
 // NewAuthService 创建 AuthService 实例。
 func NewAuthService(
-	store auth.TokenStore,
+	store authstore.TokenStore,
 	authRepo authRepo.AuthRepository,
 	cfg config.AuthConfig,
-	notifier auth.SLONotifier,
+	notifier authnotifier.SLONotifier,
 	logStore log_grpc.LoginLogStore,
 ) AuthService {
 	return &authService{
@@ -160,7 +163,7 @@ func (s *authService) ValidateEmailCode(ctx context.Context, email, code string)
 }
 
 // AuthorizeLogin 处理授权页内部登录（只验证凭据，返回短期 token）。
-func (s *authService) AuthorizeLogin(ctx context.Context, req *auth.LoginRequest) (string, error) {
+func (s *authService) AuthorizeLogin(ctx context.Context, req *authmodel.LoginRequest) (string, error) {
 	var userId int64
 	var err error
 
@@ -190,7 +193,7 @@ func (s *authService) AuthorizeLogin(ctx context.Context, req *auth.LoginRequest
 }
 
 // Login 先校验客户端，再根据 grant_type 分发登录请求。
-func (s *authService) Login(ctx context.Context, req *auth.LoginRequest) (*auth.TokenPair, error) {
+func (s *authService) Login(ctx context.Context, req *authmodel.LoginRequest) (*authmodel.TokenPair, error) {
 	logUsername := req.Username
 	if logUsername == "" {
 		logUsername = req.Email // Email fallback specifically for email
@@ -212,7 +215,7 @@ func (s *authService) Login(ctx context.Context, req *auth.LoginRequest) (*auth.
 		}
 	}
 
-	var pair *auth.TokenPair
+	var pair *authmodel.TokenPair
 	switch req.GrantType {
 	case "password":
 		pair, err = s.loginByPassword(ctx, req, client)
@@ -243,7 +246,7 @@ func (s *authService) Login(ctx context.Context, req *auth.LoginRequest) (*auth.
 	return pair, nil
 }
 
-func (s *authService) loginByPassword(ctx context.Context, req *auth.LoginRequest, client *model.OauthClient) (*auth.TokenPair, error) {
+func (s *authService) loginByPassword(ctx context.Context, req *authmodel.LoginRequest, client *model.OauthClient) (*authmodel.TokenPair, error) {
 	user, err := s.authRepo.GetUserByUsername(req.Username)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -277,7 +280,7 @@ func (s *authService) loginByPassword(ctx context.Context, req *auth.LoginReques
 	return s.issueTokenPair(ctx, user.Id, req.ClientId, accessTTL, refreshTTL)
 }
 
-func (s *authService) loginByEmailCode(ctx context.Context, req *auth.LoginRequest, client *model.OauthClient) (*auth.TokenPair, error) {
+func (s *authService) loginByEmailCode(ctx context.Context, req *authmodel.LoginRequest, client *model.OauthClient) (*authmodel.TokenPair, error) {
 	storedCode, err := s.store.GetEmailCode(ctx, req.Email, "login")
 	if err != nil {
 		return nil, &AuthError{Code: consts.ErrInvalidCode, HTTPStatus: 400}
@@ -305,7 +308,7 @@ func (s *authService) loginByEmailCode(ctx context.Context, req *auth.LoginReque
 	return s.issueTokenPair(ctx, user.Id, req.ClientId, accessTTL, refreshTTL)
 }
 
-func (s *authService) loginByAuthCode(ctx context.Context, req *auth.LoginRequest, client *model.OauthClient) (*auth.TokenPair, error) {
+func (s *authService) loginByAuthCode(ctx context.Context, req *authmodel.LoginRequest, client *model.OauthClient) (*authmodel.TokenPair, error) {
 	if req.Code == "" {
 		return nil, &AuthError{Code: consts.ErrInvalidAuthCode, HTTPStatus: 400}
 	}
@@ -332,7 +335,7 @@ func (s *authService) loginByAuthCode(ctx context.Context, req *auth.LoginReques
 	return s.issueTokenPairWithScopes(ctx, user.Id, req.ClientId, scopes, accessTTL, refreshTTL)
 }
 
-func (s *authService) loginByClientCredentials(ctx context.Context, req *auth.LoginRequest, client *model.OauthClient) (*auth.TokenPair, error) {
+func (s *authService) loginByClientCredentials(ctx context.Context, req *authmodel.LoginRequest, client *model.OauthClient) (*authmodel.TokenPair, error) {
 	if req.ClientSecret == "" {
 		return nil, &AuthError{Code: consts.ErrOAuthInvalidClient, HTTPStatus: 401}
 	}
@@ -361,12 +364,12 @@ func (s *authService) loginByClientCredentials(ctx context.Context, req *auth.Lo
 		permissions = []string{}
 	}
 
-	loginUser := &auth.LoginUser{
+	loginUser := &authmodel.LoginUser{
 		UserId:       0,
 		Username:     client.ClientId,
 		Nickname:     client.ClientName,
-		Roles:        []auth.Role{},
-		Depts:        []auth.Dept{},
+		Roles:        []authmodel.Role{},
+		Depts:        []authmodel.Dept{},
 		Permissions:  permissions,
 		RefreshToken: refreshToken,
 		ClientId:     client.ClientId,
@@ -379,7 +382,7 @@ func (s *authService) loginByClientCredentials(ctx context.Context, req *auth.Lo
 		return nil, err
 	}
 
-	return &auth.TokenPair{
+	return &authmodel.TokenPair{
 		AccessToken:      accessToken,
 		RefreshToken:     refreshToken,
 		ExpiresIn:        accessTTL,
@@ -390,7 +393,7 @@ func (s *authService) loginByClientCredentials(ctx context.Context, req *auth.Lo
 
 // Refresh 验证 Refresh Token，撤销旧令牌对并颁发新的 TokenPair。
 // 新的 Refresh Token 继承原 Token 的剩余 TTL，防止无限滑动续期。
-func (s *authService) Refresh(ctx context.Context, refreshToken, clientId string) (*auth.TokenPair, error) {
+func (s *authService) Refresh(ctx context.Context, refreshToken, clientId string) (*authmodel.TokenPair, error) {
 	oldAccessToken, err := s.store.GetAccessTokenByRefresh(ctx, refreshToken)
 	if err != nil {
 		return nil, &AuthError{Code: consts.ErrInvalidRefreshToken, HTTPStatus: 401}
@@ -425,11 +428,11 @@ func (s *authService) Refresh(ctx context.Context, refreshToken, clientId string
 	return s.issueTokenPair(ctx, loginUser.UserId, loginUser.ClientId, s.cfg.AccessTokenTTL, refreshTTL)
 }
 
-func (s *authService) reissueClientToken(ctx context.Context, old *auth.LoginUser, accessTTL, refreshTTL int64) (*auth.TokenPair, error) {
+func (s *authService) reissueClientToken(ctx context.Context, old *authmodel.LoginUser, accessTTL, refreshTTL int64) (*authmodel.TokenPair, error) {
 	accessToken := uuid.New().String()
 	refreshToken := uuid.New().String()
 
-	loginUser := &auth.LoginUser{
+	loginUser := &authmodel.LoginUser{
 		UserId:       0,
 		Username:     old.Username,
 		Nickname:     old.Nickname,
@@ -446,7 +449,7 @@ func (s *authService) reissueClientToken(ctx context.Context, old *auth.LoginUse
 		return nil, err
 	}
 
-	return &auth.TokenPair{
+	return &authmodel.TokenPair{
 		AccessToken:      accessToken,
 		RefreshToken:     refreshToken,
 		ExpiresIn:        accessTTL,
@@ -478,7 +481,7 @@ func (s *authService) GlobalLogout(ctx context.Context, userId int64) error {
 		sessions = map[string]string{}
 	}
 
-	payload := &auth.LogoutPayload{
+	payload := &authnotifier.LogoutPayload{
 		UId:       userId,
 		Action:    "logout_all",
 		Timestamp: time.Now().Unix(),
@@ -563,7 +566,7 @@ func (s *authService) UpdateProfile(ctx context.Context, userId int64, accessTok
 
 	// 动态更新缓存，让前端页面不用重登也能看到新资料
 	if accessToken != "" {
-		_ = s.store.UpdateLoginUser(ctx, accessToken, func(user *auth.LoginUser) {
+		_ = s.store.UpdateLoginUser(ctx, accessToken, func(user *authmodel.LoginUser) {
 			if req.Nickname != nil {
 				user.Nickname = *req.Nickname
 			}
@@ -579,7 +582,7 @@ func (s *authService) UpdateProfile(ctx context.Context, userId int64, accessTok
 }
 
 // UpdatePassword 用户修改自己密码。
-func (s *authService) UpdatePassword(ctx context.Context, userId int64, req *auth.UpdatePasswordRequest) error {
+func (s *authService) UpdatePassword(ctx context.Context, userId int64, req *authmodel.UpdatePasswordRequest) error {
 	user, err := s.authRepo.GetUserByUserId(userId)
 	if err != nil {
 		return err
@@ -642,12 +645,12 @@ func (s *authService) GenerateAuthCode(ctx context.Context, userId int64, client
 }
 
 // issueTokenPair 加载用户信息，构建 LoginUser，将令牌对存入 Redis，并记录用户会话。
-func (s *authService) issueTokenPair(ctx context.Context, userId int64, clientId string, accessTTL, refreshTTL int64) (*auth.TokenPair, error) {
+func (s *authService) issueTokenPair(ctx context.Context, userId int64, clientId string, accessTTL, refreshTTL int64) (*authmodel.TokenPair, error) {
 	return s.issueTokenPairWithScopes(ctx, userId, clientId, nil, accessTTL, refreshTTL)
 }
 
 // issueTokenPairWithScopes 同 issueTokenPair，额外将授权 scopes 存入 LoginUser。
-func (s *authService) issueTokenPairWithScopes(ctx context.Context, userId int64, clientId string, scopes []string, accessTTL, refreshTTL int64) (*auth.TokenPair, error) {
+func (s *authService) issueTokenPairWithScopes(ctx context.Context, userId int64, clientId string, scopes []string, accessTTL, refreshTTL int64) (*authmodel.TokenPair, error) {
 	if accessTTL <= 0 {
 		accessTTL = s.cfg.AccessTokenTTL
 	}
@@ -674,9 +677,9 @@ func (s *authService) issueTokenPairWithScopes(ctx context.Context, userId int64
 	if err != nil {
 		return nil, err
 	}
-	roles := make([]auth.Role, len(dbRoles))
+	roles := make([]authmodel.Role, len(dbRoles))
 	for i, role := range dbRoles {
-		roles[i] = auth.Role{
+		roles[i] = authmodel.Role{
 			Id:        role.Id,
 			RoleKey:   role.RoleKey,
 			DataScope: role.DataScope,
@@ -692,9 +695,9 @@ func (s *authService) issueTokenPairWithScopes(ctx context.Context, userId int64
 		}
 	}
 
-	depts := make([]auth.Dept, len(userDepts))
+	depts := make([]authmodel.Dept, len(userDepts))
 	for i, userDept := range userDepts {
-		depts[i] = auth.Dept{
+		depts[i] = authmodel.Dept{
 			DeptId: userDept.DeptId,
 			PostId: userDept.PostId,
 		}
@@ -713,7 +716,7 @@ func (s *authService) issueTokenPairWithScopes(ctx context.Context, userId int64
 	accessToken := uuid.New().String()
 	refreshToken := uuid.New().String()
 
-	loginUser := &auth.LoginUser{
+	loginUser := &authmodel.LoginUser{
 		UserId:       user.Id,
 		Username:     user.Username,
 		Nickname:     user.Nickname,
@@ -734,7 +737,7 @@ func (s *authService) issueTokenPairWithScopes(ctx context.Context, userId int64
 	// 记录用户全局会话，供 SLO 使用
 	_ = s.store.AddUserSession(ctx, userId, clientId, accessToken)
 
-	return &auth.TokenPair{
+	return &authmodel.TokenPair{
 		AccessToken:      accessToken,
 		RefreshToken:     refreshToken,
 		ExpiresIn:        accessTTL,
@@ -820,7 +823,7 @@ func (s *authService) ApproveAuthorize(ctx context.Context, userId int64, state 
 
 // Callback 处理授权回调：校验 state，使用 oauth2.Config.Exchange 换取令牌。
 // Requirements: 1.2, 1.4, 6.1, 6.2
-func (s *authService) Callback(ctx context.Context, code, state string) (*auth.TokenPair, error) {
+func (s *authService) Callback(ctx context.Context, code, state string) (*authmodel.TokenPair, error) {
 	// 校验 state 参数（Requirements 1.2, 1.4）
 	clientId, err := s.store.GetOAuthState(ctx, state)
 	if err != nil {
@@ -862,12 +865,12 @@ func (s *authService) IssueShortToken(ctx context.Context, userId int64) (string
 		return "", err
 	}
 	token := uuid.New().String()
-	loginUser := &auth.LoginUser{
+	loginUser := &authmodel.LoginUser{
 		UserId:   user.Id,
 		Username: user.Username,
 		Nickname: user.Nickname,
-		Roles:    []auth.Role{},
-		Depts:    []auth.Dept{},
+		Roles:    []authmodel.Role{},
+		Depts:    []authmodel.Dept{},
 		ClientId: "__authorize__",
 	}
 	if err := s.store.SaveAccessToken(ctx, token, loginUser, 10*time.Minute); err != nil {
@@ -877,7 +880,7 @@ func (s *authService) IssueShortToken(ctx context.Context, userId int64) (string
 }
 
 // GetLoginUser 根据 access token 获取登录用户信息。
-func (s *authService) GetLoginUser(ctx context.Context, accessToken string) (*auth.LoginUser, error) {
+func (s *authService) GetLoginUser(ctx context.Context, accessToken string) (*authmodel.LoginUser, error) {
 	return s.store.GetLoginUser(ctx, accessToken)
 }
 
@@ -911,8 +914,8 @@ func (s *authService) ValidateUserPassword(ctx context.Context, username, passwo
 	return user.Id, nil
 }
 
-func (s *authService) GetRouters(ctx context.Context, langCode string) ([]auth.Menu, error) {
-	user, err := auth.GetCurrentUser(ctx)
+func (s *authService) GetRouters(ctx context.Context, langCode string) ([]authmodel.Menu, error) {
+	user, err := authctx.GetCurrentUser(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -926,7 +929,7 @@ func (s *authService) GetRouters(ctx context.Context, langCode string) ([]auth.M
 			return nil, err
 		}
 	} else {
-		roleIds, err := auth.GetCurrentRoleIds(ctx)
+		roleIds, err := authctx.GetCurrentRoleIds(ctx)
 		if err != nil {
 			return nil, err
 		}
@@ -939,20 +942,20 @@ func (s *authService) GetRouters(ctx context.Context, langCode string) ([]auth.M
 	return buildMenuTree(menus, 0), nil
 }
 
-func buildMenuTree(menus []dto.MenuDTO, parentId int64) []auth.Menu {
-	var tree []auth.Menu
+func buildMenuTree(menus []dto.MenuDTO, parentId int64) []authmodel.Menu {
+	var tree []authmodel.Menu
 	for _, menu := range menus {
 		if menu.ParentId == parentId {
 			var perms []string
 			if menu.Permission != "" {
 				perms = []string{menu.Permission}
 			}
-			node := auth.Menu{
+			node := authmodel.Menu{
 				Key:       fmt.Sprintf("%d", menu.Id),
 				Path:      menu.Path,
 				Component: menu.Component,
 				Query:     menu.Query,
-				Meta: &auth.Meta{
+				Meta: &authmodel.Meta{
 					Title:       menu.Title,
 					Icon:        menu.Icon,
 					Hidden:      menu.Visible == 0, // 直接赋值，修复逻辑
@@ -989,7 +992,7 @@ func (e *AuthError) Error() string {
 }
 
 // GetPublicKey 生成并返回临时的 RSA 公钥和关联凭证。
-func (s *authService) GetPublicKey(ctx context.Context) (*auth.PublicKeyResponse, error) {
+func (s *authService) GetPublicKey(ctx context.Context) (*authmodel.PublicKeyResponse, error) {
 	priv, pub, err := utils.GenerateRSAKey(2048)
 	if err != nil {
 		return nil, err
@@ -1001,7 +1004,7 @@ func (s *authService) GetPublicKey(ctx context.Context) (*auth.PublicKeyResponse
 		return nil, err
 	}
 
-	return &auth.PublicKeyResponse{
+	return &authmodel.PublicKeyResponse{
 		KeyId:     keyId,
 		PublicKey: pub,
 	}, nil
@@ -1042,7 +1045,7 @@ func (s *authService) GetProfile(id int64) (*dto.UserProfile, error) {
 
 // LoginByUserId 直接为指定用户颁发令牌对（Passkey 等无密码登录使用）。
 // TTL 优先从 oauth_client 表读取；若客户端不存在或未配置，回退到 config.yaml 中的兜底值。
-func (s *authService) LoginByUserId(ctx context.Context, userId int64, clientId string) (*auth.TokenPair, error) {
+func (s *authService) LoginByUserId(ctx context.Context, userId int64, clientId string) (*authmodel.TokenPair, error) {
 	var accessTTL, refreshTTL int64
 	if client, err := s.authRepo.GetByClientId(clientId); err == nil {
 		accessTTL, refreshTTL = client.GetTTL()
@@ -1062,7 +1065,7 @@ func (s *authService) RecordLoginLog(ctx context.Context, username, clientId str
 }
 
 func (s *authService) GetLatestLoginLog(ctx context.Context) ([]*log_grpc.LoginEntry, error) {
-	user, err := auth.GetCurrentUser(ctx)
+	user, err := authctx.GetCurrentUser(ctx)
 	if err != nil {
 		return nil, err
 	}

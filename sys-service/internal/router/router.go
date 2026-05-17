@@ -9,7 +9,7 @@ import (
 
 	"aevons-grpc/log_grpc"
 
-	"github.com/calmlax/aevons-framework/auth"
+	authstore "github.com/calmlax/aevons-framework/auth/store"
 	"github.com/calmlax/aevons-framework/consts"
 	"github.com/calmlax/aevons-framework/core"
 	"github.com/calmlax/aevons-framework/core/server"
@@ -55,7 +55,7 @@ func Setup(app *core.App) (*gin.Engine, error) {
 	r.Use(middleware.XSSMiddleware(cfg))
 	server.RegisterHealthRoute(r, cfg.Server.Name)
 	server.RegisterOpenApiRoute(r, cfg)
-	r.Use(middleware.AuthMiddleware(auth.NewRedisTokenStore(redisClient), cfg.Auth.Excludes))
+	r.Use(middleware.AuthMiddleware(authstore.NewRedisTokenStore(redisClient), cfg.Auth.Excludes))
 
 	v1 := r.Group("/api/v1/sys")
 	{

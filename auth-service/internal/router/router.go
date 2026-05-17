@@ -8,7 +8,8 @@ import (
 	authRepo "auth-service/internal/repository"
 	authService "auth-service/internal/service"
 
-	"github.com/calmlax/aevons-framework/auth"
+	authnotifier "github.com/calmlax/aevons-framework/auth/notifier"
+	authstore "github.com/calmlax/aevons-framework/auth/store"
 	"github.com/calmlax/aevons-framework/config"
 	"github.com/calmlax/aevons-framework/core"
 	"github.com/calmlax/aevons-framework/core/server"
@@ -55,7 +56,7 @@ func Setup(app *core.App) (*gin.Engine, error) {
 	r.Use(middleware.XSSMiddleware(cfg))
 	server.RegisterHealthRoute(r, cfg.Server.Name)
 	server.RegisterOpenApiRoute(r, cfg)
-	r.Use(middleware.AuthMiddleware(auth.NewRedisTokenStore(redisClient), cfg.Auth.Excludes))
+	r.Use(middleware.AuthMiddleware(authstore.NewRedisTokenStore(redisClient), cfg.Auth.Excludes))
 
 	v1 := r.Group("/api/v1/auth")
 	{
@@ -67,9 +68,9 @@ func Setup(app *core.App) (*gin.Engine, error) {
 
 // RegisterRoutes 将认证模块的所有路由注册到指定路由组。
 func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB, client *redis.Client, cfg *config.Config, logStore log_grpc.LoginLogStore) {
-	store := auth.NewRedisTokenStore(client)
+	store := authstore.NewRedisTokenStore(client)
 	repo := authRepo.NewAuthRepository(db)
-	notifier := auth.NewHttpSLONotifier()
+	notifier := authnotifier.NewHttpSLONotifier()
 	svc := authService.NewAuthService(store, repo, cfg.Auth, notifier, logStore)
 
 	h := authHandler.NewAuthHandler(svc)

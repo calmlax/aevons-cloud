@@ -8,7 +8,7 @@ import (
 
 	"auth-service/internal/service"
 
-	pkgauth "github.com/calmlax/aevons-framework/auth"
+	authctx "github.com/calmlax/aevons-framework/auth/context"
 	"github.com/calmlax/aevons-framework/response"
 
 	"github.com/gin-gonic/gin"
@@ -35,7 +35,7 @@ func NewPasskeyHandler(svc service.PasskeyService, authSvc service.AuthService) 
 // @Failure      401  {object}  response.Response
 // @Router       /auth/passkey/register/begin [post]
 func (h *PasskeyHandler) BeginRegistration(c *gin.Context) {
-	userId, err := pkgauth.GetCurrentUserId(c.Request.Context())
+	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
 		response.Fail(c, http.StatusUnauthorized, http.StatusUnauthorized, "err.sys.unauthorized")
 		return
@@ -68,7 +68,7 @@ func (h *PasskeyHandler) BeginRegistration(c *gin.Context) {
 // @Failure      401  {object}  response.Response
 // @Router       /auth/passkey/register/finish [post]
 func (h *PasskeyHandler) FinishRegistration(c *gin.Context) {
-	userId, err := pkgauth.GetCurrentUserId(c.Request.Context())
+	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
 		response.Fail(c, http.StatusUnauthorized, http.StatusUnauthorized, "err.sys.unauthorized")
 		return
@@ -180,7 +180,7 @@ func (h *PasskeyHandler) FinishAuthentication(c *gin.Context) {
 // @Failure      401  {object}  response.Response
 // @Router       /auth/passkey/credentials [get]
 func (h *PasskeyHandler) ListCredentials(c *gin.Context) {
-	userId, err := pkgauth.GetCurrentUserId(c.Request.Context())
+	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
 		response.Fail(c, http.StatusUnauthorized, http.StatusUnauthorized, "err.sys.unauthorized")
 		return
@@ -207,7 +207,7 @@ func (h *PasskeyHandler) ListCredentials(c *gin.Context) {
 // @Failure      401  {object}  response.Response
 // @Router       /auth/passkey/credentials/{id} [delete]
 func (h *PasskeyHandler) RevokeCredential(c *gin.Context) {
-	userId, err := pkgauth.GetCurrentUserId(c.Request.Context())
+	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
 		response.Fail(c, http.StatusUnauthorized, http.StatusUnauthorized, "err.sys.unauthorized")
 		return

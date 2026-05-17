@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/calmlax/aevons-framework/auth"
+	autherr "github.com/calmlax/aevons-framework/auth/errors"
 	"github.com/calmlax/aevons-framework/consts"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -104,17 +104,17 @@ func (r *authRepository) ValidateClient(clientId, clientSecret, grantType string
 	client, err := r.GetByClientId(clientId)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, &auth.AuthError{Code: consts.ErrOAuthInvalidClient, HTTPStatus: 401}
+			return nil, &autherr.AuthError{Code: consts.ErrOAuthInvalidClient, HTTPStatus: 401}
 		}
 		return nil, err
 	}
 	if clientSecret != "" {
 		if err := bcrypt.CompareHashAndPassword([]byte(client.ClientSecret), []byte(clientSecret)); err != nil {
-			return nil, &auth.AuthError{Code: consts.ErrOAuthInvalidClient, HTTPStatus: 401}
+			return nil, &autherr.AuthError{Code: consts.ErrOAuthInvalidClient, HTTPStatus: 401}
 		}
 	}
 	if !r.isGrantTypeAllowed(client.AuthorizedGrantTypes, grantType) {
-		return nil, &auth.AuthError{Code: consts.ErrOAuthUnsupportedGrant, HTTPStatus: 400}
+		return nil, &autherr.AuthError{Code: consts.ErrOAuthUnsupportedGrant, HTTPStatus: 400}
 	}
 	return client, nil
 }

@@ -8,7 +8,8 @@ import (
 	"auth-service/internal/dto"
 	"auth-service/internal/service"
 
-	"github.com/calmlax/aevons-framework/auth"
+	authctx "github.com/calmlax/aevons-framework/auth/context"
+	authmodel "github.com/calmlax/aevons-framework/auth/model"
 	"github.com/calmlax/aevons-framework/consts"
 	"github.com/calmlax/aevons-framework/response"
 
@@ -44,7 +45,7 @@ func NewAuthHandler(svc service.AuthService) *AuthHandler {
 // @Failure      401  {object}  response.Response
 // @Router       /auth/login [post]
 func (h *AuthHandler) Login(c *gin.Context) {
-	var req auth.LoginRequest
+	var req authmodel.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.Fail(c, http.StatusBadRequest, http.StatusBadRequest, "err.sys.bad_request", map[string]any{"error": err.Error()})
 		return
@@ -267,7 +268,7 @@ func (h *AuthHandler) GetLatestLoginLog(c *gin.Context) {
 // @Failure      401  {object}  response.Response
 // @Router       /auth/code [post]
 func (h *AuthHandler) GenerateAuthCode(c *gin.Context) {
-	userId, err := auth.GetCurrentUserId(c)
+	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
 		response.Fail(c, http.StatusUnauthorized, http.StatusUnauthorized, consts.ErrTokenMissing)
 		return
@@ -443,7 +444,7 @@ func (h *AuthHandler) Routers(c *gin.Context) {
 // @Failure      401  {object}  response.Response
 // @Router       /auth/user [get]
 func (h *AuthHandler) GetUserInfo(c *gin.Context) {
-	user, err := auth.GetCurrentUser(c.Request.Context())
+	user, err := authctx.GetCurrentUser(c.Request.Context())
 	if err != nil {
 		handleAuthError(c, err)
 		return
@@ -462,7 +463,7 @@ func (h *AuthHandler) GetUserInfo(c *gin.Context) {
 // @Failure      401  {object}  response.Response
 // @Router       /auth/user/profile [get]
 func (h *AuthHandler) GetProfile(c *gin.Context) {
-	userId, err := auth.GetCurrentUserId(c.Request.Context())
+	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
 		response.Fail(c, http.StatusUnauthorized, 401, "err.sys.unauthorized")
 		return
@@ -490,7 +491,7 @@ func (h *AuthHandler) GetProfile(c *gin.Context) {
 // @Failure      401  {object}  response.Response
 // @Router       /auth/user/profile [put]
 func (h *AuthHandler) UpdateProfile(c *gin.Context) {
-	userId, err := auth.GetCurrentUserId(c.Request.Context())
+	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
 		handleAuthError(c, err)
 		return
@@ -526,13 +527,13 @@ func (h *AuthHandler) UpdateProfile(c *gin.Context) {
 // @Failure      401  {object}  response.Response
 // @Router       /auth/user/password [put]
 func (h *AuthHandler) UpdatePassword(c *gin.Context) {
-	userId, err := auth.GetCurrentUserId(c.Request.Context())
+	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
 		handleAuthError(c, err)
 		return
 	}
 
-	var req auth.UpdatePasswordRequest
+	var req authmodel.UpdatePasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.Fail(c, http.StatusBadRequest, http.StatusBadRequest, "err.sys.bad_request", map[string]any{"error": err.Error()})
 		return
@@ -589,7 +590,7 @@ func handleAuthError(c *gin.Context, err error) {
 
 // respondWithTokenPair 安全分发双 Token 机制响应。
 // Access Token 放 JSON 返回，Refresh Token 设为 HttpOnly, Secure Cookie。
-func respondWithTokenPair(c *gin.Context, pair *auth.TokenPair) {
+func respondWithTokenPair(c *gin.Context, pair *authmodel.TokenPair) {
 	if pair.RefreshToken != "" {
 		c.SetSameSite(http.SameSiteLaxMode)
 		c.SetCookie("refreshToken", pair.RefreshToken, int(pair.RefreshExpiresIn), "/api/v1/auth/refresh", "", true, true)

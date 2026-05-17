@@ -11,7 +11,8 @@ import (
 	credModel "auth-service/internal/model"
 	authRepo "auth-service/internal/repository"
 
-	pkgauth "github.com/calmlax/aevons-framework/auth"
+	authmodel "github.com/calmlax/aevons-framework/auth/model"
+	authstore "github.com/calmlax/aevons-framework/auth/store"
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
@@ -27,7 +28,7 @@ type PasskeyService interface {
 	// BeginAuthentication 开始认证：生成 challenge，返回 PublicKeyCredentialRequestOptions
 	BeginAuthentication(ctx context.Context, username string) (optionsJSON []byte, sessionKey string, err error)
 	// FinishAuthentication 完成认证：验证响应，返回 TokenPair
-	FinishAuthentication(ctx context.Context, sessionKey string, responseJSON []byte, clientIP, userAgent string) (*pkgauth.TokenPair, error)
+	FinishAuthentication(ctx context.Context, sessionKey string, responseJSON []byte, clientIP, userAgent string) (*authmodel.TokenPair, error)
 	// ListCredentials 列出用户所有凭据
 	ListCredentials(ctx context.Context, userId int64) ([]*credModel.UserCredential, error)
 	// RevokeCredential 吊销凭据
@@ -52,7 +53,7 @@ func (u *waUser) WebAuthnCredentials() []webauthn.Credential { return u.credenti
 
 type passkeyService struct {
 	wa       *webauthn.WebAuthn
-	store    pkgauth.TokenStore // 复用 Redis store 存 session
+	store    authstore.TokenStore // 复用 Redis store 存 session
 	authRepo authRepo.AuthRepository
 	authSvc  AuthService // 复用 issueTokenPair
 }
@@ -61,7 +62,7 @@ func NewPasskeyService(
 	rpId string,
 	rpOrigins []string,
 	rpName string,
-	store pkgauth.TokenStore,
+	store authstore.TokenStore,
 	authRepo authRepo.AuthRepository,
 	authSvc AuthService,
 ) (PasskeyService, error) {
@@ -257,7 +258,7 @@ func (s *passkeyService) BeginAuthentication(ctx context.Context, username strin
 	return b, sessionKey, err
 }
 
-func (s *passkeyService) FinishAuthentication(ctx context.Context, sessionKey string, responseJSON []byte, clientIP, userAgent string) (*pkgauth.TokenPair, error) {
+func (s *passkeyService) FinishAuthentication(ctx context.Context, sessionKey string, responseJSON []byte, clientIP, userAgent string) (*authmodel.TokenPair, error) {
 	session, err := s.loadSession(ctx, sessionKey)
 	if err != nil {
 		return nil, &AuthError{Code: "auth.passkey_session_expired", HTTPStatus: 400}
