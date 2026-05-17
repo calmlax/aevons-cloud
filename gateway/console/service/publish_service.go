@@ -68,14 +68,20 @@ func (s *PublishService) Snapshot() (apisixadmin.PublishSnapshot, error) {
 	}
 
 	for _, upstream := range plan.Upstreams {
-		snapshot.Upstreams = append(snapshot.Upstreams, apisixadmin.UpstreamResource{
+		resource := apisixadmin.UpstreamResource{
 			ID:     upstream.ID,
 			Name:   upstream.ServiceName,
 			Type:   normalizeLB(upstream.LoadBalance),
-			Nodes:  upstream.Nodes,
 			Scheme: "http",
 			Pass:   "pass",
-		})
+		}
+		if upstream.Discovery == "consul" {
+			resource.ServiceName = upstream.ServiceName
+			resource.DiscoveryType = "consul"
+		} else {
+			resource.Nodes = upstream.Nodes
+		}
+		snapshot.Upstreams = append(snapshot.Upstreams, resource)
 	}
 
 	for _, consumer := range plan.Consumers {

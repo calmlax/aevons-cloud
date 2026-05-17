@@ -16,13 +16,15 @@ type RouteResource struct {
 }
 
 type UpstreamResource struct {
-	ID     string            `json:"id,omitempty"`
-	Name   string            `json:"name,omitempty"`
-	Type   string            `json:"type,omitempty"`
-	Nodes  map[string]int    `json:"nodes,omitempty"`
-	Scheme string            `json:"scheme,omitempty"`
-	Pass   string            `json:"pass_host,omitempty"`
-	Labels map[string]string `json:"labels,omitempty"`
+	ID            string            `json:"id,omitempty"`
+	Name          string            `json:"name,omitempty"`
+	Type          string            `json:"type,omitempty"`
+	Nodes         map[string]int    `json:"nodes,omitempty"`
+	Scheme        string            `json:"scheme,omitempty"`
+	Pass          string            `json:"pass_host,omitempty"`
+	Labels        map[string]string `json:"labels,omitempty"`
+	ServiceName   string            `json:"service_name,omitempty"`
+	DiscoveryType string            `json:"discovery_type,omitempty"`
 }
 
 type ConsumerResource struct {

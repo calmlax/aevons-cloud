@@ -1,12 +1,21 @@
 deployment:
-  role: traditional
-  role_traditional:
+  role: data_plane
+  role_data_plane:
     config_provider: yaml
+
+discovery:
+  consul:
+    servers:
+      - "http://host.docker.internal:8500"
+    keepalive: true
+    fetch_interval: 5
+    weight: 1
 
 apisix:
   node_listen: 9080
   enable_admin: true
   enable_admin_cors: true
+  extra_lua_path: "/opt/aevons/apisix/?.lua;/opt/aevons/apisix/?/init.lua"
   admin_key:
     - name: admin
       key: replace-with-real-admin-key

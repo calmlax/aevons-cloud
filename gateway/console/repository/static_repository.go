@@ -51,9 +51,6 @@ func (r *StaticRepository) Upstreams() []model.Upstream {
 			Discovery:    "consul",
 			LoadBalance:  "round_robin",
 			HealthPolicy: "healthy_only",
-			StaticNodesBackup: map[string]int{
-				"127.0.0.1:10601": 1,
-			},
 		},
 		{
 			ID:           "system-service-upstream",
@@ -61,9 +58,6 @@ func (r *StaticRepository) Upstreams() []model.Upstream {
 			Discovery:    "consul",
 			LoadBalance:  "round_robin",
 			HealthPolicy: "healthy_only",
-			StaticNodesBackup: map[string]int{
-				"127.0.0.1:10702": 1,
-			},
 		},
 		{
 			ID:           "log-service-upstream",
@@ -71,9 +65,6 @@ func (r *StaticRepository) Upstreams() []model.Upstream {
 			Discovery:    "consul",
 			LoadBalance:  "round_robin",
 			HealthPolicy: "healthy_only",
-			StaticNodesBackup: map[string]int{
-				"127.0.0.1:10803": 1,
-			},
 		},
 	}
 }

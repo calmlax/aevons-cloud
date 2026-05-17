@@ -75,9 +75,8 @@ auth:
   refresh_token_ttl: 604800 # 单位：秒，7 天
   email_ttl: 300            # 单位：秒，5 分钟
   excludes:
-    - /api/v1/ping
-    - /swagger/*
     - /api/swagger.json
+    - /api/v1/system/ping
     - /api/v1/system/lang
     - /api/v1/auth/register
     - /api/v1/auth/login
@@ -93,7 +92,6 @@ auth:
 xss:
   enabled: true
   excludes:
-    - /api/v1/content/article/*
     - /api/v1/auth/passkey/register/finish
     - /api/v1/auth/passkey/login/finish
 

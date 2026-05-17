@@ -10,9 +10,9 @@ routes:
       client-resource-auth: {}
       jwt-enterprise-auth: {}
     upstream:
+      service_name: auth-service
+      discovery_type: consul
       type: roundrobin
-      nodes:
-        "127.0.0.1:10601": 1
 
   - id: system-route
     uri: /api/v1/system/*
@@ -25,9 +25,9 @@ routes:
       client-resource-auth: {}
       jwt-enterprise-auth: {}
     upstream:
+      service_name: system-service
+      discovery_type: consul
       type: roundrobin
-      nodes:
-        "127.0.0.1:10702": 1
 
   - id: log-route
     uri: /api/v1/log/*
@@ -39,6 +39,8 @@ routes:
       audit-log: {}
       jwt-enterprise-auth: {}
     upstream:
+      service_name: log-service
+      discovery_type: consul
       type: roundrobin
-      nodes:
-        "127.0.0.1:10803": 1
+
+#END

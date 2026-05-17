@@ -70,7 +70,6 @@ func (s *CatalogService) resolveUpstreams(strict bool) ([]model.Upstream, error)
 				if strict {
 					return nil, err
 				}
-				next.Nodes = copyNodes(next.StaticNodesBackup)
 				resolved = append(resolved, next)
 				continue
 			}
@@ -79,7 +78,6 @@ func (s *CatalogService) resolveUpstreams(strict bool) ([]model.Upstream, error)
 				if strict {
 					return nil, ErrNoHealthyInstances{ServiceName: next.ServiceName}
 				}
-				next.Nodes = copyNodes(next.StaticNodesBackup)
 				resolved = append(resolved, next)
 				continue
 			}
@@ -89,9 +87,6 @@ func (s *CatalogService) resolveUpstreams(strict bool) ([]model.Upstream, error)
 				nodes[instance.Address+":"+itoa(instance.Port)] = 1
 			}
 			next.Nodes = nodes
-		}
-		if next.Nodes == nil {
-			next.Nodes = copyNodes(next.StaticNodesBackup)
 		}
 		resolved = append(resolved, next)
 	}
@@ -122,15 +117,4 @@ func itoa(v int) string {
 		v /= 10
 	}
 	return sign + string(buf)
-}
-
-func copyNodes(src map[string]int) map[string]int {
-	if len(src) == 0 {
-		return nil
-	}
-	dst := make(map[string]int, len(src))
-	for key, value := range src {
-		dst[key] = value
-	}
-	return dst
 }

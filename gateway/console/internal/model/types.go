@@ -13,13 +13,12 @@ type Route struct {
 }
 
 type Upstream struct {
-	ID                string         `json:"id"`
-	ServiceName       string         `json:"service_name"`
-	Discovery         string         `json:"discovery"`
-	LoadBalance       string         `json:"load_balance"`
-	HealthPolicy      string         `json:"health_policy"`
-	Nodes             map[string]int `json:"nodes,omitempty"`
-	StaticNodesBackup map[string]int `json:"static_nodes_fallback,omitempty"`
+	ID           string         `json:"id"`
+	ServiceName  string         `json:"service_name"`
+	Discovery    string         `json:"discovery"`
+	LoadBalance  string         `json:"load_balance"`
+	HealthPolicy string         `json:"health_policy"`
+	Nodes        map[string]int `json:"nodes,omitempty"`
 }
 
 type Consumer struct {

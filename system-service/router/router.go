@@ -59,6 +59,9 @@ func Setup(app *core.App) (*gin.Engine, error) {
 
 	v1 := r.Group("/api/v1/system")
 	{
+		v1.GET("ping", func(c *gin.Context) {
+			c.JSON(200, gin.H{"message": "pong"})
+		})
 		registerUserRoutes(v1, db, logWriter)
 		registerRoleRoutes(v1, db, logWriter)
 		registerDeptRoutes(v1, db, logWriter)
