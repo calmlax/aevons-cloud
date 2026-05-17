@@ -7,8 +7,9 @@ import (
 	"fmt"
 	"time"
 
-	"aevo/pkg/scheduler"
-	"aevo/pkg/xlog"
+	"job-service/internal/scheduler"
+
+	"github.com/calmlax/aevons-framework/xlog"
 )
 
 // Init 注册所有任务处理函数，在应用启动时调用一次
