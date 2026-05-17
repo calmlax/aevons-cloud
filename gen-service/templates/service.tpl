@@ -11,10 +11,10 @@ package service
  */
 
 import (
-	"aevo/internal/modules/{{.ModuleName}}/dto"
-	"aevo/internal/modules/{{.ModuleName}}/model"
-	"aevo/internal/modules/{{.ModuleName}}/repository"
-	"aevo/pkg/base"
+	"{{.ModuleName}}-service/internal/dto"
+	"{{.ModuleName}}-service/internal/model"
+	"{{.ModuleName}}-service/internal/repository"
+	"github.com/calmlax/aevons-framework/core/base"
 )
 
 // 继承BaseService

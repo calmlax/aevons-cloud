@@ -11,8 +11,8 @@ package repository
  */
 
 import (
-	"aevo/internal/modules/{{.ModuleName}}/model"
-	"aevo/pkg/base"
+	"{{.ModuleName}}-service/internal/model"
+	"github.com/calmlax/aevons-framework/core/base"
 
 	"gorm.io/gorm"
 )

@@ -11,7 +11,7 @@ package dto
  */
 
 import (
-	"aevo/pkg/base"
+	"github.com/calmlax/aevons-framework/core/base"
 )
 
 // q 支持查询操作: eq, ne, gt, gte, lt, lte, like, like_l, like_r, in, not_in, between, is_null, not_null

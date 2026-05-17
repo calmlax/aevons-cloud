@@ -11,7 +11,7 @@ package model
  */
 {{if ne .BaseClass ""}}
 import (
-	"aevo/pkg/base"
+	"github.com/calmlax/aevons-framework/core/base"
 )
 {{end}}
 
