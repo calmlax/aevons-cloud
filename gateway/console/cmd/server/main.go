@@ -44,6 +44,9 @@ func main() {
 	if err != nil {
 		xlog.Fatal("failed to load framework config: %v", err)
 	}
+	if err := xlog.Init(&cfg); err != nil {
+		xlog.Fatal("failed to init logger: %v", err)
+	}
 
 	consoleCfg, err := consoleconfig.Load(configPath, env)
 	if err != nil {

@@ -61,6 +61,9 @@ func main() {
 	if err != nil {
 		xlog.Fatal("failed to load config: %v", err)
 	}
+	if err := xlog.Init(&cfg); err != nil {
+		xlog.Fatal("failed to init logger: %v", err)
+	}
 
 	// 初始化数据库连接与连接池。
 	gdb, err := db.Init(&cfg)

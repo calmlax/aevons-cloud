@@ -1,0 +1,24 @@
+2026-05-17 22:07:53 [INFO] swagger json:      http://localhost:10702/api/swagger.json
+2026-05-17 22:07:53 [INFO] server starting on port 10702
+2026-05-17 22:07:53 [INFO] [reqId:-] [Method:GET] [Path:/health] [Status:200] [Latency:0.05ms]
+2026-05-17 22:07:53 [INFO] consul discovered 0 healthy instance(s) for sys-service
+2026-05-17 22:08:00 [INFO] [reqId:-] [Method:GET] [Path:/health] [Status:200] [Latency:0.05ms]
+2026-05-17 22:08:10 [INFO] [reqId:-] [Method:GET] [Path:/health] [Status:200] [Latency:0.04ms]
+2026-05-17 22:08:20 [INFO] [reqId:-] [Method:GET] [Path:/health] [Status:200] [Latency:0.04ms]
+2026-05-17 22:08:30 [INFO] [reqId:-] [Method:GET] [Path:/health] [Status:200] [Latency:0.04ms]
+2026-05-17 22:08:40 [INFO] [reqId:-] [Method:GET] [Path:/health] [Status:200] [Latency:0.03ms]
+2026-05-17 22:08:47 [INFO] shutting down server...
+2026-05-17 22:08:47 [INFO] server exited gracefully
+2026-05-17 22:08:49 [INFO] swagger json:      http://localhost:10702/api/swagger.json
+2026-05-17 22:08:49 [INFO] server starting on port 10702
+2026-05-17 22:08:49 [INFO] [reqId:-] [GET:/health] [Status:200] [Latency:0.06ms]
+2026-05-17 22:08:49 [INFO] consul discovered 0 healthy instance(s) for sys-service
+2026-05-17 22:08:50 [INFO] [reqId:-] [GET:/health] [Status:200] [Latency:0.03ms]
+2026-05-17 22:09:00 [INFO] [reqId:-] [GET:/health] [Status:200] [Latency:0.04ms]
+2026-05-17 22:09:10 [INFO] [reqId:-] [GET:/health] [Status:200] [Latency:0.04ms]
+2026-05-17 22:09:20 [INFO] [reqId:-] [GET:/health] [Status:200] [Latency:0.04ms]
+2026-05-17 22:09:22 [INFO] shutting down server...
+2026-05-17 22:09:22 [INFO] server exited gracefully
+2026-05-17 22:09:24 [INFO] swagger json:      http://localhost:10702/api/swagger.json
+2026-05-17 22:09:24 [INFO] server starting on port 10702
+2026-05-17 22:09:24 [INFO] consul discovered 0 healthy instance(s) for sys-service

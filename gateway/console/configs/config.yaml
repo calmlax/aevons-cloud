@@ -9,6 +9,15 @@ consul:
   address: http://127.0.0.1:8500
   enabled: true
 
+log:
+  level: info
+  dir: logs
+  console: true
+  max_size_mb: 100
+  max_backups: 10
+  max_age_days: 30
+  compress: false
+
 cors:
   enabled: true
   allowed_origins:
