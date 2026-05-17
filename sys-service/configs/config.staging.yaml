@@ -24,8 +24,3 @@ rocketmq:
   name_servers:
     - "127.0.0.1:9876"
 
-webauthn:
-  rp_id: staging.your-domain.com
-  rp_origins:
-    - https://staging.your-domain.com
-  rp_name: Aevons Admin (Staging)

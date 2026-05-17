@@ -15,11 +15,6 @@ redis:
   address: 127.0.0.1:6379
   password: ""
 
-rocketmq:
-  enabled: true
-  name_servers:
-    - "127.0.0.1:9876"
-
 webauthn:
   rp_id: localhost
   rp_origins:

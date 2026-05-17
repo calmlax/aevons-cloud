@@ -32,13 +32,6 @@ redis:
   mode: standalone
   address: 127.0.0.1:6379
   password: ""
-  db: 0
-  pool_size: 10
-  min_idle_conns: 2
-  max_retries: 3
-  dial_timeout_seconds: 5
-  read_timeout_seconds: 3
-  write_timeout_seconds: 3
 
   # 哨兵模式示例：
   # mode: sentinel
@@ -48,13 +41,6 @@ redis:
   #   - 127.0.0.1:26380
   #   - 127.0.0.1:26381
   # password: ""
-  # db: 0
-  # pool_size: 10
-  # min_idle_conns: 2
-  # max_retries: 3
-  # dial_timeout_seconds: 5
-  # read_timeout_seconds: 3
-  # write_timeout_seconds: 3
 
   # 集群模式示例：
   # mode: cluster
@@ -63,14 +49,25 @@ redis:
   #   - 127.0.0.1:7001
   #   - 127.0.0.1:7002
   # password: ""
-  # pool_size: 20
-  # min_idle_conns: 4
-  # max_retries: 3
-  # dial_timeout_seconds: 5
-  # read_timeout_seconds: 3
-  # write_timeout_seconds: 3
 
 xss:
   enabled: true
   excludes:
     - 
+
+rocketmq:
+  enabled: false
+  name_servers:
+    - "127.0.0.1:9876"
+  producer:
+    group: "aevo_producer"
+    retry_times: 2
+    send_timeout: 3
+  consumer:
+    group: "aevo_consumer"
+    concurrency: 8
+
+auth:
+  excludes:
+    - /api/swagger.json
+    - /api/v1/job/ping

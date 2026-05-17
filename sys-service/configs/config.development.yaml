@@ -19,10 +19,3 @@ rocketmq:
   enabled: true
   name_servers:
     - "127.0.0.1:9876"
-
-webauthn:
-  rp_id: localhost
-  rp_origins:
-    - http://localhost:5173
-    - http://192.168.31.82:5173
-  rp_name: Aevons Admin
