@@ -12,9 +12,9 @@ import (
 	authstore "github.com/calmlax/aevons-framework/auth/store"
 	"github.com/calmlax/aevons-framework/config"
 	"github.com/calmlax/aevons-framework/core"
+	"github.com/calmlax/aevons-framework/core/middleware"
 	"github.com/calmlax/aevons-framework/core/server"
-	"github.com/calmlax/aevons-framework/middleware"
-	"github.com/calmlax/aevons-framework/xlog"
+	"github.com/calmlax/aevons-framework/core/xlog"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 

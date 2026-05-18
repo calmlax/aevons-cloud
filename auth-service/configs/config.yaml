@@ -1,6 +1,6 @@
 server:
   name: auth-service
-  host: 192.168.0.108
+  host: 192.168.31.81
   port: 10701
   grpc_port: 10801
 

@@ -12,7 +12,7 @@ package {{.ModuleName}}
 
 import (
 	localmiddleware "sys-service/internal/middleware"
-	"github.com/calmlax/aevons-framework/middleware"
+	"github.com/calmlax/aevons-framework/core/middleware"
 	"{{.ModuleName}}-service/internal/handler"
 	"{{.ModuleName}}-service/internal/repository"
 	"{{.ModuleName}}-service/internal/service"

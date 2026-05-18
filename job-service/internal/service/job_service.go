@@ -7,7 +7,7 @@ import (
 	"job-service/internal/scheduler"
 	"time"
 
-	"github.com/calmlax/aevons-framework/xlog"
+	"github.com/calmlax/aevons-framework/core/xlog"
 
 	"github.com/calmlax/aevons-framework/core/base"
 )

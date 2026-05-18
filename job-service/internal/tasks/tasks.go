@@ -9,7 +9,7 @@ import (
 
 	"job-service/internal/scheduler"
 
-	"github.com/calmlax/aevons-framework/xlog"
+	"github.com/calmlax/aevons-framework/core/xlog"
 )
 
 // Init 注册所有任务处理函数，在应用启动时调用一次

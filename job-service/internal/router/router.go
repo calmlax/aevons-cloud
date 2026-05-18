@@ -17,10 +17,10 @@ import (
 	"github.com/calmlax/aevons-framework/auth/store"
 	"github.com/calmlax/aevons-framework/consts"
 	"github.com/calmlax/aevons-framework/core"
+	"github.com/calmlax/aevons-framework/core/middleware"
 	"github.com/calmlax/aevons-framework/core/server"
-	"github.com/calmlax/aevons-framework/middleware"
+	"github.com/calmlax/aevons-framework/core/xlog"
 	"github.com/calmlax/aevons-framework/redis"
-	"github.com/calmlax/aevons-framework/xlog"
 	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"

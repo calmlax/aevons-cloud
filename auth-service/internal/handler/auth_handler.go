@@ -11,7 +11,7 @@ import (
 	authctx "github.com/calmlax/aevons-framework/auth/context"
 	authmodel "github.com/calmlax/aevons-framework/auth/model"
 	"github.com/calmlax/aevons-framework/consts"
-	"github.com/calmlax/aevons-framework/response"
+	"github.com/calmlax/aevons-framework/core/response"
 
 	"github.com/gin-gonic/gin"
 )

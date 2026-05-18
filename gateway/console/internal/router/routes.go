@@ -12,8 +12,8 @@ import (
 
 	"github.com/calmlax/aevons-framework/core"
 	frameworkconsul "github.com/calmlax/aevons-framework/core/consul"
+	"github.com/calmlax/aevons-framework/core/middleware"
 	"github.com/calmlax/aevons-framework/core/server"
-	"github.com/calmlax/aevons-framework/middleware"
 	"github.com/gin-gonic/gin"
 )
 

@@ -10,7 +10,7 @@ import (
 	"gateway-console/internal/model"
 	"gateway-console/internal/service"
 
-	frameworkresp "github.com/calmlax/aevons-framework/response"
+	frameworkresp "github.com/calmlax/aevons-framework/core/response"
 	"github.com/gin-gonic/gin"
 )
 
