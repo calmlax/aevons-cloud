@@ -13,8 +13,7 @@ auth-service/configs/config.production.yaml
 sys-service/configs/config.production.yaml
 job-service/configs/config.production.yaml
 gen-service/configs/config.production.yaml
-
-gateway-service
+gateway-service/configs/config.production.yaml
 
 gateway/console/ui/node_modules
 
@@ -24,5 +23,9 @@ sys-service/logs
 log-service/logs
 job-service/logs
 gen-service/logs
+gateway-service/logs
 gateway/logs
 gateway/console/logs
+
+
+gateway-service/

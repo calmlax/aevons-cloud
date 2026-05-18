@@ -8,11 +8,11 @@ discovery:
     servers:
       - "http://127.0.0.1:8500"
     timeout:
-      connect: 1000
-      read: 1000
-      wait: 60
+      connect: 3000
+      read: 5000
+      wait: 120
     keepalive: false
-    fetch_interval: 5
+    fetch_interval: 10
     weight: 1
 
 apisix:

@@ -1,6 +1,6 @@
 server:
   name: log-service
-  host: 192.168.31.81
+  host: 192.168.0.102
   port: 10703
   grpc_port: 10803
 
