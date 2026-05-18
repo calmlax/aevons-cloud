@@ -57,8 +57,6 @@ func Setup(app *core.App) (*gin.Engine, error) {
 	r.Use(middleware.Logger())
 	r.Use(gin.Recovery())
 	r.Use(middleware.RequestID())
-	r.Use(middleware.CORS(cfg.CORS.Enabled, cfg.CORS.AllowedOrigins))
-	r.Use(middleware.XSSMiddleware(cfg))
 	server.RegisterHealthRoute(r, cfg.Server.Name)
 	server.RegisterOpenApiRoute(r, cfg)
 	r.Use(middleware.AuthMiddleware(store.NewRedisTokenStore(redisClient), cfg.Auth.Excludes))
