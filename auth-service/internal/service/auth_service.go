@@ -131,7 +131,12 @@ func (s *authService) recordLoginLog(ctx context.Context, username, clientId, gr
 	}
 
 	go func(record *log_grpc.LoginEntry) {
-		_ = s.logStore.WriteLoginLog(ctx, *record)
+		writeCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		if err := s.logStore.WriteLoginLog(writeCtx, *record); err != nil {
+			fmt.Printf("[AuthService] write login log failed: %v\n", err)
+		}
 	}(log)
 }
 

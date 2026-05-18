@@ -38,13 +38,7 @@ func Setup(app *core.App) (*gin.Engine, error) {
 		return nil, fmt.Errorf("router: 读取数据库连接失败: %w", err)
 	}
 
-	logStore := log_grpc.LoginLogStore(log_grpc.NopLoginLogStore{})
-	client, err := log_grpc.NewLoginLogClient(cfg.Consul)
-	if err != nil {
-		xlog.Warn("init login log grpc client from consul failed: %v", err)
-	} else {
-		logStore = client
-	}
+	logStore := log_grpc.NewConsulLoginLogStore(cfg.Consul)
 
 	gin.SetMode(cfg.Server.Mode)
 

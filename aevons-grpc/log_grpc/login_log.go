@@ -2,6 +2,7 @@ package log_grpc
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"github.com/calmlax/aevons-framework/config"
@@ -85,6 +86,14 @@ type LoginLogClient struct {
 	conn *grpc.ClientConn
 }
 
+// ConsulLoginLogStore 是带 Consul 自动重连能力的登录日志写入器。
+// 当 log-service 启动晚于业务服务时，不需要重启业务服务也能恢复写日志。
+type ConsulLoginLogStore struct {
+	consulCfg config.ConsulConfig
+	mu        sync.Mutex
+	client    *LoginLogClient
+}
+
 // NewLoginLogClient 通过 Consul 服务发现创建登录日志 gRPC 客户端。
 // 默认使用 RegistryServiceName 作为日志中心服务注册名，业务侧无需再配置。
 func NewLoginLogClient(consulCfg config.ConsulConfig, opts ...grpc.DialOption) (*LoginLogClient, error) {
@@ -93,6 +102,11 @@ func NewLoginLogClient(consulCfg config.ConsulConfig, opts ...grpc.DialOption) (
 		return nil, err
 	}
 	return &LoginLogClient{conn: conn}, nil
+}
+
+// NewConsulLoginLogStore 创建一个可按需连接、失败后自动重试的登录日志存储实现。
+func NewConsulLoginLogStore(consulCfg config.ConsulConfig) LoginLogStore {
+	return &ConsulLoginLogStore{consulCfg: consulCfg}
 }
 
 // WriteLoginLog 调用远端 log-service 写入登录日志。
@@ -120,6 +134,76 @@ func (c *LoginLogClient) Close() error {
 		return nil
 	}
 	return closeConn(c.conn)
+}
+
+func (s *ConsulLoginLogStore) getClient() (*LoginLogClient, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if s.client != nil {
+		return s.client, nil
+	}
+
+	client, err := NewLoginLogClient(s.consulCfg)
+	if err != nil {
+		return nil, err
+	}
+	s.client = client
+	return client, nil
+}
+
+func (s *ConsulLoginLogStore) resetClient() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if s.client != nil {
+		_ = s.client.Close()
+	}
+	s.client = nil
+}
+
+func (s *ConsulLoginLogStore) WriteLoginLog(ctx context.Context, entry LoginEntry) error {
+	client, err := s.getClient()
+	if err != nil {
+		return err
+	}
+
+	if err := client.WriteLoginLog(ctx, entry); err == nil {
+		return nil
+	}
+
+	s.resetClient()
+
+	client, err = s.getClient()
+	if err != nil {
+		return err
+	}
+	return client.WriteLoginLog(ctx, entry)
+}
+
+func (s *ConsulLoginLogStore) GetLatestLoginLog(ctx context.Context, username string, limit int) ([]LoginEntry, error) {
+	client, err := s.getClient()
+	if err != nil {
+		return nil, err
+	}
+
+	entries, err := client.GetLatestLoginLog(ctx, username, limit)
+	if err == nil {
+		return entries, nil
+	}
+
+	s.resetClient()
+
+	client, err = s.getClient()
+	if err != nil {
+		return nil, err
+	}
+	return client.GetLatestLoginLog(ctx, username, limit)
+}
+
+func (s *ConsulLoginLogStore) Close() error {
+	s.resetClient()
+	return nil
 }
 
 // RegisterLoginService 注册登录日志 gRPC 服务。
