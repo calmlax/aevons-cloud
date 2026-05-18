@@ -11,7 +11,7 @@
  Target Server Version : 80044
  File Encoding         : 65001
 
- Date: 18/05/2026 17:24:18
+ Date: 18/05/2026 18:05:52
 */
 
 SET NAMES utf8mb4;
@@ -287,7 +287,7 @@ CREATE TABLE `sys_conf` (
 -- Records of sys_conf
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_conf` VALUES (1, '账号初始密码', 'sys.user.initPassword', 'kwpzXGcBZbG5R3X02qZtEw==', 1, 2, 1, '初始化密码 123456', 1, '2022-12-11 16:51:52', 1, '2026-04-18 08:19:55');
+INSERT INTO `sys_conf` VALUES (1, '账号初始密码', 'sys.user.initPassword', 'kwpzXGcBZbG5R3X02qZtEw==', 1, 2, 1, '初始化密码 123456', 1, '2022-12-11 16:51:52', 1, '2026-05-18 18:05:19');
 INSERT INTO `sys_conf` VALUES (2, '验证码开关', 'sys.captcha.enabled', 'true', 1, 0, 0, '验证码开关（true开启，false关闭）', 1, '2022-12-11 16:51:52', 1, '2025-04-16 09:18:39');
 INSERT INTO `sys_conf` VALUES (3, '验证码类型', 'sys.captcha.type', 'SLIDER', 1, 0, 0, 'SLIDER/ROTATE/CONCAT/WORD_IMAGE_CLICK', 1, '2025-08-23 09:34:48', 0, '2025-08-23 09:34:55');
 INSERT INTO `sys_conf` VALUES (5, '开启用户注册功能', 'sys.registerEnabled', 'false', 1, 0, 0, '开启用户注册功能（true开启，false关闭）', 1, '2022-12-11 16:51:52', 1, '2025-04-16 09:18:43');
@@ -297,11 +297,11 @@ INSERT INTO `sys_conf` VALUES (13, 'IP黑名单', 'sys.blacklist', '#', 1, 0, 0,
 INSERT INTO `sys_conf` VALUES (15, 'Mail 驱动', 'sys.mail.driver', 'qq', 1, 2, 0, 'qq/google/163/', 1, '2025-08-09 20:50:37', 0, '2025-08-09 20:51:01');
 INSERT INTO `sys_conf` VALUES (16, 'Mail 主机', 'sys.mail.host', 'smtp.qq.com', 1, 2, 0, 'QQ Email 主机', 1, '2025-08-09 20:53:09', 0, '2025-08-09 20:53:31');
 INSERT INTO `sys_conf` VALUES (17, 'Mail 协议', 'sys.mail.protocol', 'smtp', 1, 2, 0, 'Mail 协议', 1, '2025-08-09 20:55:23', 0, '2025-08-09 20:55:36');
-INSERT INTO `sys_conf` VALUES (18, '发件地址', 'sys.mail.email', '1073602@qq.com', 1, 2, 0, '发件地址', 1, '2025-08-09 20:56:38', 0, '2026-04-20 12:30:55');
-INSERT INTO `sys_conf` VALUES (19, '发件授权码', 'sys.mail.code', 'X7k0LJ1dm3aH/nbw1XSz7g==', 1, 2, 1, '发件授权码', 1, '2025-08-09 21:00:11', 0, '2026-04-18 08:19:43');
-INSERT INTO `sys_conf` VALUES (21, '百度翻译AppId', 'i18n.baidu.translator.app_id', 'j5+UOlMdFMS7Oe/aCL6GOaFospK5uPoao8kSbCmsMsE=', 1, 2, 1, '', 1, '2026-02-02 10:45:45', 0, '2026-04-18 08:20:09');
-INSERT INTO `sys_conf` VALUES (22, '百度翻译SecretKey', 'i18n.baidu.translator.secret_key', '0usXSPYff2H+RIU5GGc4+FlStcEn0Xd8sqe30vGgWco=', 1, 2, 1, '', 1, '2026-02-02 10:46:31', 0, '2026-04-18 08:20:04');
-INSERT INTO `sys_conf` VALUES (23, '百度翻译AppKey', 'i18n.baidu.translator.api_key', 'e4208uCkdxUq7kbUyMPh+C9H3Pniu1fX6kxe4XjbmRE=', 1, 2, 1, '', 1, '2026-02-02 13:34:16', 0, '2026-04-18 08:20:12');
+INSERT INTO `sys_conf` VALUES (18, '发件地址', 'sys.mail.email', 'bQ4xAlQQxGUSrTp4KtGtyg==', 1, 2, 1, '发件地址', 1, '2025-08-09 20:56:38', 0, '2026-05-18 18:05:31');
+INSERT INTO `sys_conf` VALUES (19, '发件授权码', 'sys.mail.code', '', 1, 2, 0, '发件授权码', 1, '2025-08-09 21:00:11', 0, '2026-04-18 08:19:43');
+INSERT INTO `sys_conf` VALUES (21, '百度翻译AppId', 'i18n.baidu.translator.app_id', '', 1, 2, 0, '', 1, '2026-02-02 10:45:45', 0, '2026-04-18 08:20:09');
+INSERT INTO `sys_conf` VALUES (22, '百度翻译SecretKey', 'i18n.baidu.translator.secret_key', '', 1, 2, 0, '', 1, '2026-02-02 10:46:31', 0, '2026-04-18 08:20:04');
+INSERT INTO `sys_conf` VALUES (23, '百度翻译AppKey', 'i18n.baidu.translator.api_key', '', 1, 2, 0, '', 1, '2026-02-02 13:34:16', 0, '2026-04-18 08:20:12');
 INSERT INTO `sys_conf` VALUES (24, '多语言翻译强制更新开关', 'i18n.forced_update', '1', 1, 2, 0, '（1开启，0关闭）, 开启后翻译过的也会更新', 1, '2026-02-02 13:34:16', 0, '2026-02-02 10:47:40');
 COMMIT;
 
@@ -970,7 +970,7 @@ CREATE TABLE `sys_job` (
 -- Records of sys_job
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_job` VALUES (1, 'sys.test', '', 'sys.test', '0 */1 * * * *', 'sys.test', 1, 0, 0, 30, '', 0, '2026-04-19 16:13:53', '2026-04-20 11:03:13', 0);
+INSERT INTO `sys_job` VALUES (1, 'sys.test', '', 'sys.test', '0 */1 * * * *', 'sys.test', 0, 0, 0, 30, '', 0, '2026-04-19 16:13:53', '2026-05-18 18:03:12', 0);
 COMMIT;
 
 -- ----------------------------
@@ -991,12 +991,15 @@ CREATE TABLE `sys_job_log` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '日志生成时间',
   PRIMARY KEY (`id`),
   KEY `idx_job_id` (`job_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=205 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='定时任务执行日志表';
+) ENGINE=InnoDB AUTO_INCREMENT=208 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='定时任务执行日志表';
 
 -- ----------------------------
 -- Records of sys_job_log
 -- ----------------------------
 BEGIN;
+INSERT INTO `sys_job_log` VALUES (205, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-18 18:03:16', 0, 'manual', '2026-05-18 18:03:17', '2026-05-18 18:03:17', '2026-05-18 18:03:17');
+INSERT INTO `sys_job_log` VALUES (206, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-18 18:04:00', 0, 'auto', '2026-05-18 18:04:00', '2026-05-18 18:04:00', '2026-05-18 18:04:00');
+INSERT INTO `sys_job_log` VALUES (207, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-18 18:05:00', 0, 'auto', '2026-05-18 18:05:00', '2026-05-18 18:05:00', '2026-05-18 18:05:00');
 COMMIT;
 
 -- ----------------------------
@@ -1214,7 +1217,7 @@ CREATE TABLE `sys_login_log` (
   `msg` varchar(50) DEFAULT NULL COMMENT '模块标题',
   `login_at` datetime DEFAULT NULL COMMENT '登录时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=255 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='操作日志记录';
+) ENGINE=InnoDB AUTO_INCREMENT=259 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='操作日志记录';
 
 -- ----------------------------
 -- Records of sys_login_log
@@ -1260,6 +1263,10 @@ INSERT INTO `sys_login_log` VALUES (251, 'develop', '100000', 'password', 'Linux
 INSERT INTO `sys_login_log` VALUES (252, 'develop', '100000', 'password', 'Linux', 'Chrome', '127.0.0.1', '', 1, 'Login successful', '2026-05-01 10:46:11');
 INSERT INTO `sys_login_log` VALUES (253, 'develop', '100000', 'password', 'Linux', 'Chrome', '127.0.0.1', '', 1, 'Login successful', '2026-05-01 10:57:17');
 INSERT INTO `sys_login_log` VALUES (254, 'develop', '100000', 'password', 'Linux', 'Chrome', '127.0.0.1', '', 1, 'Login successful', '2026-05-03 12:45:57');
+INSERT INTO `sys_login_log` VALUES (255, 'develop', '100000', 'passkey', 'Linux', 'Chrome', '192.168.0.102', '', 1, 'Passkey login successful', '2026-05-18 17:37:52');
+INSERT INTO `sys_login_log` VALUES (256, 'develop', '100000', 'password', 'Linux', 'Chrome', '192.168.0.102', '', 1, 'Login successful', '2026-05-18 17:38:13');
+INSERT INTO `sys_login_log` VALUES (257, '123123', '100000', 'password', 'Linux', 'Chrome', '192.168.0.102', '', 0, 'auth.invalid_credentials', '2026-05-18 18:01:39');
+INSERT INTO `sys_login_log` VALUES (258, 'develop', '100000', 'passkey', 'Linux', 'Chrome', '192.168.0.102', '', 1, 'Passkey login successful', '2026-05-18 18:02:29');
 COMMIT;
 
 -- ----------------------------
@@ -1756,7 +1763,7 @@ CREATE TABLE `sys_oper_log` (
   `username` varchar(50) DEFAULT NULL COMMENT '用户名',
   `oper_at` datetime DEFAULT NULL COMMENT '操作时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='操作日志记录';
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='操作日志记录';
 
 -- ----------------------------
 -- Records of sys_oper_log
@@ -1786,6 +1793,9 @@ INSERT INTO `sys_oper_log` VALUES (21, 'Menu-[菜单权限表]', 'UPDATE', '', '
 INSERT INTO `sys_oper_log` VALUES (23, 'Online-[在线用户]', 'DELETE', 'Online-[在线用户]', 'DELETE', '/api/v1/sys/monitor/online/728cd7fb-9ce5-485e-9fa7-f512b3aef76d', '192.168.0.102', '', '', '{\"code\":0,\"message\":\"success\",\"data\":null}\n', 'PC', 'Linux', 'Chrome', 1, '', 0, 2, 'develop', '2026-05-18 17:20:32');
 INSERT INTO `sys_oper_log` VALUES (24, 'Online-[在线用户]', 'DELETE', 'Online-[在线用户]', 'DELETE', '/api/v1/sys/monitor/online/f34e102e-0204-4b36-a59f-ab8717f3d834', '192.168.0.102', '', '', '{\"code\":0,\"message\":\"success\",\"data\":null}\n', 'PC', 'Linux', 'Chrome', 1, '', 0, 2, 'develop', '2026-05-18 17:20:34');
 INSERT INTO `sys_oper_log` VALUES (25, 'Online-[在线用户]', 'DELETE', 'Online-[在线用户]', 'DELETE', '/api/v1/sys/monitor/online/7cd0eff2-504a-419b-8316-5de9ec76b381', '192.168.0.102', '', '', '{\"code\":0,\"message\":\"success\",\"data\":null}\n', 'PC', 'Linux', 'Chrome', 1, '', 0, 2, 'develop', '2026-05-18 17:20:36');
+INSERT INTO `sys_oper_log` VALUES (26, 'Conf-[参数配置]', 'UPDATE', 'Conf-[参数配置]', 'PUT', '/api/v1/sys/conf/1', '192.168.0.102', '', '{\"id\":\"1\",\"name\":\"账号初始密码\",\"confKey\":\"sys.user.initPassword\",\"confValue\":\"123456\",\"isSys\":1,\"scope\":2,\"isSecret\":0,\"remark\":\"初始化密码 123456\",\"createdBy\":\"1\",\"createdAt\":\"2022-12-11T16:51:52+08:00\",\"updatedAt\":\"2026-04-18T08:19:55+08:00\",\"updatedBy\":\"1\"}', '{\"code\":0,\"message\":\"success\",\"data\":null}\n', 'PC', 'Linux', 'Chrome', 1, '', 5, 2, 'develop', '2026-05-18 18:05:16');
+INSERT INTO `sys_oper_log` VALUES (27, 'Conf-[参数配置]', 'UPDATE', 'Conf-[参数配置]', 'PUT', '/api/v1/sys/conf/1', '192.168.0.102', '', '{\"id\":\"1\",\"name\":\"账号初始密码\",\"confKey\":\"sys.user.initPassword\",\"confValue\":\"123456\",\"isSys\":1,\"scope\":2,\"isSecret\":1,\"remark\":\"初始化密码 123456\",\"createdBy\":\"1\",\"createdAt\":\"2022-12-11T16:51:52+08:00\",\"updatedAt\":\"2026-05-18T18:05:16+08:00\",\"updatedBy\":\"1\"}', '{\"code\":0,\"message\":\"success\",\"data\":null}\n', 'PC', 'Linux', 'Chrome', 1, '', 4, 2, 'develop', '2026-05-18 18:05:19');
+INSERT INTO `sys_oper_log` VALUES (28, 'Conf-[参数配置]', 'UPDATE', 'Conf-[参数配置]', 'PUT', '/api/v1/sys/conf/18', '192.168.0.102', '', '{\"id\":\"18\",\"name\":\"发件地址\",\"confKey\":\"sys.mail.email\",\"confValue\":\"1073602@qq.com\",\"isSys\":1,\"scope\":2,\"isSecret\":1,\"remark\":\"发件地址\",\"createdBy\":\"1\",\"createdAt\":\"2025-08-09T20:56:38+08:00\",\"updatedAt\":\"2026-04-20T12:30:55+08:00\",\"updatedBy\":\"1\"}', '{\"code\":0,\"message\":\"success\",\"data\":null}\n', 'PC', 'Linux', 'Chrome', 1, '', 7, 2, 'develop', '2026-05-18 18:05:31');
 COMMIT;
 
 -- ----------------------------
@@ -2316,7 +2326,7 @@ CREATE TABLE `sys_user_credential` (
 -- Records of sys_user_credential
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_user_credential` VALUES (7, 2, 'develop', 0x032E86B4C9301ED58D832F96DC1C8BBF, 0xA501020326200121582037DE0D8711752F9E8E65FC569FEF86C64B1DDCD950F6DC8CBB1714BED85F0C1E225820FE478D6FF055A0FACB668278FABEC63093F8E45A8BE2203CCDFC66208281570D, 0x32, 0, 'ea9b8d664d011d213ce4b6b48cb575d4', 'none', '', 'hybrid,internal', '', 1, '', 0, '2026-05-18 17:20:11', '2026-04-26 16:30:18', '2026-05-18 17:20:11');
+INSERT INTO `sys_user_credential` VALUES (7, 2, 'develop', 0x032E86B4C9301ED58D832F96DC1C8BBF, 0xA501020326200121582037DE0D8711752F9E8E65FC569FEF86C64B1DDCD950F6DC8CBB1714BED85F0C1E225820FE478D6FF055A0FACB668278FABEC63093F8E45A8BE2203CCDFC66208281570D, 0x32, 0, 'ea9b8d664d011d213ce4b6b48cb575d4', 'none', '', 'hybrid,internal', '', 1, '', 0, '2026-05-18 18:02:29', '2026-04-26 16:30:18', '2026-05-18 18:02:29');
 COMMIT;
 
 -- ----------------------------
