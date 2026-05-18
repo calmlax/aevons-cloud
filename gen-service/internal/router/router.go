@@ -3,7 +3,7 @@ package router
 import (
 	"fmt"
 
-	"aevons-grpc/log_grpc"
+	"internal-grpc/log_grpc"
 
 	"gen-service/internal/handler"
 	localmiddleware "gen-service/internal/middleware"

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"aevons-grpc/log_grpc"
+	"internal-grpc/log_grpc"
 
 	authctx "github.com/calmlax/aevons-framework/auth/context"
 	"github.com/calmlax/aevons-framework/consts"

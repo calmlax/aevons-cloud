@@ -14,7 +14,7 @@ package main
 import (
 	"log-service/internal/router"
 
-	"aevons-grpc/log_grpc"
+	"internal-grpc/log_grpc"
 	"log-service/internal/grpcs"
 
 	"github.com/calmlax/aevons-framework/core"

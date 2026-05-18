@@ -2,13 +2,13 @@
 package service
 
 import (
-	"aevons-grpc/log_grpc"
 	"auth-service/internal/dto"
 	authRepo "auth-service/internal/repository"
 	"context"
 	"crypto/rand"
 	"errors"
 	"fmt"
+	"internal-grpc/log_grpc"
 	"math/big"
 	"strings"
 	"time"

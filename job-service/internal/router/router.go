@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"aevons-grpc/log_grpc"
+	"internal-grpc/log_grpc"
 
 	"job-service/internal/handler"
 	"job-service/internal/repository"

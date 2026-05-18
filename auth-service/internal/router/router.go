@@ -3,10 +3,10 @@ package router
 import (
 	"fmt"
 
-	"aevons-grpc/log_grpc"
 	authHandler "auth-service/internal/handler"
 	authRepo "auth-service/internal/repository"
 	authService "auth-service/internal/service"
+	"internal-grpc/log_grpc"
 
 	authnotifier "github.com/calmlax/aevons-framework/auth/notifier"
 	authstore "github.com/calmlax/aevons-framework/auth/store"

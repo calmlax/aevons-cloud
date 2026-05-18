@@ -1,4 +1,4 @@
-module aevons-grpc
+module internal-grpc
 
 go 1.25.0
 

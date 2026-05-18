@@ -2,10 +2,10 @@ module auth-service
 
 go 1.25.0
 
-replace aevons-grpc => ../aevons-grpc
+replace internal-grpc => ../internal-grpc
 
 require (
-	aevons-grpc v0.0.0-00010101000000-000000000000
+	internal-grpc v0.0.0-00010101000000-000000000000
 	github.com/calmlax/aevons-framework v0.0.0
 	github.com/gin-gonic/gin v1.12.0
 	github.com/go-webauthn/webauthn v0.17.3

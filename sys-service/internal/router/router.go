@@ -7,7 +7,7 @@ import (
 	"sys-service/internal/repository"
 	"sys-service/internal/service"
 
-	"aevons-grpc/log_grpc"
+	"internal-grpc/log_grpc"
 
 	"github.com/calmlax/aevons-framework/auth/store"
 	"github.com/calmlax/aevons-framework/config"

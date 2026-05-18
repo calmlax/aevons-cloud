@@ -2,10 +2,10 @@ module gen-service
 
 go 1.25.0
 
-replace aevons-grpc => ../aevons-grpc
+replace internal-grpc => ../internal-grpc
 
 require (
-	aevons-grpc v0.0.0
+	internal-grpc v0.0.0
 	github.com/calmlax/aevons-framework v0.0.0
 	github.com/gin-gonic/gin v1.12.0
 	github.com/spf13/cobra v1.10.1

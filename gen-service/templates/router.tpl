@@ -17,7 +17,7 @@ import (
 	"{{.ModuleName}}-service/internal/repository"
 	"{{.ModuleName}}-service/internal/service"
 	"github.com/calmlax/aevons-framework/consts"
-	"aevons-grpc/log_grpc"
+	"internal-grpc/log_grpc"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
