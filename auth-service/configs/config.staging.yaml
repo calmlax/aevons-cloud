@@ -13,7 +13,7 @@ cors:
 
 db:
   driver: mysql
-  dsn: root:changeme@tcp(127.0.0.1:3306)/aevo_db_staging?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
+  dsn: root:changeme@tcp(127.0.0.1:3306)/aevons_db_staging?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
 
 redis:
   address: 127.0.0.1:6379

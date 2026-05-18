@@ -24,7 +24,7 @@ cors:
 
 db:
   driver: mysql
-  dsn: root:123456@tcp(127.0.0.1:3306)/aevo_db?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
+  dsn: root:123456@tcp(127.0.0.1:3306)/aevons_db?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
   max_open_conns: 20
   max_idle_conns: 10
   conn_max_lifetime_seconds: 3600
