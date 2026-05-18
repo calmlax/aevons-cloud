@@ -2,14 +2,14 @@ package router
 
 import (
 	"fmt"
-	handler "sys-service/internal/handler"
+	"sys-service/internal/handler"
 	localmiddleware "sys-service/internal/middleware"
 	"sys-service/internal/repository"
 	"sys-service/internal/service"
 
 	"aevons-grpc/log_grpc"
 
-	authstore "github.com/calmlax/aevons-framework/auth/store"
+	"github.com/calmlax/aevons-framework/auth/store"
 	"github.com/calmlax/aevons-framework/consts"
 	"github.com/calmlax/aevons-framework/core"
 	"github.com/calmlax/aevons-framework/core/server"
@@ -55,7 +55,7 @@ func Setup(app *core.App) (*gin.Engine, error) {
 	r.Use(middleware.XSSMiddleware(cfg))
 	server.RegisterHealthRoute(r, cfg.Server.Name)
 	server.RegisterOpenApiRoute(r, cfg)
-	r.Use(middleware.AuthMiddleware(authstore.NewRedisTokenStore(redisClient), cfg.Auth.Excludes))
+	r.Use(middleware.AuthMiddleware(store.NewRedisTokenStore(redisClient), cfg.Auth.Excludes))
 
 	v1 := r.Group("/api/v1/sys")
 	{

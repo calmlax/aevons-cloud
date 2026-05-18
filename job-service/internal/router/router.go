@@ -6,7 +6,7 @@ import (
 
 	"aevons-grpc/log_grpc"
 
-	handler "job-service/internal/handler"
+	"job-service/internal/handler"
 	"job-service/internal/repository"
 	"job-service/internal/scheduler"
 	"job-service/internal/service"
@@ -14,7 +14,7 @@ import (
 
 	localmiddleware "job-service/internal/middleware"
 
-	authstore "github.com/calmlax/aevons-framework/auth/store"
+	"github.com/calmlax/aevons-framework/auth/store"
 	"github.com/calmlax/aevons-framework/consts"
 	"github.com/calmlax/aevons-framework/core"
 	"github.com/calmlax/aevons-framework/core/server"
@@ -61,7 +61,7 @@ func Setup(app *core.App) (*gin.Engine, error) {
 	r.Use(middleware.XSSMiddleware(cfg))
 	server.RegisterHealthRoute(r, cfg.Server.Name)
 	server.RegisterOpenApiRoute(r, cfg)
-	r.Use(middleware.AuthMiddleware(authstore.NewRedisTokenStore(redisClient), cfg.Auth.Excludes))
+	r.Use(middleware.AuthMiddleware(store.NewRedisTokenStore(redisClient), cfg.Auth.Excludes))
 
 	jobRepo := repository.NewJobRepository(db)
 	logRepo := repository.NewJobLogRepository(db)
