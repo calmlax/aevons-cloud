@@ -10,11 +10,13 @@ import (
 	"aevons-grpc/log_grpc"
 
 	"github.com/calmlax/aevons-framework/auth/store"
+	"github.com/calmlax/aevons-framework/config"
 	"github.com/calmlax/aevons-framework/consts"
 	"github.com/calmlax/aevons-framework/core"
 	"github.com/calmlax/aevons-framework/core/server"
 	"github.com/calmlax/aevons-framework/middleware"
 	"github.com/calmlax/aevons-framework/xlog"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"
@@ -72,6 +74,7 @@ func Setup(app *core.App) (*gin.Engine, error) {
 		registerLangRoutes(v1, db, logWriter)
 		registerOAuthClientRoutes(v1, db, logWriter)
 		registerNoticeRoutes(v1, db, logWriter)
+		registerMonitorRoutes(v1, db, redisClient, cfg, logWriter)
 	}
 
 	return r, nil
@@ -273,5 +276,19 @@ func registerNoticeRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.O
 		g.POST("", middleware.HasPermission("sys:notice$add"), localmiddleware.OperLog(logWriter, "Notice-[通知公告]", consts.INSERT), h.Create)
 		g.PUT("/:id", middleware.HasPermission("sys:notice$edit"), localmiddleware.OperLog(logWriter, "Notice-[通知公告]", consts.UPDATE), h.Update)
 		g.DELETE("/:ids", middleware.HasPermission("sys:notice$delete"), localmiddleware.OperLog(logWriter, "Notice-[通知公告]", consts.DELETE), h.BatchDelete)
+	}
+}
+
+func registerMonitorRoutes(rg *gin.RouterGroup, db *gorm.DB, redisClient *redis.Client, cfg *config.Config, logWriter log_grpc.OperLogWriter) {
+	m := rg.Group("monitor")
+	{
+		monitorH := handler.NewMonitorHandler(db, redisClient, cfg)
+		m.GET("/server", middleware.HasPermission("monitor:server$query"), monitorH.GetServerInfo)
+		m.GET("/online", middleware.HasPermission("monitor:online$list"), monitorH.ListOnline)
+		m.DELETE("/online/:token", middleware.HasPermission("monitor:online$forceLogout"), localmiddleware.OperLog(logWriter, "Online-[在线用户]", consts.DELETE), monitorH.ForceLogout)
+		m.GET("/cache", middleware.HasPermission("cache$list"), monitorH.List)
+		m.GET("/cache/detail", middleware.HasPermission("cache$list"), monitorH.Detail)
+		m.DELETE("/cache", middleware.HasPermission("cache$delete"), localmiddleware.OperLog(logWriter, "Redis-[缓存管理]", consts.DELETE), monitorH.Delete)
+		m.DELETE("/cache/prefix", middleware.HasPermission("cache$delete"), localmiddleware.OperLog(logWriter, "Redis-[缓存管理]", consts.DELETE), monitorH.DeleteByPrefix)
 	}
 }

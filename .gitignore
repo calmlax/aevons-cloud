@@ -1,6 +1,7 @@
 frontend/node_modules
 frontend/dist
 frontend/dist.zip
+frontend
 
 .vscode
 
@@ -23,3 +24,5 @@ sys-service/logs
 log-service/logs
 job-service/logs
 gen-service/logs
+gateway/logs
+gateway/console/logs

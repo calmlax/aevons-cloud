@@ -10,12 +10,14 @@ consul:
 
 log:
   level: info
-  dir: logs
   console: true
-  max_size_mb: 100
-  max_backups: 10
-  max_age_days: 30
-  compress: false
+  file:
+    dir: logs
+    rotation:
+      max_size_mb: 100
+      max_backups: 10
+      max_age_days: 30
+      compress: false
 
 cors:
   enabled: false

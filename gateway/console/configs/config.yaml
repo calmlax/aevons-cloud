@@ -1,6 +1,6 @@
 server:
   name: gateway-console
-  host: 0.0.0.0
+  host: 192.168.31.81
   port: 10900
   env: development
   mode: debug
@@ -11,12 +11,14 @@ consul:
 
 log:
   level: info
-  dir: logs
   console: true
-  max_size_mb: 100
-  max_backups: 10
-  max_age_days: 30
-  compress: false
+  file:
+    dir: logs
+    rotation:
+      max_size_mb: 100
+      max_backups: 10
+      max_age_days: 30
+      compress: false
 
 cors:
   enabled: true
