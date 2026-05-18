@@ -1,0 +1,104 @@
+/* ============================================================
+   animations.css — Dedicated animation styles for Aevons
+   ============================================================ */
+
+/* ── Page Transition: .page-fade-* ── */
+/* Enter: fade in + slide up 220ms ease-out */
+.page-fade-enter-active {
+  transition:
+    opacity var(--dur-normal) var(--ease-out),
+    transform var(--dur-normal) var(--ease-out);
+}
+
+/* Leave: fade out + slide down 180ms ease-in */
+.page-fade-leave-active {
+  transition:
+    opacity 180ms var(--ease-in),
+    transform 180ms var(--ease-in);
+}
+
+.page-fade-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+/* ── Skeleton Screen ── */
+@keyframes skeleton-scan {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  --skeleton-base: rgba(148, 163, 184, 0.12);
+  --skeleton-shine: rgba(148, 163, 184, 0.28);
+  background: linear-gradient(90deg,
+      var(--skeleton-base) 25%,
+      var(--skeleton-shine) 50%,
+      var(--skeleton-base) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-scan 1.5s ease-in-out infinite;
+  border-radius: 6px;
+}
+
+[data-theme='dark'] .skeleton {
+  --skeleton-base: rgba(100, 116, 139, 0.18);
+  --skeleton-shine: rgba(148, 163, 184, 0.32);
+}
+
+/* ── Stagger Enter Animation ── */
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-item {
+  animation: stagger-in 300ms var(--ease-out) both;
+  animation-delay: calc(var(--stagger-index, 0) * 40ms);
+}
+
+/* ── Arco Design Popup / Dropdown Animation Override ── */
+/* Enter: elastic spring scale from 0.92 → 1 */
+.slide-dynamic-origin-enter-active {
+  transition:
+    opacity var(--dur-normal) var(--ease-spring),
+    transform var(--dur-normal) var(--ease-spring);
+}
+
+.slide-dynamic-origin-enter-from {
+  opacity: 0;
+  transform: scale(0.92);
+}
+
+/* Leave: quick ease-in shrink */
+.slide-dynamic-origin-leave-active {
+  transition:
+    opacity 140ms var(--ease-in),
+    transform 140ms var(--ease-in);
+}
+
+.slide-dynamic-origin-leave-to {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+/* Ensure transform-origin follows Arco's dynamic origin variable */
+.arco-trigger-popup {
+  transform-origin: var(--transform-origin, top center);
+}

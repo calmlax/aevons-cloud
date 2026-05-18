@@ -94,7 +94,7 @@ func (h *Handler) Forward(c *gin.Context) {
 
 	allowedByAll := false
 	if clientID != "" {
-		allowed, allowAll := h.checkWithMode(clientID, c.Request.Method, c.Request.URL.Path)
+		allowed, allowAll := h.checkWithMode(clientID, rule)
 		if !allowed {
 			gatewayresp.Fail(c, http.StatusForbidden, "GATEWAY_CLIENT_FORBIDDEN", "gateway.client_resource_forbidden")
 			h.logAudit(c, startedAt, requestCtx, "", http.StatusForbidden, false, true)
@@ -218,18 +218,18 @@ func toUserIdentity(user *model.UserContext) *model.UserIdentity {
 	}
 }
 
-func (h *Handler) checkWithMode(clientID, method, path string) (allowed bool, allowAll bool) {
+func (h *Handler) checkWithMode(clientID string, service *model.ServiceRule) (allowed bool, allowAll bool) {
 	if h.checker == nil {
 		return true, false
 	}
 	rule, ok := h.checker.Rule(clientID)
 	if !ok {
-		return false, false
+		return h.checker.Allow(clientID, service), false
 	}
 	if rule.AllowAll {
 		return true, true
 	}
-	return h.checker.Allow(clientID, method, path), false
+	return h.checker.Allow(clientID, service), false
 }
 
 func (h *Handler) logAudit(

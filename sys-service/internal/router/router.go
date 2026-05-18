@@ -254,6 +254,7 @@ func registerOAuthClientRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_g
 		g.GET("/page", middleware.HasPermission("sys:oauth:client$list"), h.Page)
 		g.GET("/:id", middleware.HasPermission("sys:oauth:client$query"), h.Get)
 		g.POST("", middleware.HasPermission("sys:oauth:client$add"), localmiddleware.OperLog(logWriter, "OAuthClient-[终端应用]", consts.INSERT), h.CreateOAuthClient)
+		g.POST("/refresh-cache", middleware.HasPermission("sys:oauth:client$edit"), localmiddleware.OperLog(logWriter, "OAuthClient-[终端应用缓存刷新]", consts.CLEAN), h.RefreshGatewayCache)
 		g.PUT("/:id", middleware.HasPermission("sys:oauth:client$edit"), localmiddleware.OperLog(logWriter, "OAuthClient-[终端应用]", consts.UPDATE), h.UpdateOAuthClient)
 		g.DELETE("/:ids", middleware.HasPermission("sys:oauth:client$delete"), localmiddleware.OperLog(logWriter, "OAuthClient-[终端应用]", consts.DELETE), h.BatchDelete)
 	}

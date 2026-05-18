@@ -10,12 +10,16 @@
 package handler
 
 import (
+	"math/rand"
 	"net/http"
+	"strings"
 	"sys-service/internal/dto"
 	"sys-service/internal/model"
 	"sys-service/internal/service"
+	"time"
 
 	apperr "github.com/calmlax/aevons-framework/errors"
+	frameworkredis "github.com/calmlax/aevons-framework/redis"
 	"github.com/calmlax/aevons-framework/response"
 	"github.com/calmlax/aevons-framework/utils"
 
@@ -25,9 +29,26 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+const (
+	gatewayOauthClientCacheKey       = "gateway-service:oauth-client-rules:v1"
+	gatewayOauthClientBackupCacheKey = "gateway-service:oauth-client-rules:backup:v1"
+	gatewayOauthClientCacheTTL       = 30 * time.Second
+	gatewayOauthClientBackupTTL      = 150 * time.Second
+	gatewayOauthClientCacheJitter    = 10 * time.Second
+)
+
 type OauthClientHandler struct {
 	crud *base.BaseHandler[model.OauthClient, *dto.OauthClientQuery, dto.CreateOauthClientDTO, dto.UpdateOauthClientDTO]
 	svc  service.OauthClientService
+}
+
+type gatewayOauthClientRule struct {
+	ClientID     string              `json:"ClientID"`
+	Enabled      bool                `json:"Enabled"`
+	AllowAll     bool                `json:"AllowAll"`
+	ServiceNames map[string]struct{} `json:"ServiceNames"`
+	ExactRules   map[string]struct{} `json:"ExactRules"`
+	PrefixRules  []string            `json:"PrefixRules"`
 }
 
 // 构造函数
@@ -169,4 +190,81 @@ func (h *OauthClientHandler) UpdateOAuthClient(c *gin.Context) {
 		return
 	}
 	response.Success(c, nil)
+}
+
+// RefreshGatewayCache 刷新网关 OAuth Client 资源缓存。
+//
+// @Summary      刷新网关 OAuth Client 资源缓存
+// @Tags         终端应用
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.Response
+// @Router       /oauth/client/refresh-cache [post]
+func (h *OauthClientHandler) RefreshGatewayCache(c *gin.Context) {
+	list, err := h.svc.List(&dto.OauthClientQuery{})
+	if err != nil {
+		response.FailBy(c, apperr.ErrQueryFailed, map[string]any{"error": err.Error()})
+		return
+	}
+
+	rules := make(map[string]gatewayOauthClientRule, len(list))
+	for _, item := range list {
+		clientID := strings.TrimSpace(item.ClientId)
+		if clientID == "" {
+			continue
+		}
+
+		rule := gatewayOauthClientRule{
+			ClientID:     clientID,
+			Enabled:      true,
+			ServiceNames: map[string]struct{}{},
+			ExactRules:   map[string]struct{}{},
+			PrefixRules:  []string{},
+		}
+
+		for _, resource := range splitGatewayResources(item.Resources) {
+			if strings.EqualFold(resource, "ALL") {
+				rule.AllowAll = true
+				continue
+			}
+			rule.ServiceNames[resource] = struct{}{}
+		}
+		rules[clientID] = rule
+	}
+
+	if err := frameworkredis.SetJSON(c.Request.Context(), gatewayOauthClientCacheKey, rules, withGatewayCacheJitter(gatewayOauthClientCacheTTL)); err != nil {
+		response.Fail(c, http.StatusInternalServerError, 1013, "err.api.failed_to_refresh_cache", map[string]any{"error": err.Error()})
+		return
+	}
+	if err := frameworkredis.SetJSON(c.Request.Context(), gatewayOauthClientBackupCacheKey, rules, withGatewayCacheJitter(gatewayOauthClientBackupTTL)); err != nil {
+		response.Fail(c, http.StatusInternalServerError, 1013, "err.api.failed_to_refresh_cache", map[string]any{"error": err.Error()})
+		return
+	}
+
+	response.Success(c, gin.H{
+		"count":        len(rules),
+		"refreshed_at": time.Now().Format(time.RFC3339),
+	})
+}
+
+func splitGatewayResources(raw string) []string {
+	if strings.TrimSpace(raw) == "" {
+		return nil
+	}
+	parts := strings.Split(raw, ",")
+	result := make([]string, 0, len(parts))
+	for _, item := range parts {
+		item = strings.TrimSpace(item)
+		if item != "" {
+			result = append(result, item)
+		}
+	}
+	return result
+}
+
+func withGatewayCacheJitter(base time.Duration) time.Duration {
+	if base <= 0 || gatewayOauthClientCacheJitter <= 0 {
+		return base
+	}
+	return base + time.Duration(rand.Int63n(int64(gatewayOauthClientCacheJitter)))
 }

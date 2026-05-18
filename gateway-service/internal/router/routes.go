@@ -24,6 +24,10 @@ func Setup(app *core.App, settings gatewayconfig.Settings) (*gin.Engine, error) 
 	if err != nil {
 		return nil, fmt.Errorf("router: read app config failed: %w", err)
 	}
+	db, err := app.RawDatabase()
+	if err != nil {
+		return nil, fmt.Errorf("router: read database failed: %w", err)
+	}
 
 	gin.SetMode(cfg.Server.Mode)
 
@@ -41,7 +45,7 @@ func Setup(app *core.App, settings gatewayconfig.Settings) (*gin.Engine, error) 
 	}
 
 	resolver := discovery.NewResolver(registry)
-	checker := gatewayclientauth.NewChecker(settings.Clients)
+	checker := gatewayclientauth.NewChecker(settings.ClientAuth.Enabled, db, 30*time.Second)
 	verifier := gatewayauth.NewVerifier(resolver, "auth-service", 5*time.Second)
 	proxyHandler := gatewayproxy.NewHandler(
 		matcher,
@@ -50,7 +54,7 @@ func Setup(app *core.App, settings gatewayconfig.Settings) (*gin.Engine, error) 
 		verifier,
 		time.Duration(settings.Gateway.TimeoutSeconds)*time.Second,
 	)
-	swaggerHandler := gatewayswagger.NewHandler(settings)
+	swaggerHandler := gatewayswagger.NewHandler(settings, resolver, matcher.Rules())
 
 	r := gin.New()
 	if err := r.SetTrustedProxies(settings.Gateway.TrustedProxies); err != nil {
@@ -87,7 +91,7 @@ func registerSwaggerUI(r *gin.Engine, settings gatewayconfig.Settings) {
 		c.Redirect(http.StatusMovedPermanently, "/swagger/")
 	})
 	swaggerGroup := r.Group("/swagger", swaggerAccess(settings))
-	swaggerGroup.Static("/", "./ui/swagger")
+	swaggerGroup.Static("/", "./swagger-ui")
 }
 
 func limitBodySize(maxBodyBytes int64) gin.HandlerFunc {

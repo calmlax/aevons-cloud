@@ -32,6 +32,8 @@ type OauthClientQuery struct {
 	WebServerRedirectUri *string `form:"webServerRedirectUri" gorm:"column:web_server_redirect_uri" q:"eq"`
 	// 自动授权（0否，1是）
 	Autoapprove *int16 `form:"autoapprove" gorm:"column:autoapprove" q:"eq"`
+	// 资源权限，按服务名称逗号分割
+	Resources *string `form:"resources" gorm:"column:resources" q:"like"`
 	base.BaseQuery
 }
 
@@ -57,6 +59,8 @@ type CreateOauthClientDTO struct {
 	RefreshTokenValidity int `json:"refreshTokenValidity"`
 	//自动授权（0否，1是）
 	Autoapprove int16 `json:"autoapprove"`
+	//资源权限，按服务名称逗号分割
+	Resources string `json:"resources" binding:"max=2048"`
 }
 
 type UpdateOauthClientDTO struct {
@@ -82,4 +86,6 @@ type UpdateOauthClientDTO struct {
 	RefreshTokenValidity *int `json:"refreshTokenValidity"`
 	//自动授权（0否，1是）
 	Autoapprove *int16 `json:"autoapprove"`
+	//资源权限，按服务名称逗号分割
+	Resources *string `json:"resources" binding:"max=2048"`
 }

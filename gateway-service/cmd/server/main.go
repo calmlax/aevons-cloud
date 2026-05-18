@@ -19,8 +19,8 @@ import (
 
 func main() {
 	app, err := core.BootstrapWithOptions(core.BootstrapOptions{
-		InitDB:      false,
-		InitRedis:   false,
+		InitDB:      true,
+		InitRedis:   true,
 		InitGinJSON: true,
 	})
 	if err != nil {

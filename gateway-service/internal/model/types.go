@@ -16,7 +16,7 @@ type SwaggerConfig struct {
 type SwaggerDocConfig struct {
 	Name      string `yaml:"name"`
 	ServiceID string `yaml:"service_id"`
-	URL       string `yaml:"url"`
+	Path      string `yaml:"path"`
 }
 
 type ServiceConfig struct {
@@ -33,6 +33,10 @@ type ClientRuleConfig struct {
 	ClientID  string   `yaml:"client_id"`
 	Enabled   bool     `yaml:"enabled"`
 	Resources []string `yaml:"resources"`
+}
+
+type ClientAuthConfig struct {
+	Enabled bool `yaml:"enabled"`
 }
 
 type RouteRule struct {
@@ -54,11 +58,12 @@ type ServiceRule struct {
 }
 
 type ClientRule struct {
-	ClientID    string
-	Enabled     bool
-	AllowAll    bool
-	ExactRules  map[string]struct{}
-	PrefixRules []string
+	ClientID     string
+	Enabled      bool
+	AllowAll     bool
+	ServiceNames map[string]struct{}
+	ExactRules   map[string]struct{}
+	PrefixRules  []string
 }
 
 type ClientIdentity struct {

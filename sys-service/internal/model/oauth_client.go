@@ -48,6 +48,9 @@ type OauthClient struct {
 	//自动授权（0否，1是）
 	Autoapprove int16 `gorm:"column:autoapprove;type:tinyint(1);comment:自动授权（0否，1是）" json:"autoapprove"`
 
+	//资源权限，逗号分割，如 ALL,auth-service,sys-service
+	Resources string `gorm:"column:resources;type:varchar(2048);comment:资源权限，按服务名称逗号分割" json:"resources"`
+
 	base.DefaultModel
 }
 

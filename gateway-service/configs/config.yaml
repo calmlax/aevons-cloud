@@ -24,12 +24,27 @@ cors:
   allowed_origins:
     - "*"
 
+db:
+  driver: mysql
+  dsn: root:123456@tcp(127.0.0.1:3306)/aevons_db?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
+  max_open_conns: 20
+  max_idle_conns: 10
+  conn_max_lifetime_seconds: 3600
+  conn_max_idle_time_seconds: 1800
+
+redis:
+  mode: standalone
+  address: 127.0.0.1:6379
+  password: ""
+
 xss:
   enabled: true
   excludes:
     - /api/v1/auth/login
     - /api/v1/auth/register
     - /api/v1/auth/reset-password
+    - /api/v1/auth/passkey/register/finish
+    - /api/v1/auth/passkey/login/finish
 
 gateway:
   trusted_proxies:
@@ -47,19 +62,19 @@ swagger:
   docs:
     - name: auth-service
       service_id: auth-service
-      url: http://127.0.0.1:10701/api/swagger.json
+      path: /api/swagger.json
     - name: sys-service
       service_id: sys-service
-      url: http://127.0.0.1:10702/api/swagger.json
+      path: /api/swagger.json
     - name: log-service
       service_id: log-service
-      url: http://127.0.0.1:10703/api/swagger.json
+      path: /api/swagger.json
     - name: gen-service
       service_id: gen-service
-      url: http://127.0.0.1:10704/api/swagger.json
+      path: /api/swagger.json
     - name: job-service
       service_id: job-service
-      url: http://127.0.0.1:10705/api/swagger.json
+      path: /api/swagger.json
 
 services:
   - id: auth
@@ -115,21 +130,5 @@ services:
     exclude_auth_routes:
       - GET:/api/v1/job/ping
 
-clients:
-  - client_id: admin-web
-    enabled: true
-    resources:
-      - ALL
-  - client_id: "100000"
-    enabled: true
-    resources:
-      - ALL
-  - client_id: portal-web
-    enabled: true
-    resources:
-      - POST:/api/v1/auth/login
-      - POST:/api/v1/auth/refresh
-      - GET:/api/v1/auth/public-key
-      - GET:/api/v1/sys/lang
-      - GET:/api/v1/gen/ping
-      - GET:/api/v1/job/ping
+client_auth:
+  enabled: true

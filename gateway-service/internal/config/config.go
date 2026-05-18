@@ -13,17 +13,17 @@ import (
 )
 
 type Settings struct {
-	Gateway  model.GatewayConfig
-	Swagger  model.SwaggerConfig
-	Services []model.ServiceConfig
-	Clients  []model.ClientRuleConfig
+	Gateway    model.GatewayConfig
+	Swagger    model.SwaggerConfig
+	Services   []model.ServiceConfig
+	ClientAuth model.ClientAuthConfig
 }
 
 type fileConfig struct {
-	Gateway  model.GatewayConfig      `yaml:"gateway"`
-	Swagger  model.SwaggerConfig      `yaml:"swagger"`
-	Services []model.ServiceConfig    `yaml:"services"`
-	Clients  []model.ClientRuleConfig `yaml:"clients"`
+	Gateway    model.GatewayConfig    `yaml:"gateway"`
+	Swagger    model.SwaggerConfig    `yaml:"swagger"`
+	Services   []model.ServiceConfig  `yaml:"services"`
+	ClientAuth model.ClientAuthConfig `yaml:"client_auth"`
 }
 
 func Load(configDir, env string) (Settings, error) {
@@ -37,6 +37,9 @@ func Load(configDir, env string) (Settings, error) {
 			Enabled:    true,
 			UIEnabled:  true,
 			AllowedIPs: []string{"127.0.0.1", "::1"},
+		},
+		ClientAuth: model.ClientAuthConfig{
+			Enabled: true,
 		},
 	}
 
@@ -87,15 +90,18 @@ func mergeFile(path string, cfg *Settings) error {
 		cfg.Swagger.AllowedIPs = next.Swagger.AllowedIPs
 	}
 	if len(next.Swagger.Docs) > 0 {
+		for i := range next.Swagger.Docs {
+			if strings.TrimSpace(next.Swagger.Docs[i].Path) == "" {
+				next.Swagger.Docs[i].Path = "/api/swagger.json"
+			}
+		}
 		cfg.Swagger.Docs = next.Swagger.Docs
 	}
 
 	if len(next.Services) > 0 {
 		cfg.Services = next.Services
 	}
-	if len(next.Clients) > 0 {
-		cfg.Clients = next.Clients
-	}
+	cfg.ClientAuth.Enabled = next.ClientAuth.Enabled
 
 	return nil
 }
@@ -114,18 +120,6 @@ func validate(cfg Settings) error {
 			return fmt.Errorf("duplicate service id: %s", service.ID)
 		}
 		seenServiceIDs[service.ID] = struct{}{}
-	}
-
-	seenClients := make(map[string]struct{}, len(cfg.Clients))
-	for _, client := range cfg.Clients {
-		clientID := strings.TrimSpace(client.ClientID)
-		if clientID == "" {
-			return errors.New("gateway client rule requires client_id")
-		}
-		if _, exists := seenClients[clientID]; exists {
-			return fmt.Errorf("duplicate client rule: %s", clientID)
-		}
-		seenClients[clientID] = struct{}{}
 	}
 
 	return nil

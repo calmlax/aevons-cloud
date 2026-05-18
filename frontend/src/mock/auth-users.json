@@ -1,0 +1,68 @@
+[
+  {
+    "id": "seed-admin",
+    "name": "安夏",
+    "email": "admin@aevo.local",
+    "password": "Admin@123",
+    "role": "super-admin",
+    "permissions": [
+      "components:view",
+      "dashboard:view",
+      "dashboard:create-task",
+      "dashboard:export",
+      "users:view",
+      "users:create",
+      "users:segments:view",
+      "orders:view",
+      "orders:export",
+      "orders:returns:view",
+      "account:profile",
+      "account:password",
+      "audit:view",
+      "settings:manage",
+      "system:menu:view",
+      "system:menu:create",
+      "system:menu:edit",
+      "system:menu:delete"
+    ],
+    "verified": true,
+    "createdAt": "2026-03-13T09:00:00.000Z",
+    "lastLoginAt": "2026-03-13T09:42:00.000Z"
+  },
+  {
+    "id": "seed-operator",
+    "name": "周岚",
+    "email": "operator@aevo.local",
+    "password": "Operator@123",
+    "role": "operator",
+    "permissions": [
+      "components:view",
+      "dashboard:view",
+      "dashboard:create-task",
+      "users:view",
+      "users:create",
+      "users:segments:view",
+      "account:profile",
+      "account:password"
+    ],
+    "verified": true,
+    "createdAt": "2026-03-13T09:10:00.000Z",
+    "lastLoginAt": "2026-03-13T09:58:00.000Z"
+  },
+  {
+    "id": "seed-auditor",
+    "name": "顾言",
+    "email": "viewer@aevo.local",
+    "password": "Viewer@123",
+    "role": "auditor",
+    "permissions": [
+      "components:view",
+      "dashboard:view",
+      "orders:view",
+      "account:profile"
+    ],
+    "verified": true,
+    "createdAt": "2026-03-13T09:18:00.000Z",
+    "lastLoginAt": "2026-03-13T10:06:00.000Z"
+  }
+]

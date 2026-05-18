@@ -17,7 +17,7 @@ gateway-service/
 │   ├── proxy
 │   ├── router
 │   └── swagger
-├── ui/swagger
+├── swagger-ui
 ├── gateway-architecture.md
 ├── gateway-implementation.md
 └── README.md
@@ -55,14 +55,21 @@ gateway-service/
 - `gateway`
 - `swagger`
 - `services`
-- `clients`
+- `client_auth`
 
 其中：
 
 - `services` 定义服务前缀、发现方式、负载策略、公开接口白名单
-- `clients` 定义客户端资源访问规则
+- `client_auth.enabled=true` 时才启用 `oauth_client` 资源校验流程
 - `swagger.allowed_ips` 控制 Swagger UI 和聚合接口访问来源
-- `swagger.docs` 定义聚合展示的文档源
+- `swagger.docs` 定义聚合展示的文档源，实际文档地址通过 `service_id + Consul 服务发现 + path` 解析
+
+客户端资源规则缓存策略：
+
+- 优先读 Redis
+- Redis 未命中时回源数据库表 `sys_oauth_client`
+- 回源结果写回 Redis，并按网关内部刷新周期自动过期
+- 管理端修改 `sys_oauth_client.resources` 后，可调用 `sys-service` 的 `/api/v1/sys/oauth/client/refresh-cache` 立即更新网关缓存
 
 ## 启动
 

@@ -1,12 +1,16 @@
 package swagger
 
 import (
+	"errors"
 	"io"
 	"net/http"
+	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
 	gatewayconfig "gateway-service/internal/config"
+	"gateway-service/internal/discovery"
 	"gateway-service/internal/model"
 	gatewayresp "gateway-service/internal/response"
 
@@ -16,12 +20,28 @@ import (
 
 type Handler struct {
 	settings   gatewayconfig.Settings
+	resolver   *discovery.Resolver
+	services   map[string]*model.ServiceRule
 	httpClient *http.Client
 }
 
-func NewHandler(settings gatewayconfig.Settings) *Handler {
+func NewHandler(settings gatewayconfig.Settings, resolver *discovery.Resolver, services []*model.ServiceRule) *Handler {
+	serviceMap := make(map[string]*model.ServiceRule, len(services))
+	for _, service := range services {
+		if service == nil {
+			continue
+		}
+		if service.ID != "" {
+			serviceMap[service.ID] = service
+		}
+		if service.Name != "" {
+			serviceMap[service.Name] = service
+		}
+	}
 	return &Handler{
 		settings: settings,
+		resolver: resolver,
+		services: serviceMap,
 		httpClient: &http.Client{
 			Timeout: 5 * time.Second,
 		},
@@ -40,13 +60,13 @@ func (h *Handler) Sources(c *gin.Context) {
 
 	sources := make([]model.SwaggerSource, 0, len(h.settings.Swagger.Docs))
 	for _, doc := range h.settings.Swagger.Docs {
-		if doc.ServiceID == "" || doc.URL == "" {
+		if doc.ServiceID == "" {
 			continue
 		}
 		sources = append(sources, model.SwaggerSource{
 			Name:      doc.Name,
 			Service:   doc.ServiceID,
-			TargetURL: doc.URL,
+			TargetURL: doc.ServiceID + doc.Path,
 			ProxyURL:  "/api/v1/gateway/swagger/" + doc.ServiceID + "/swagger.json",
 		})
 	}
@@ -74,7 +94,13 @@ func (h *Handler) Proxy(c *gin.Context) {
 		return
 	}
 
-	req, err := http.NewRequestWithContext(c.Request.Context(), http.MethodGet, source.URL, nil)
+	targetURL, err := h.resolveTargetURL(source)
+	if err != nil {
+		gatewayresp.Fail(c, http.StatusBadGateway, "GATEWAY_PROXY_ERROR", "gateway.swagger_proxy_failed")
+		return
+	}
+
+	req, err := http.NewRequestWithContext(c.Request.Context(), http.MethodGet, targetURL, nil)
 	if err != nil {
 		gatewayresp.Fail(c, http.StatusInternalServerError, "GATEWAY_PROXY_ERROR", "gateway.swagger_proxy_failed")
 		return
@@ -131,6 +157,27 @@ func (h *Handler) lookup(serviceID string) (model.SwaggerDocConfig, bool) {
 		}
 	}
 	return model.SwaggerDocConfig{}, false
+}
+
+func (h *Handler) resolveTargetURL(source model.SwaggerDocConfig) (string, error) {
+	serviceRule, ok := h.services[source.ServiceID]
+	if !ok {
+		return "", errors.New("swagger service rule not found")
+	}
+	instance, err := h.resolver.Resolve(serviceRule)
+	if err != nil {
+		return "", err
+	}
+	path := source.Path
+	if strings.TrimSpace(path) == "" {
+		path = "/api/swagger.json"
+	}
+	u := url.URL{
+		Scheme: "http",
+		Host:   instance.Address + ":" + strconv.Itoa(instance.Port),
+		Path:   path,
+	}
+	return u.String(), nil
 }
 
 func (h *Handler) allow(clientIP string) bool {

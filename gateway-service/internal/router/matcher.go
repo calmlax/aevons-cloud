@@ -53,6 +53,17 @@ func (m *ServiceMatcher) Match(path string) (*model.ServiceRule, bool) {
 	return nil, false
 }
 
+func (m *ServiceMatcher) Rules() []*model.ServiceRule {
+	if m == nil {
+		return nil
+	}
+	rules := make([]*model.ServiceRule, 0, len(m.rules))
+	for i := range m.rules {
+		rules = append(rules, &m.rules[i])
+	}
+	return rules
+}
+
 func normalizePrefix(prefix string) string {
 	trimmed := strings.TrimSpace(prefix)
 	trimmed = strings.TrimSuffix(trimmed, "**")

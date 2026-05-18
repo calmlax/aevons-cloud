@@ -1,0 +1,212 @@
+{
+  "code": 200,
+  "message": "success",
+  "data": [
+    {
+      "key": "users-center",
+      "meta": {
+        "titleKey": "menu.usersCenter",
+        "icon": "users"
+      },
+      "children": [
+        {
+          "key": "users-list",
+          "path": "/users",
+          "component": "users/UsersPage",
+          "meta": {
+            "titleKey": "menu.usersList",
+            "icon": "usersList",
+            "permissions": [
+              "users:view"
+            ]
+          },
+          "children": [
+            {
+              "key": "users-hidden-menu",
+              "path": "/users/hidden",
+              "component": "users/UserHidden",
+              "meta": {
+                "titleKey": "menu.usersHidden",
+                "icon": "user",
+                "permissions": [
+                  "users:view"
+                ],
+                "visible": false,
+                "activeMenu": "users-list"
+              }
+            }
+          ]
+        },
+        {
+          "key": "users-segments",
+          "meta": {
+            "titleKey": "menu.usersSegments",
+            "icon": "usersSegments"
+          },
+          "children": [
+            {
+              "key": "users-segments-high-value",
+              "path": "/users/segments/high-value",
+              "component": "users/NestedMenuPage",
+              "meta": {
+                "titleKey": "menu.usersSegmentsHighValue",
+                "icon": "dashboard",
+                "permissions": [
+                  "users:segments:view"
+                ]
+              }
+            },
+            {
+              "key": "users-segments-recall",
+              "path": "/users/segments/recall",
+              "component": "users/NestedMenuPage",
+              "meta": {
+                "titleKey": "menu.usersSegmentsRecall",
+                "icon": "usersSegmentsRecall",
+                "permissions": [
+                  "users:segments:view"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "orders-center",
+      "meta": {
+        "titleKey": "menu.ordersCenter",
+        "icon": "orders"
+      },
+      "children": [
+        {
+          "key": "orders-overview",
+          "path": "/orders",
+          "component": "orders/OrdersPage",
+          "meta": {
+            "titleKey": "menu.ordersOverview",
+            "icon": "ordersOverview",
+            "permissions": [
+              "orders:view"
+            ]
+          }
+        },
+        {
+          "key": "orders-returns",
+          "path": "/orders/returns",
+          "component": "users/NestedMenuPage",
+          "meta": {
+            "titleKey": "menu.ordersReturns",
+            "icon": "ordersReturns",
+            "permissions": [
+              "orders:returns:view"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "system-center",
+      "meta": {
+        "titleKey": "menu.systemCenter",
+        "icon": "setting"
+      },
+      "children": [
+        {
+          "key": "system-menu",
+          "path": "/system/menu",
+          "component": "system/MenuManagePage",
+          "meta": {
+            "titleKey": "menu.systemMenu",
+            "icon": "menu",
+            "permissions": [
+              "system:menu:view"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "components-center",
+      "meta": {
+        "titleKey": "menu.componentsCenter",
+        "icon": "components"
+      },
+      "children": [
+        {
+          "key": "components-button",
+          "path": "/components/button",
+          "component": "components/ComponentsButtonPage",
+          "meta": {
+            "titleKey": "menu.componentsButton",
+            "icon": "componentsButton",
+            "permissions": [
+              "components:view"
+            ]
+          }
+        },
+        {
+          "key": "components-avatar",
+          "path": "/components/avatar",
+          "component": "components/ComponentsAvatarPage",
+          "meta": {
+            "titleKey": "menu.componentsAvatar",
+            "icon": "componentsAvatar",
+            "permissions": [
+              "components:view"
+            ]
+          }
+        },
+        {
+          "key": "components-card-list",
+          "path": "/components/card-list",
+          "component": "components/ComponentsCardListPage",
+          "meta": {
+            "titleKey": "menu.demoCardList",
+            "icon": "componentsButton",
+            "permissions": [
+              "components:view"
+            ]
+          }
+        },
+        {
+          "key": "components-dict-tag",
+          "path": "/components/dict-tag",
+          "component": "components/ComponentsDictTagPage",
+          "meta": {
+            "titleKey": "menu.componentsDictTag",
+            "icon": "dict",
+            "permissions": [
+              "components:view"
+            ]
+          }
+        },
+        {
+          "key": "components-svg-icon",
+          "path": "/components/svg-icon",
+          "component": "components/ComponentsSvgIconPage",
+          "meta": {
+            "titleKey": "menu.componentsSvgIcon",
+            "icon": "icon",
+            "permissions": [
+              "components:view"
+            ]
+          }
+        },
+        {
+          "key": "components-query-demo",
+          "path": "/components/query-demo",
+          "component": "components/QueryDemoPage",
+          "query": "{\"name\":\"123\",\"mode\":\"test\"}",
+          "meta": {
+            "titleKey": "menu.queryDemo",
+            "icon": "link",
+            "permissions": [
+              "components:view"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

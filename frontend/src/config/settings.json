@@ -1,0 +1,9 @@
+{
+  "appName": "Aevons",
+  "mock": {
+    "authRequestDelay": 180,
+    "menuRequestDelay": 120,
+    "codeExpiresIn": 300000,
+    "sessionExpiresIn": 28800000
+  }
+}
