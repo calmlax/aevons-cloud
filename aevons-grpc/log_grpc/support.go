@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/calmlax/aevons-framework/config"
-	"github.com/calmlax/aevons-framework/core/grpcx"
+	"github.com/calmlax/aevons-framework/grpcx"
 	"google.golang.org/grpc"
 )
 

@@ -17,7 +17,7 @@ import (
 	"sys-service/internal/model"
 	"sys-service/internal/service"
 
-	"github.com/calmlax/aevons-framework/core/response"
+	"github.com/calmlax/aevons-framework/response"
 	"github.com/calmlax/aevons-framework/utils"
 
 	"github.com/calmlax/aevons-framework/core/base"

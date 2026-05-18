@@ -25,10 +25,10 @@ import (
 	"github.com/calmlax/aevons-framework/config"
 	"github.com/calmlax/aevons-framework/core"
 	"github.com/calmlax/aevons-framework/core/consul"
-	"github.com/calmlax/aevons-framework/core/xjson"
-	"github.com/calmlax/aevons-framework/core/xlog"
 	"github.com/calmlax/aevons-framework/db"
 	"github.com/calmlax/aevons-framework/redis"
+	"github.com/calmlax/aevons-framework/xjson"
+	"github.com/calmlax/aevons-framework/xlog"
 
 	"github.com/gin-gonic/gin/binding"
 )

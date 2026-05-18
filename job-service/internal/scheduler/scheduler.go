@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/calmlax/aevons-framework/core/xlog"
+	"github.com/calmlax/aevons-framework/xlog"
 
 	"github.com/redis/go-redis/v9"
 	"github.com/robfig/cron/v3"

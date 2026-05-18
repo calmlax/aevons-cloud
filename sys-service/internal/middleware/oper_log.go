@@ -10,8 +10,8 @@ import (
 
 	authctx "github.com/calmlax/aevons-framework/auth/context"
 	"github.com/calmlax/aevons-framework/consts"
-	"github.com/calmlax/aevons-framework/core/xlog"
 	"github.com/calmlax/aevons-framework/utils"
+	"github.com/calmlax/aevons-framework/xlog"
 	"github.com/gin-gonic/gin"
 )
 

@@ -10,8 +10,8 @@ import (
 	"github.com/calmlax/aevons-framework/auth/store"
 	"github.com/calmlax/aevons-framework/consts"
 	"github.com/calmlax/aevons-framework/core"
-	"github.com/calmlax/aevons-framework/core/middleware"
 	"github.com/calmlax/aevons-framework/core/server"
+	"github.com/calmlax/aevons-framework/middleware"
 	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"

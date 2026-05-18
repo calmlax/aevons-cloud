@@ -9,7 +9,7 @@ import (
 	"auth-service/internal/service"
 
 	authctx "github.com/calmlax/aevons-framework/auth/context"
-	"github.com/calmlax/aevons-framework/core/response"
+	"github.com/calmlax/aevons-framework/response"
 
 	"github.com/gin-gonic/gin"
 )

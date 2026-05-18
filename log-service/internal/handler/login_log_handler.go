@@ -16,7 +16,7 @@ import (
 
 	apperr "github.com/calmlax/aevons-framework/errors"
 
-	"github.com/calmlax/aevons-framework/core/response"
+	"github.com/calmlax/aevons-framework/response"
 
 	"github.com/calmlax/aevons-framework/core/base"
 

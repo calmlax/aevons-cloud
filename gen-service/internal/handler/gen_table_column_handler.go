@@ -6,8 +6,8 @@ import (
 	"gen-service/internal/service"
 
 	"github.com/calmlax/aevons-framework/core/base"
-	"github.com/calmlax/aevons-framework/core/response"
 	apperr "github.com/calmlax/aevons-framework/errors"
+	"github.com/calmlax/aevons-framework/response"
 	"github.com/calmlax/aevons-framework/utils"
 
 	"github.com/gin-gonic/gin"
