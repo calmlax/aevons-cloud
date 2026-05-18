@@ -33,7 +33,7 @@ func NewJobHandler(svc service.JobService) *JobHandler {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /job/page [get]
+// @Router       /api/v1/job/page [get]
 func (h *JobHandler) Page(c *gin.Context) {
 	h.crud.HandlePage(c)
 }
@@ -46,7 +46,7 @@ func (h *JobHandler) Page(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "定时任务ID"
 // @Success      200  {object}  response.Response
-// @Router       /job/{id} [get]
+// @Router       /api/v1/job/{id} [get]
 func (h *JobHandler) Get(c *gin.Context) {
 	h.crud.HandleGet(c)
 }
@@ -60,7 +60,7 @@ func (h *JobHandler) Get(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      dto.CreateJobDTO  true  "新增定时任务"
 // @Success      200      {object}  response.Response
-// @Router       /job [post]
+// @Router       /api/v1/job [post]
 func (h *JobHandler) Create(c *gin.Context) {
 	h.crud.HandleCreate(c)
 }
@@ -75,7 +75,7 @@ func (h *JobHandler) Create(c *gin.Context) {
 // @Param        id       path      int               true  "定时任务ID"
 // @Param        request  body      dto.UpdateJobDTO  true  "修改定时任务"
 // @Success      200      {object}  response.Response
-// @Router       /job/{id} [put]
+// @Router       /api/v1/job/{id} [put]
 func (h *JobHandler) Update(c *gin.Context) {
 	h.crud.HandleUpdate(c)
 }
@@ -88,7 +88,7 @@ func (h *JobHandler) Update(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        ids   path      string  true  "逗号分隔的定时任务ID"
 // @Success      200   {object}  response.Response
-// @Router       /job/{ids} [delete]
+// @Router       /api/v1/job/{ids} [delete]
 func (h *JobHandler) BatchDelete(c *gin.Context) {
 	h.crud.HandleBatchDelete(c)
 }
@@ -101,7 +101,7 @@ func (h *JobHandler) BatchDelete(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "定时任务ID"
 // @Success      200  {object}  response.Response
-// @Router       /job/{id}/trigger [post]
+// @Router       /api/v1/job/{id}/trigger [post]
 func (h *JobHandler) Trigger(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
@@ -125,7 +125,7 @@ func (h *JobHandler) Trigger(c *gin.Context) {
 // @Param        id       path      int     true  "定时任务ID"
 // @Param        request  body      object  true  "任务状态"
 // @Success      200      {object}  response.Response
-// @Router       /job/{id}/status [put]
+// @Router       /api/v1/job/{id}/status [put]
 func (h *JobHandler) ChangeStatus(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {

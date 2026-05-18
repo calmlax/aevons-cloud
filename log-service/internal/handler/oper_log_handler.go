@@ -42,7 +42,7 @@ func NewOperLogHandler(svc service.OperLogService) *OperLogHandler {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /oper/log/list [get]
+// @Router       /api/v1/log/oper/log/list [get]
 func (h *OperLogHandler) List(c *gin.Context) {
 	h.crud.HandleList(c)
 }
@@ -54,7 +54,7 @@ func (h *OperLogHandler) List(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /oper/log/page [get]
+// @Router       /api/v1/log/oper/log/page [get]
 func (h *OperLogHandler) Page(c *gin.Context) {
 	h.crud.HandlePage(c)
 }
@@ -67,7 +67,7 @@ func (h *OperLogHandler) Page(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "操作日志ID"
 // @Success      200  {object}  response.Response
-// @Router       /oper/log/{id} [get]
+// @Router       /api/v1/log/oper/log/{id} [get]
 func (h *OperLogHandler) Get(c *gin.Context) {
 	h.crud.HandleGet(c)
 }
@@ -80,7 +80,7 @@ func (h *OperLogHandler) Get(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        ids   path      string  true  "逗号分隔的操作日志ID"
 // @Success      200   {object}  response.Response
-// @Router       /oper/log/{ids} [delete]
+// @Router       /api/v1/log/oper/log/{ids} [delete]
 func (h *OperLogHandler) BatchDelete(c *gin.Context) {
 	h.crud.HandleBatchDelete(c)
 }
@@ -92,7 +92,7 @@ func (h *OperLogHandler) BatchDelete(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /oper/log [delete]
+// @Router       /api/v1/log/oper/log [delete]
 func (h *OperLogHandler) Clear(c *gin.Context) {
 	if err := h.svc.TruncateAll(); err != nil {
 		response.FailBy(c, apperr.ErrDeleteFailed)

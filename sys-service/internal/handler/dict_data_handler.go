@@ -43,7 +43,7 @@ func NewDictDataHandler(svc service.DictDataService) *DictDataHandler {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /dict/data/list [get]
+// @Router       /api/v1/sys/dict/data/list [get]
 func (h *DictDataHandler) ListByDictType(c *gin.Context) {
 	dictType := c.Query("dictType")
 	langCode := c.GetHeader(consts.AcceptLanguage)
@@ -64,7 +64,7 @@ func (h *DictDataHandler) ListByDictType(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      dto.CreateDictDataDTO  true  "新增字典数据"
 // @Success      200      {object}  response.Response
-// @Router       /dict/data [post]
+// @Router       /api/v1/sys/dict/data [post]
 func (h *DictDataHandler) CreateDictData(c *gin.Context) {
 	var dictData dto.CreateDictDataDTO
 	if err := c.ShouldBindJSON(&dictData); err != nil {
@@ -93,7 +93,7 @@ func (h *DictDataHandler) CreateDictData(c *gin.Context) {
 // @Param        id       path      int                    true  "字典数据ID"
 // @Param        request  body      dto.UpdateDictDataDTO  true  "修改字典数据"
 // @Success      200      {object}  response.Response
-// @Router       /dict/data/{id} [put]
+// @Router       /api/v1/sys/dict/data/{id} [put]
 func (h *DictDataHandler) UpdateDictData(c *gin.Context) {
 	var dictData dto.UpdateDictDataDTO
 	if err := c.ShouldBindJSON(&dictData); err != nil {
@@ -115,7 +115,7 @@ func (h *DictDataHandler) UpdateDictData(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      string  true  "字典类型"
 // @Success      200  {object}  response.Response
-// @Router       /dict/type/{id} [get]
+// @Router       /api/v1/sys/dict/type/{id} [get]
 func (h *DictDataHandler) GetDictDataCache(c *gin.Context) {
 	dictType := c.Param("id")
 	dictData, err := h.svc.GetDictDataCache(dictType)
@@ -133,7 +133,7 @@ func (h *DictDataHandler) GetDictDataCache(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /dict/refresh-cache [delete]
+// @Router       /api/v1/sys/dict/refresh-cache [delete]
 func (h *DictDataHandler) RefreshCache(c *gin.Context) {
 	if err := h.svc.RefreshCache(); err != nil {
 		response.Fail(c, http.StatusInternalServerError, 1013, "err.api.failed_to_refresh_cache")
@@ -150,7 +150,7 @@ func (h *DictDataHandler) RefreshCache(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "字典数据ID"
 // @Success      200  {object}  response.Response
-// @Router       /dict/data/{id} [get]
+// @Router       /api/v1/sys/dict/data/{id} [get]
 func (h *DictDataHandler) GetDetail(c *gin.Context) {
 	id, ok := base.GetId(c)
 	if !ok {
@@ -172,7 +172,7 @@ func (h *DictDataHandler) GetDetail(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        ids   path      string  true  "逗号分隔的字典数据ID"
 // @Success      200   {object}  response.Response
-// @Router       /dict/data/{ids} [delete]
+// @Router       /api/v1/sys/dict/data/{ids} [delete]
 func (h *DictDataHandler) BatchDelete(c *gin.Context) {
 	ids, ok := base.GetIds(c)
 	if !ok {
@@ -196,7 +196,7 @@ func (h *DictDataHandler) BatchDelete(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      []dto.SortItemDTO  true  "排序项"
 // @Success      200      {object}  response.Response
-// @Router       /dict/data/sort [put]
+// @Router       /api/v1/sys/dict/data/sort [put]
 func (h *DictDataHandler) UpdateSort(c *gin.Context) {
 	var items []dto.SortItemDTO
 	if err := c.ShouldBindJSON(&items); err != nil {

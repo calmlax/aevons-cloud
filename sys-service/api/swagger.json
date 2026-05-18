@@ -10,10 +10,10 @@
         "contact": {},
         "version": "1.0.0"
     },
-    "host": "localhost:8021",
+    "host": "localhost:10702",
     "basePath": "/api/v1/sys",
     "paths": {
-        "/conf": {
+        "/api/v1/sys/conf": {
             "post": {
                 "security": [
                     {
@@ -51,7 +51,7 @@
                 }
             }
         },
-        "/conf/key/{key}": {
+        "/api/v1/sys/conf/key/{key}": {
             "get": {
                 "produces": [
                     "application/json"
@@ -85,7 +85,7 @@
                 }
             }
         },
-        "/conf/list": {
+        "/api/v1/sys/conf/list": {
             "get": {
                 "security": [
                     {
@@ -109,7 +109,7 @@
                 }
             }
         },
-        "/conf/page": {
+        "/api/v1/sys/conf/page": {
             "get": {
                 "security": [
                     {
@@ -133,7 +133,7 @@
                 }
             }
         },
-        "/conf/refresh-cache": {
+        "/api/v1/sys/conf/refresh-cache": {
             "post": {
                 "security": [
                     {
@@ -157,7 +157,7 @@
                 }
             }
         },
-        "/conf/{id}": {
+        "/api/v1/sys/conf/{id}": {
             "get": {
                 "security": [
                     {
@@ -264,7 +264,7 @@
                 }
             }
         },
-        "/dept": {
+        "/api/v1/sys/dept": {
             "post": {
                 "security": [
                     {
@@ -302,7 +302,7 @@
                 }
             }
         },
-        "/dept/list": {
+        "/api/v1/sys/dept/list": {
             "get": {
                 "security": [
                     {
@@ -326,7 +326,7 @@
                 }
             }
         },
-        "/dept/{id}": {
+        "/api/v1/sys/dept/{id}": {
             "get": {
                 "security": [
                     {
@@ -433,7 +433,7 @@
                 }
             }
         },
-        "/dict": {
+        "/api/v1/sys/dict": {
             "post": {
                 "security": [
                     {
@@ -471,7 +471,7 @@
                 }
             }
         },
-        "/dict/data": {
+        "/api/v1/sys/dict/data": {
             "post": {
                 "security": [
                     {
@@ -509,7 +509,7 @@
                 }
             }
         },
-        "/dict/data/list": {
+        "/api/v1/sys/dict/data/list": {
             "get": {
                 "security": [
                     {
@@ -533,7 +533,7 @@
                 }
             }
         },
-        "/dict/data/sort": {
+        "/api/v1/sys/dict/data/sort": {
             "put": {
                 "security": [
                     {
@@ -574,7 +574,7 @@
                 }
             }
         },
-        "/dict/data/{ids}": {
+        "/api/v1/sys/dict/data/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -607,7 +607,7 @@
                 }
             }
         },
-        "/dict/data/{id}": {
+        "/api/v1/sys/dict/data/{id}": {
             "get": {
                 "security": [
                     {
@@ -683,7 +683,7 @@
                 }
             }
         },
-        "/dict/list": {
+        "/api/v1/sys/dict/list": {
             "get": {
                 "security": [
                     {
@@ -707,7 +707,7 @@
                 }
             }
         },
-        "/dict/page": {
+        "/api/v1/sys/dict/page": {
             "get": {
                 "security": [
                     {
@@ -731,7 +731,7 @@
                 }
             }
         },
-        "/dict/refresh-cache": {
+        "/api/v1/sys/dict/refresh-cache": {
             "delete": {
                 "security": [
                     {
@@ -755,7 +755,7 @@
                 }
             }
         },
-        "/dict/type/{id}": {
+        "/api/v1/sys/dict/type/{id}": {
             "get": {
                 "security": [
                     {
@@ -788,7 +788,7 @@
                 }
             }
         },
-        "/dict/{id}": {
+        "/api/v1/sys/dict/{id}": {
             "get": {
                 "security": [
                     {
@@ -895,7 +895,7 @@
                 }
             }
         },
-        "/lang": {
+        "/api/v1/sys/lang": {
             "get": {
                 "security": [
                     {
@@ -955,7 +955,7 @@
                 }
             }
         },
-        "/lang/list": {
+        "/api/v1/sys/lang/list": {
             "get": {
                 "security": [
                     {
@@ -979,7 +979,7 @@
                 }
             }
         },
-        "/lang/page": {
+        "/api/v1/sys/lang/page": {
             "get": {
                 "security": [
                     {
@@ -1003,7 +1003,7 @@
                 }
             }
         },
-        "/lang/resource": {
+        "/api/v1/sys/lang/resource": {
             "post": {
                 "security": [
                     {
@@ -1041,7 +1041,7 @@
                 }
             }
         },
-        "/lang/resource/keys": {
+        "/api/v1/sys/lang/resource/keys": {
             "get": {
                 "security": [
                     {
@@ -1065,7 +1065,7 @@
                 }
             }
         },
-        "/lang/resource/keys/page": {
+        "/api/v1/sys/lang/resource/keys/page": {
             "get": {
                 "security": [
                     {
@@ -1089,7 +1089,7 @@
                 }
             }
         },
-        "/lang/resource/list": {
+        "/api/v1/sys/lang/resource/list": {
             "get": {
                 "security": [
                     {
@@ -1113,7 +1113,7 @@
                 }
             }
         },
-        "/lang/resource/page": {
+        "/api/v1/sys/lang/resource/page": {
             "get": {
                 "security": [
                     {
@@ -1137,7 +1137,7 @@
                 }
             }
         },
-        "/lang/resource/save-translations": {
+        "/api/v1/sys/lang/resource/save-translations": {
             "post": {
                 "security": [
                     {
@@ -1175,7 +1175,7 @@
                 }
             }
         },
-        "/lang/resource/translations": {
+        "/api/v1/sys/lang/resource/translations": {
             "get": {
                 "security": [
                     {
@@ -1199,7 +1199,7 @@
                 }
             }
         },
-        "/lang/resource/{ids}": {
+        "/api/v1/sys/lang/resource/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -1232,7 +1232,7 @@
                 }
             }
         },
-        "/lang/resource/{id}": {
+        "/api/v1/sys/lang/resource/{id}": {
             "get": {
                 "security": [
                     {
@@ -1308,7 +1308,7 @@
                 }
             }
         },
-        "/lang/{ids}": {
+        "/api/v1/sys/lang/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -1341,7 +1341,7 @@
                 }
             }
         },
-        "/lang/{id}": {
+        "/api/v1/sys/lang/{id}": {
             "get": {
                 "security": [
                     {
@@ -1417,7 +1417,7 @@
                 }
             }
         },
-        "/menu": {
+        "/api/v1/sys/menu": {
             "post": {
                 "security": [
                     {
@@ -1455,7 +1455,7 @@
                 }
             }
         },
-        "/menu/list": {
+        "/api/v1/sys/menu/list": {
             "get": {
                 "security": [
                     {
@@ -1479,7 +1479,7 @@
                 }
             }
         },
-        "/menu/{ids}": {
+        "/api/v1/sys/menu/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -1512,7 +1512,7 @@
                 }
             }
         },
-        "/menu/{id}": {
+        "/api/v1/sys/menu/{id}": {
             "get": {
                 "security": [
                     {
@@ -1588,7 +1588,7 @@
                 }
             }
         },
-        "/notice": {
+        "/api/v1/sys/notice": {
             "post": {
                 "security": [
                     {
@@ -1626,7 +1626,7 @@
                 }
             }
         },
-        "/notice/list": {
+        "/api/v1/sys/notice/list": {
             "get": {
                 "security": [
                     {
@@ -1650,7 +1650,7 @@
                 }
             }
         },
-        "/notice/page": {
+        "/api/v1/sys/notice/page": {
             "get": {
                 "security": [
                     {
@@ -1674,7 +1674,7 @@
                 }
             }
         },
-        "/notice/{ids}": {
+        "/api/v1/sys/notice/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -1707,7 +1707,7 @@
                 }
             }
         },
-        "/notice/{id}": {
+        "/api/v1/sys/notice/{id}": {
             "get": {
                 "security": [
                     {
@@ -1783,7 +1783,7 @@
                 }
             }
         },
-        "/oauth/client": {
+        "/api/v1/sys/oauth/client": {
             "post": {
                 "security": [
                     {
@@ -1821,7 +1821,7 @@
                 }
             }
         },
-        "/oauth/client/list": {
+        "/api/v1/sys/oauth/client/list": {
             "get": {
                 "security": [
                     {
@@ -1845,7 +1845,7 @@
                 }
             }
         },
-        "/oauth/client/page": {
+        "/api/v1/sys/oauth/client/page": {
             "get": {
                 "security": [
                     {
@@ -1869,7 +1869,31 @@
                 }
             }
         },
-        "/oauth/client/{ids}": {
+        "/api/v1/sys/oauth/client/refresh-cache": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "终端应用"
+                ],
+                "summary": "刷新网关 OAuth Client 资源缓存",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/sys/oauth/client/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -1902,7 +1926,7 @@
                 }
             }
         },
-        "/oauth/client/{id}": {
+        "/api/v1/sys/oauth/client/{id}": {
             "get": {
                 "security": [
                     {
@@ -1978,7 +2002,7 @@
                 }
             }
         },
-        "/post": {
+        "/api/v1/sys/post": {
             "post": {
                 "security": [
                     {
@@ -2016,7 +2040,7 @@
                 }
             }
         },
-        "/post/list": {
+        "/api/v1/sys/post/list": {
             "get": {
                 "security": [
                     {
@@ -2040,7 +2064,7 @@
                 }
             }
         },
-        "/post/page": {
+        "/api/v1/sys/post/page": {
             "get": {
                 "security": [
                     {
@@ -2064,7 +2088,7 @@
                 }
             }
         },
-        "/post/{ids}": {
+        "/api/v1/sys/post/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -2097,7 +2121,7 @@
                 }
             }
         },
-        "/post/{id}": {
+        "/api/v1/sys/post/{id}": {
             "get": {
                 "security": [
                     {
@@ -2173,7 +2197,7 @@
                 }
             }
         },
-        "/role": {
+        "/api/v1/sys/role": {
             "post": {
                 "security": [
                     {
@@ -2211,7 +2235,7 @@
                 }
             }
         },
-        "/role/list": {
+        "/api/v1/sys/role/list": {
             "get": {
                 "security": [
                     {
@@ -2235,7 +2259,7 @@
                 }
             }
         },
-        "/role/page": {
+        "/api/v1/sys/role/page": {
             "get": {
                 "security": [
                     {
@@ -2259,7 +2283,7 @@
                 }
             }
         },
-        "/role/{ids}": {
+        "/api/v1/sys/role/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -2292,7 +2316,7 @@
                 }
             }
         },
-        "/role/{id}": {
+        "/api/v1/sys/role/{id}": {
             "get": {
                 "security": [
                     {
@@ -2368,7 +2392,7 @@
                 }
             }
         },
-        "/role/{id}/menu": {
+        "/api/v1/sys/role/{id}/menu": {
             "get": {
                 "security": [
                     {
@@ -2401,7 +2425,7 @@
                 }
             }
         },
-        "/user": {
+        "/api/v1/sys/user": {
             "post": {
                 "security": [
                     {
@@ -2439,7 +2463,7 @@
                 }
             }
         },
-        "/user/list": {
+        "/api/v1/sys/user/list": {
             "get": {
                 "security": [
                     {
@@ -2463,7 +2487,7 @@
                 }
             }
         },
-        "/user/page": {
+        "/api/v1/sys/user/page": {
             "get": {
                 "security": [
                     {
@@ -2487,7 +2511,7 @@
                 }
             }
         },
-        "/user/{ids}": {
+        "/api/v1/sys/user/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -2520,7 +2544,7 @@
                 }
             }
         },
-        "/user/{id}": {
+        "/api/v1/sys/user/{id}": {
             "get": {
                 "security": [
                     {
@@ -2596,7 +2620,7 @@
                 }
             }
         },
-        "/user/{id}/relations": {
+        "/api/v1/sys/user/{id}/relations": {
             "get": {
                 "security": [
                     {
@@ -2629,7 +2653,7 @@
                 }
             }
         },
-        "/user/{id}/reset-password": {
+        "/api/v1/sys/user/{id}/reset-password": {
             "put": {
                 "security": [
                     {
@@ -2674,7 +2698,7 @@
                 }
             }
         },
-        "/user/{id}/status": {
+        "/api/v1/sys/user/{id}/status": {
             "put": {
                 "security": [
                     {
@@ -3102,6 +3126,11 @@
                 "refreshTokenValidity": {
                     "description": "刷新令牌有效期（秒）",
                     "type": "integer"
+                },
+                "resources": {
+                    "description": "资源权限，按服务名称逗号分割",
+                    "type": "string",
+                    "maxLength": 2048
                 },
                 "scope": {
                     "description": "授权范围",
@@ -3775,6 +3804,11 @@
                 "refreshTokenValidity": {
                     "description": "刷新令牌有效期（秒）",
                     "type": "integer"
+                },
+                "resources": {
+                    "description": "资源权限，按服务名称逗号分割",
+                    "type": "string",
+                    "maxLength": 2048
                 },
                 "scope": {
                     "description": "授权范围",

@@ -35,7 +35,7 @@ func NewGenTableHandler(svc service.GenTableService) *GenTableHandler {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /table/list [get]
+// @Router       /api/v1/gen/table/list [get]
 func (h *GenTableHandler) List(c *gin.Context) {
 	h.crud.HandleList(c)
 }
@@ -47,7 +47,7 @@ func (h *GenTableHandler) List(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /table/page [get]
+// @Router       /api/v1/gen/table/page [get]
 func (h *GenTableHandler) Page(c *gin.Context) {
 	h.crud.HandlePage(c)
 }
@@ -60,7 +60,7 @@ func (h *GenTableHandler) Page(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "代码生成表ID"
 // @Success      200  {object}  response.Response
-// @Router       /table/{id} [get]
+// @Router       /api/v1/gen/table/{id} [get]
 func (h *GenTableHandler) Get(c *gin.Context) {
 	h.crud.HandleGet(c)
 }
@@ -74,7 +74,7 @@ func (h *GenTableHandler) Get(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      dto.CreateGenTableDTO  true  "新增代码生成表"
 // @Success      200      {object}  response.Response
-// @Router       /table [post]
+// @Router       /api/v1/gen/table [post]
 func (h *GenTableHandler) Create(c *gin.Context) {
 	h.crud.HandleCreate(c)
 }
@@ -89,7 +89,7 @@ func (h *GenTableHandler) Create(c *gin.Context) {
 // @Param        id       path      int                   true  "代码生成表ID"
 // @Param        request  body      dto.UpdateGenTableDTO true  "修改代码生成表"
 // @Success      200      {object}  response.Response
-// @Router       /table/{id} [put]
+// @Router       /api/v1/gen/table/{id} [put]
 func (h *GenTableHandler) Update(c *gin.Context) {
 	h.crud.HandleUpdate(c)
 }
@@ -102,7 +102,7 @@ func (h *GenTableHandler) Update(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        ids   path      string  true  "逗号分隔的代码生成表ID"
 // @Success      200   {object}  response.Response
-// @Router       /table/{ids} [delete]
+// @Router       /api/v1/gen/table/{ids} [delete]
 func (h *GenTableHandler) BatchDelete(c *gin.Context) {
 	h.crud.HandleBatchDelete(c)
 }
@@ -114,7 +114,7 @@ func (h *GenTableHandler) BatchDelete(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /table/db [get]
+// @Router       /api/v1/gen/table/db [get]
 func (h *GenTableHandler) DBTables(c *gin.Context) {
 	list, err := h.svc.DBTables()
 	if err != nil {
@@ -133,7 +133,7 @@ func (h *GenTableHandler) DBTables(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      []string  true  "待导入的数据库表名列表"
 // @Success      200      {object}  response.Response
-// @Router       /table/import [post]
+// @Router       /api/v1/gen/table/import [post]
 func (h *GenTableHandler) ImportTables(c *gin.Context) {
 	var tableNames []string
 	if err := c.ShouldBindJSON(&tableNames); err != nil {
@@ -155,7 +155,7 @@ func (h *GenTableHandler) ImportTables(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        tableId  query     int  true  "代码生成表ID"
 // @Success      200      {object}  response.Response
-// @Router       /table/synch [get]
+// @Router       /api/v1/gen/table/synch [get]
 func (h *GenTableHandler) SynchDbTable(c *gin.Context) {
 	tableID, err := strconv.ParseInt(c.Query("tableId"), 10, 64)
 	if err != nil {
@@ -177,7 +177,7 @@ func (h *GenTableHandler) SynchDbTable(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        tableId  query     int  true  "代码生成表ID"
 // @Success      200      {object}  response.Response
-// @Router       /table/preview [get]
+// @Router       /api/v1/gen/table/preview [get]
 func (h *GenTableHandler) CodePreview(c *gin.Context) {
 	tableID, err := strconv.ParseInt(c.Query("tableId"), 10, 64)
 	if err != nil {
@@ -201,7 +201,7 @@ func (h *GenTableHandler) CodePreview(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        tableIds  query     string  true  "逗号分隔的代码生成表ID"
 // @Success      200       {file}    file
-// @Router       /table/download [get]
+// @Router       /api/v1/gen/table/download [get]
 func (h *GenTableHandler) Download(c *gin.Context) {
 	tableIDs, err := utils.StrToNumberArray[int64](c.Query("tableIds"), ",")
 	if err != nil {

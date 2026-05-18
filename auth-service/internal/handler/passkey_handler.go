@@ -5,10 +5,12 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 
 	"auth-service/internal/service"
 
 	authctx "github.com/calmlax/aevons-framework/auth/context"
+	"github.com/calmlax/aevons-framework/consts"
 	"github.com/calmlax/aevons-framework/response"
 
 	"github.com/gin-gonic/gin"
@@ -33,7 +35,7 @@ func NewPasskeyHandler(svc service.PasskeyService, authSvc service.AuthService) 
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /auth/passkey/register/begin [post]
+// @Router       /api/v1/auth/passkey/register/begin [post]
 func (h *PasskeyHandler) BeginRegistration(c *gin.Context) {
 	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
@@ -66,7 +68,7 @@ func (h *PasskeyHandler) BeginRegistration(c *gin.Context) {
 // @Success      200  {object}  response.Response
 // @Failure      400  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /auth/passkey/register/finish [post]
+// @Router       /api/v1/auth/passkey/register/finish [post]
 func (h *PasskeyHandler) FinishRegistration(c *gin.Context) {
 	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
@@ -94,23 +96,34 @@ func (h *PasskeyHandler) FinishRegistration(c *gin.Context) {
 // BeginAuthentication 开始 Passkey 认证。
 //
 // @Summary      开始 Passkey 认证
-// @Description  生成 WebAuthn 认证 challenge，返回 PublicKeyCredentialRequestOptions（支持 discoverable credential，username 可选）。
+// @Description  生成 WebAuthn 认证 challenge，返回 PublicKeyCredentialRequestOptions（支持 discoverable credential，username 可选）。客户端凭证通过 Authorization: Basic base64(client_id:client_secret) 传递。
 // @Tags         Passkey
 // @Accept       json
 // @Produce      json
+// @Param        Authorization  header  string  true   "Basic base64(client_id:client_secret)"
 // @Param        username  body  string  false  "用户名（可选，discoverable credential 无需传）"
 // @Success      200  {object}  response.Response
 // @Failure      500  {object}  response.Response
-// @Router       /auth/passkey/login/begin [post]
+// @Router       /api/v1/auth/passkey/login/begin [post]
 func (h *PasskeyHandler) BeginAuthentication(c *gin.Context) {
+	clientId, clientSecret, ok := extractBasicAuth(c)
+	if !ok || strings.TrimSpace(clientId) == "" {
+		response.Fail(c, http.StatusUnauthorized, http.StatusUnauthorized, consts.ErrOAuthInvalidClient)
+		return
+	}
+
 	var body struct {
 		Username string `json:"username"`
 	}
 	// 忽略绑定错误，username 可选
 	_ = c.ShouldBindJSON(&body)
 
-	optionsJSON, sessionKey, err := h.svc.BeginAuthentication(c.Request.Context(), body.Username)
+	optionsJSON, sessionKey, err := h.svc.BeginAuthentication(c.Request.Context(), body.Username, clientId, clientSecret)
 	if err != nil {
+		if authErr, ok := err.(*service.AuthError); ok {
+			response.Fail(c, authErr.HTTPStatus, authErr.HTTPStatus, authErr.Code)
+			return
+		}
 		response.FailServerError(c, "err.sys.server_error", map[string]any{"error": err.Error()})
 		return
 	}
@@ -124,17 +137,24 @@ func (h *PasskeyHandler) BeginAuthentication(c *gin.Context) {
 // FinishAuthentication 完成 Passkey 认证。
 //
 // @Summary      完成 Passkey 认证
-// @Description  验证浏览器返回的 PublicKeyCredential，颁发令牌对。
+// @Description  验证浏览器返回的 PublicKeyCredential，颁发令牌对。客户端凭证通过 Authorization: Basic base64(client_id:client_secret) 传递。
 // @Tags         Passkey
 // @Accept       json
 // @Produce      json
+// @Param        Authorization  header  string  true  "Basic base64(client_id:client_secret)"
 // @Param        session_key  body  string  true  "BeginAuthentication 返回的 session_key"
 // @Param        response     body  string  true  "浏览器 navigator.credentials.get() 返回的 JSON"
 // @Success      200  {object}  response.Response
 // @Failure      400  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /auth/passkey/login/finish [post]
+// @Router       /api/v1/auth/passkey/login/finish [post]
 func (h *PasskeyHandler) FinishAuthentication(c *gin.Context) {
+	clientId, clientSecret, ok := extractBasicAuth(c)
+	if !ok || strings.TrimSpace(clientId) == "" {
+		response.Fail(c, http.StatusUnauthorized, http.StatusUnauthorized, consts.ErrOAuthInvalidClient)
+		return
+	}
+
 	var body struct {
 		SessionKey   string          `json:"session_key" binding:"required"`
 		ResponseJSON json.RawMessage `json:"response"    binding:"required"`
@@ -152,6 +172,8 @@ func (h *PasskeyHandler) FinishAuthentication(c *gin.Context) {
 		c.Request.Context(),
 		body.SessionKey,
 		[]byte(body.ResponseJSON),
+		clientId,
+		clientSecret,
 		c.ClientIP(),
 		c.Request.UserAgent(),
 	)
@@ -178,7 +200,7 @@ func (h *PasskeyHandler) FinishAuthentication(c *gin.Context) {
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /auth/passkey/credentials [get]
+// @Router       /api/v1/auth/passkey/credentials [get]
 func (h *PasskeyHandler) ListCredentials(c *gin.Context) {
 	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
@@ -205,7 +227,7 @@ func (h *PasskeyHandler) ListCredentials(c *gin.Context) {
 // @Success      200  {object}  response.Response
 // @Failure      400  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /auth/passkey/credentials/{id} [delete]
+// @Router       /api/v1/auth/passkey/credentials/{id} [delete]
 func (h *PasskeyHandler) RevokeCredential(c *gin.Context) {
 	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {

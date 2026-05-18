@@ -33,7 +33,7 @@ func NewLangResourceHandler(svc service.LangResourceService) *LangResourceHandle
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /lang/resource/list [get]
+// @Router       /api/v1/sys/lang/resource/list [get]
 func (h *LangResourceHandler) List(c *gin.Context) {
 	h.crud.HandleList(c)
 }
@@ -45,7 +45,7 @@ func (h *LangResourceHandler) List(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /lang/resource/page [get]
+// @Router       /api/v1/sys/lang/resource/page [get]
 func (h *LangResourceHandler) Page(c *gin.Context) {
 	h.crud.HandlePage(c)
 }
@@ -58,7 +58,7 @@ func (h *LangResourceHandler) Page(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "语言资源ID"
 // @Success      200  {object}  response.Response
-// @Router       /lang/resource/{id} [get]
+// @Router       /api/v1/sys/lang/resource/{id} [get]
 func (h *LangResourceHandler) Get(c *gin.Context) {
 	h.crud.HandleGet(c)
 }
@@ -71,7 +71,7 @@ func (h *LangResourceHandler) Get(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        ids   path      string  true  "逗号分隔的语言资源ID"
 // @Success      200   {object}  response.Response
-// @Router       /lang/resource/{ids} [delete]
+// @Router       /api/v1/sys/lang/resource/{ids} [delete]
 func (h *LangResourceHandler) BatchDelete(c *gin.Context) {
 	h.crud.HandleBatchDelete(c)
 }
@@ -85,7 +85,7 @@ func (h *LangResourceHandler) BatchDelete(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      dto.CreateLangResourceDTO  true  "新增语言资源"
 // @Success      200      {object}  response.Response
-// @Router       /lang/resource [post]
+// @Router       /api/v1/sys/lang/resource [post]
 func (h *LangResourceHandler) Create(c *gin.Context) {
 	var d dto.CreateLangResourceDTO
 	if err := c.ShouldBindJSON(&d); err != nil {
@@ -110,7 +110,7 @@ func (h *LangResourceHandler) Create(c *gin.Context) {
 // @Param        id       path      int                        true  "语言资源ID"
 // @Param        request  body      dto.UpdateLangResourceDTO  true  "修改语言资源"
 // @Success      200      {object}  response.Response
-// @Router       /lang/resource/{id} [put]
+// @Router       /api/v1/sys/lang/resource/{id} [put]
 func (h *LangResourceHandler) Update(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
@@ -137,7 +137,7 @@ func (h *LangResourceHandler) Update(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /lang/resource/keys [get]
+// @Router       /api/v1/sys/lang/resource/keys [get]
 func (h *LangResourceHandler) GetKeysByNamespace(c *gin.Context) {
 	ns := c.Query("namespace")
 	if ns == "" {
@@ -159,7 +159,7 @@ func (h *LangResourceHandler) GetKeysByNamespace(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /lang/resource/translations [get]
+// @Router       /api/v1/sys/lang/resource/translations [get]
 func (h *LangResourceHandler) GetTranslations(c *gin.Context) {
 	ns := c.Query("namespace")
 	key := c.Query("resourceKey")
@@ -182,7 +182,7 @@ func (h *LangResourceHandler) GetTranslations(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /lang/resource/keys/page [get]
+// @Router       /api/v1/sys/lang/resource/keys/page [get]
 func (h *LangResourceHandler) PageKeys(c *gin.Context) {
 	ns := c.Query("namespace")
 	if ns == "" {
@@ -217,7 +217,7 @@ func (h *LangResourceHandler) PageKeys(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      dto.SaveTranslationsDTO  true  "翻译内容"
 // @Success      200      {object}  response.Response
-// @Router       /lang/resource/save-translations [post]
+// @Router       /api/v1/sys/lang/resource/save-translations [post]
 func (h *LangResourceHandler) SaveTranslations(c *gin.Context) {
 	var d dto.SaveTranslationsDTO
 	if err := c.ShouldBindJSON(&d); err != nil {

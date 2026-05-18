@@ -5,15 +5,15 @@
     ],
     "swagger": "2.0",
     "info": {
-        "description": "Aevons 认证服务接口文档，提供登录、令牌刷新、退出登录、邮箱验证码、注册、密码重置、授权码与通行密钥等认证能力",
-        "title": "Aevons Admin API",
+        "description": "Aevons 认证服务接口文档，提供登录、令牌刷新、退出登录、邮箱验证码、注册、密码重置、SSO 授权码和通行密钥认证等能力",
+        "title": "Aevons Auth Service API",
         "contact": {},
-        "version": "1.0"
+        "version": "1.0.0"
     },
-    "host": "localhost:8021",
-    "basePath": "/api/v1",
+    "host": "localhost:10701",
+    "basePath": "/api/v1/auth",
     "paths": {
-        "/auth/authorize": {
+        "/api/v1/auth/authorize": {
             "get": {
                 "description": "校验客户端合法性，生成 state，返回授权页所需的客户端展示信息。",
                 "produces": [
@@ -130,7 +130,7 @@
                 }
             }
         },
-        "/auth/callback": {
+        "/api/v1/auth/callback": {
             "get": {
                 "description": "校验 state 和授权码，换取令牌对。",
                 "produces": [
@@ -172,7 +172,7 @@
                 }
             }
         },
-        "/auth/code": {
+        "/api/v1/auth/code": {
             "post": {
                 "security": [
                     {
@@ -223,7 +223,7 @@
                 }
             }
         },
-        "/auth/email/code": {
+        "/api/v1/auth/email/code": {
             "post": {
                 "description": "生成 6 位验证码并发送到指定邮箱，purpose 区分用途（register / reset）。",
                 "consumes": [
@@ -272,7 +272,7 @@
                 }
             }
         },
-        "/auth/login": {
+        "/api/v1/auth/login": {
             "post": {
                 "description": "支持 password / email / authorization_code 多种 grant_type。客户端凭证通过 Authorization: Basic base64(client_id:client_secret) 传递。",
                 "consumes": [
@@ -364,7 +364,7 @@
                 }
             }
         },
-        "/auth/logout": {
+        "/api/v1/auth/logout": {
             "post": {
                 "security": [
                     {
@@ -395,7 +395,7 @@
                 }
             }
         },
-        "/auth/passkey/credentials": {
+        "/api/v1/auth/passkey/credentials": {
             "get": {
                 "security": [
                     {
@@ -426,7 +426,7 @@
                 }
             }
         },
-        "/auth/passkey/credentials/{id}": {
+        "/api/v1/auth/passkey/credentials/{id}": {
             "delete": {
                 "security": [
                     {
@@ -472,9 +472,9 @@
                 }
             }
         },
-        "/auth/passkey/login/begin": {
+        "/api/v1/auth/passkey/login/begin": {
             "post": {
-                "description": "生成 WebAuthn 认证 challenge，返回 PublicKeyCredentialRequestOptions（支持 discoverable credential，username 可选）。",
+                "description": "生成 WebAuthn 认证 challenge，返回 PublicKeyCredentialRequestOptions（支持 discoverable credential，username 可选）。客户端凭证通过 Authorization: Basic base64(client_id:client_secret) 传递。",
                 "consumes": [
                     "application/json"
                 ],
@@ -486,6 +486,13 @@
                 ],
                 "summary": "开始 Passkey 认证",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Basic base64(client_id:client_secret)",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "用户名（可选，discoverable credential 无需传）",
                         "name": "username",
@@ -511,9 +518,9 @@
                 }
             }
         },
-        "/auth/passkey/login/finish": {
+        "/api/v1/auth/passkey/login/finish": {
             "post": {
-                "description": "验证浏览器返回的 PublicKeyCredential，颁发令牌对。",
+                "description": "验证浏览器返回的 PublicKeyCredential，颁发令牌对。客户端凭证通过 Authorization: Basic base64(client_id:client_secret) 传递。",
                 "consumes": [
                     "application/json"
                 ],
@@ -525,6 +532,13 @@
                 ],
                 "summary": "完成 Passkey 认证",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Basic base64(client_id:client_secret)",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "BeginAuthentication 返回的 session_key",
                         "name": "session_key",
@@ -566,7 +580,7 @@
                 }
             }
         },
-        "/auth/passkey/register/begin": {
+        "/api/v1/auth/passkey/register/begin": {
             "post": {
                 "security": [
                     {
@@ -597,7 +611,7 @@
                 }
             }
         },
-        "/auth/passkey/register/finish": {
+        "/api/v1/auth/passkey/register/finish": {
             "post": {
                 "security": [
                     {
@@ -657,7 +671,7 @@
                 }
             }
         },
-        "/auth/public-key": {
+        "/api/v1/auth/public-key": {
             "get": {
                 "description": "返回用于前端加密密码的 RSA 公钥（PEM 格式）和对应的 key_id。",
                 "produces": [
@@ -683,7 +697,7 @@
                 }
             }
         },
-        "/auth/refresh": {
+        "/api/v1/auth/refresh": {
             "post": {
                 "description": "Refresh Token 从 HttpOnly Cookie（refreshToken）中读取，客户端凭证通过 Basic Auth 传递。",
                 "produces": [
@@ -718,7 +732,7 @@
                 }
             }
         },
-        "/auth/register": {
+        "/api/v1/auth/register": {
             "post": {
                 "description": "通过邮箱验证码完成注册，返回新建用户信息（密码字段已屏蔽）。",
                 "consumes": [
@@ -785,7 +799,7 @@
                 }
             }
         },
-        "/auth/reset-password": {
+        "/api/v1/auth/reset-password": {
             "post": {
                 "description": "通过邮箱验证码验证身份后设置新密码。",
                 "consumes": [
@@ -843,7 +857,7 @@
                 }
             }
         },
-        "/auth/routers": {
+        "/api/v1/auth/routers": {
             "get": {
                 "security": [
                     {
@@ -874,7 +888,7 @@
                 }
             }
         },
-        "/auth/user": {
+        "/api/v1/auth/user": {
             "get": {
                 "security": [
                     {
@@ -905,7 +919,7 @@
                 }
             }
         },
-        "/auth/user/login-logs": {
+        "/api/v1/auth/user/login-logs": {
             "get": {
                 "security": [
                     {
@@ -942,7 +956,7 @@
                 }
             }
         },
-        "/auth/user/password": {
+        "/api/v1/auth/user/password": {
             "put": {
                 "security": [
                     {
@@ -1002,7 +1016,7 @@
                 }
             }
         },
-        "/auth/user/profile": {
+        "/api/v1/auth/user/profile": {
             "get": {
                 "security": [
                     {
@@ -1131,7 +1145,7 @@
     },
     "securityDefinitions": {
         "BearerAuth": {
-            "description": "Bearer token，格式：Bearer {token}",
+            "description": "Bearer 访问令牌，格式：Bearer {token}",
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"

@@ -29,7 +29,7 @@ func NewJobLogHandler(svc service.JobLogService) *JobLogHandler {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /job/log/page [get]
+// @Router       /api/v1/job/log/page [get]
 func (h *JobLogHandler) Page(c *gin.Context) {
 	h.crud.HandlePage(c)
 }
@@ -42,7 +42,7 @@ func (h *JobLogHandler) Page(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "任务日志ID"
 // @Success      200  {object}  response.Response
-// @Router       /job/log/{id} [get]
+// @Router       /api/v1/job/log/{id} [get]
 func (h *JobLogHandler) Get(c *gin.Context) {
 	h.crud.HandleGet(c)
 }
@@ -55,7 +55,7 @@ func (h *JobLogHandler) Get(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        ids   path      string  true  "逗号分隔的任务日志ID"
 // @Success      200   {object}  response.Response
-// @Router       /job/log/{ids} [delete]
+// @Router       /api/v1/job/log/{ids} [delete]
 func (h *JobLogHandler) BatchDelete(c *gin.Context) {
 	h.crud.HandleBatchDelete(c)
 }

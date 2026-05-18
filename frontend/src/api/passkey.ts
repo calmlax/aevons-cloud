@@ -1,3 +1,4 @@
+import { buildBasicAuth } from '@/api/auth';
 import { request } from '@/utils/request';
 
 export interface PasskeyBeginResponse {
@@ -20,6 +21,14 @@ export interface PasskeyCredential {
   created_at: string;
 }
 
+function passkeyClientHeaders() {
+  const clientId = import.meta.env.VITE_OAUTH_CLIENT_ID || '';
+  const clientSecret = import.meta.env.VITE_OAUTH_CLIENT_SECRET || '';
+  return {
+    Authorization: buildBasicAuth(clientId, clientSecret),
+  };
+}
+
 // ── 注册流程 ──────────────────────────────────────────────────────────────────
 
 export const passkeyRegisterBegin = (): Promise<PasskeyBeginResponse> =>
@@ -38,6 +47,7 @@ export const passkeyLoginBegin = (username?: string): Promise<PasskeyBeginRespon
   request({
     url: '/v1/auth/passkey/login/begin',
     method: 'post',
+    headers: passkeyClientHeaders(),
     data: username ? { username } : {},
     ...{ isToken: false } as any,
   });
@@ -46,6 +56,7 @@ export const passkeyLoginFinish = (sessionKey: string, credential: PublicKeyCred
   request({
     url: '/v1/auth/passkey/login/finish',
     method: 'post',
+    headers: passkeyClientHeaders(),
     data: { session_key: sessionKey, response: credentialToJSON(credential) },
     ...{ isToken: false } as any,
   });

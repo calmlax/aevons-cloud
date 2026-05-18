@@ -33,7 +33,7 @@ func NewDeptHandler(svc service.DeptService) *DeptHandler {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "部门ID"
 // @Success      200  {object}  response.Response
-// @Router       /dept/{id} [get]
+// @Router       /api/v1/sys/dept/{id} [get]
 func (h *DeptHandler) Get(c *gin.Context) {
 	h.crud.HandleGet(c)
 }
@@ -45,7 +45,7 @@ func (h *DeptHandler) Get(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /dept/list [get]
+// @Router       /api/v1/sys/dept/list [get]
 func (h *DeptHandler) ListTree(c *gin.Context) {
 	var q dto.DeptQuery
 	_ = c.ShouldBindQuery(&q)
@@ -66,7 +66,7 @@ func (h *DeptHandler) ListTree(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      dto.CreateDeptDTO  true  "新增部门"
 // @Success      200      {object}  response.Response
-// @Router       /dept [post]
+// @Router       /api/v1/sys/dept [post]
 func (h *DeptHandler) Create(c *gin.Context) {
 	var d dto.CreateDeptDTO
 	if err := c.ShouldBindJSON(&d); err != nil {
@@ -91,7 +91,7 @@ func (h *DeptHandler) Create(c *gin.Context) {
 // @Param        id       path      int               true  "部门ID"
 // @Param        request  body      dto.UpdateDeptDTO true  "修改部门"
 // @Success      200      {object}  response.Response
-// @Router       /dept/{id} [put]
+// @Router       /api/v1/sys/dept/{id} [put]
 func (h *DeptHandler) Update(c *gin.Context) {
 	id, ok := base.GetId(c)
 	if !ok {
@@ -117,7 +117,7 @@ func (h *DeptHandler) Update(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "部门ID"
 // @Success      200  {object}  response.Response
-// @Router       /dept/{id} [delete]
+// @Router       /api/v1/sys/dept/{id} [delete]
 func (h *DeptHandler) Delete(c *gin.Context) {
 	id, ok := base.GetId(c)
 	if !ok {

@@ -33,7 +33,7 @@ func NewPostHandler(svc service.PostService) *PostHandler {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /post/list [get]
+// @Router       /api/v1/sys/post/list [get]
 func (h *PostHandler) List(c *gin.Context) {
 	h.crud.HandleList(c)
 }
@@ -45,7 +45,7 @@ func (h *PostHandler) List(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /post/page [get]
+// @Router       /api/v1/sys/post/page [get]
 func (h *PostHandler) Page(c *gin.Context) {
 	h.crud.HandlePage(c)
 }
@@ -58,7 +58,7 @@ func (h *PostHandler) Page(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "岗位ID"
 // @Success      200  {object}  response.Response
-// @Router       /post/{id} [get]
+// @Router       /api/v1/sys/post/{id} [get]
 func (h *PostHandler) Get(c *gin.Context) {
 	h.crud.HandleGet(c)
 }
@@ -71,7 +71,7 @@ func (h *PostHandler) Get(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        ids   path      string  true  "逗号分隔的岗位ID"
 // @Success      200   {object}  response.Response
-// @Router       /post/{ids} [delete]
+// @Router       /api/v1/sys/post/{ids} [delete]
 func (h *PostHandler) BatchDelete(c *gin.Context) {
 	h.crud.HandleBatchDelete(c)
 }
@@ -85,7 +85,7 @@ func (h *PostHandler) BatchDelete(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      dto.CreatePostDTO  true  "新增岗位"
 // @Success      200      {object}  response.Response
-// @Router       /post [post]
+// @Router       /api/v1/sys/post [post]
 func (h *PostHandler) Create(c *gin.Context) {
 	var d dto.CreatePostDTO
 	if err := c.ShouldBindJSON(&d); err != nil {
@@ -120,7 +120,7 @@ func (h *PostHandler) Create(c *gin.Context) {
 // @Param        id       path      int               true  "岗位ID"
 // @Param        request  body      dto.UpdatePostDTO true  "修改岗位"
 // @Success      200      {object}  response.Response
-// @Router       /post/{id} [put]
+// @Router       /api/v1/sys/post/{id} [put]
 func (h *PostHandler) Update(c *gin.Context) {
 	id, ok := base.GetId(c)
 	if !ok {

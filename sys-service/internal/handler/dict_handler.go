@@ -47,7 +47,7 @@ func NewDictHandler(svc service.DictService, ddsve service.DictDataService) *Dic
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /dict/list [get]
+// @Router       /api/v1/sys/dict/list [get]
 func (h *DictHandler) AvailableList(c *gin.Context) {
 	status := int16(0)
 	list, err := h.svc.List(&dto.DictQuery{
@@ -67,7 +67,7 @@ func (h *DictHandler) AvailableList(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /dict/page [get]
+// @Router       /api/v1/sys/dict/page [get]
 func (h *DictHandler) Page(c *gin.Context) {
 	h.crud.HandlePage(c)
 }
@@ -80,7 +80,7 @@ func (h *DictHandler) Page(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "字典类型ID"
 // @Success      200  {object}  response.Response
-// @Router       /dict/{id} [get]
+// @Router       /api/v1/sys/dict/{id} [get]
 func (h *DictHandler) Get(c *gin.Context) {
 	h.crud.HandleGet(c)
 }
@@ -94,7 +94,7 @@ func (h *DictHandler) Get(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      dto.CreateDictDTO  true  "新增字典类型"
 // @Success      200      {object}  response.Response
-// @Router       /dict [post]
+// @Router       /api/v1/sys/dict [post]
 func (h *DictHandler) CreateDict(c *gin.Context) {
 	var dictDto dto.CreateDictDTO
 	if !base.BindJSON(c, &dictDto) {
@@ -128,7 +128,7 @@ func (h *DictHandler) CreateDict(c *gin.Context) {
 // @Param        id       path      int               true  "字典类型ID"
 // @Param        request  body      dto.UpdateDictDTO true  "修改字典类型"
 // @Success      200      {object}  response.Response
-// @Router       /dict/{id} [put]
+// @Router       /api/v1/sys/dict/{id} [put]
 func (h *DictHandler) UpdateDict(c *gin.Context) {
 	id, ok := base.GetId(c)
 	if !ok {
@@ -156,7 +156,7 @@ func (h *DictHandler) UpdateDict(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "字典类型ID"
 // @Success      200  {object}  response.Response
-// @Router       /dict/{id} [delete]
+// @Router       /api/v1/sys/dict/{id} [delete]
 func (h *DictHandler) DeleteDict(c *gin.Context) {
 	id, ok := base.GetId(c)
 	if !ok {

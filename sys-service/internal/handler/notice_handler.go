@@ -39,7 +39,7 @@ func NewNoticeHandler(svc service.NoticeService) *NoticeHandler {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /notice/list [get]
+// @Router       /api/v1/sys/notice/list [get]
 func (h *NoticeHandler) List(c *gin.Context) {
 	h.crud.HandleList(c)
 }
@@ -51,7 +51,7 @@ func (h *NoticeHandler) List(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /notice/page [get]
+// @Router       /api/v1/sys/notice/page [get]
 func (h *NoticeHandler) Page(c *gin.Context) {
 	h.crud.HandlePage(c)
 }
@@ -64,7 +64,7 @@ func (h *NoticeHandler) Page(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "通知公告ID"
 // @Success      200  {object}  response.Response
-// @Router       /notice/{id} [get]
+// @Router       /api/v1/sys/notice/{id} [get]
 func (h *NoticeHandler) Get(c *gin.Context) {
 	h.crud.HandleGet(c)
 }
@@ -78,7 +78,7 @@ func (h *NoticeHandler) Get(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      dto.CreateNoticeDTO  true  "新增通知公告"
 // @Success      200      {object}  response.Response
-// @Router       /notice [post]
+// @Router       /api/v1/sys/notice [post]
 func (h *NoticeHandler) Create(c *gin.Context) {
 	h.crud.HandleCreate(c)
 }
@@ -93,7 +93,7 @@ func (h *NoticeHandler) Create(c *gin.Context) {
 // @Param        id       path      int                 true  "通知公告ID"
 // @Param        request  body      dto.UpdateNoticeDTO true  "修改通知公告"
 // @Success      200      {object}  response.Response
-// @Router       /notice/{id} [put]
+// @Router       /api/v1/sys/notice/{id} [put]
 func (h *NoticeHandler) Update(c *gin.Context) {
 	h.crud.HandleUpdate(c)
 }
@@ -106,7 +106,7 @@ func (h *NoticeHandler) Update(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        ids   path      string  true  "逗号分隔的通知公告ID"
 // @Success      200   {object}  response.Response
-// @Router       /notice/{ids} [delete]
+// @Router       /api/v1/sys/notice/{ids} [delete]
 func (h *NoticeHandler) BatchDelete(c *gin.Context) {
 	h.crud.HandleBatchDelete(c)
 }

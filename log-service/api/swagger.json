@@ -10,10 +10,10 @@
         "contact": {},
         "version": "1.0.0"
     },
-    "host": "localhost:8021",
+    "host": "localhost:10703",
     "basePath": "/api/v1/log",
     "paths": {
-        "/login/log": {
+        "/api/v1/log/login/log": {
             "delete": {
                 "security": [
                     {
@@ -37,7 +37,7 @@
                 }
             }
         },
-        "/login/log/list": {
+        "/api/v1/log/login/log/list": {
             "get": {
                 "security": [
                     {
@@ -61,7 +61,7 @@
                 }
             }
         },
-        "/login/log/page": {
+        "/api/v1/log/login/log/page": {
             "get": {
                 "security": [
                     {
@@ -85,7 +85,7 @@
                 }
             }
         },
-        "/login/log/{ids}": {
+        "/api/v1/log/login/log/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -118,7 +118,7 @@
                 }
             }
         },
-        "/login/log/{id}": {
+        "/api/v1/log/login/log/{id}": {
             "get": {
                 "security": [
                     {
@@ -151,7 +151,7 @@
                 }
             }
         },
-        "/oper/log": {
+        "/api/v1/log/oper/log": {
             "delete": {
                 "security": [
                     {
@@ -175,7 +175,7 @@
                 }
             }
         },
-        "/oper/log/list": {
+        "/api/v1/log/oper/log/list": {
             "get": {
                 "security": [
                     {
@@ -199,7 +199,7 @@
                 }
             }
         },
-        "/oper/log/page": {
+        "/api/v1/log/oper/log/page": {
             "get": {
                 "security": [
                     {
@@ -223,7 +223,7 @@
                 }
             }
         },
-        "/oper/log/{ids}": {
+        "/api/v1/log/oper/log/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -256,7 +256,7 @@
                 }
             }
         },
-        "/oper/log/{id}": {
+        "/api/v1/log/oper/log/{id}": {
             "get": {
                 "security": [
                     {

@@ -33,7 +33,7 @@ func NewLangHandler(svc service.LangService) *LangHandler {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /lang/list [get]
+// @Router       /api/v1/sys/lang/list [get]
 func (h *LangHandler) List(c *gin.Context) {
 	h.crud.HandleList(c)
 }
@@ -45,7 +45,7 @@ func (h *LangHandler) List(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /lang/page [get]
+// @Router       /api/v1/sys/lang/page [get]
 func (h *LangHandler) Page(c *gin.Context) {
 	h.crud.HandlePage(c)
 }
@@ -58,7 +58,7 @@ func (h *LangHandler) Page(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "语言ID"
 // @Success      200  {object}  response.Response
-// @Router       /lang/{id} [get]
+// @Router       /api/v1/sys/lang/{id} [get]
 func (h *LangHandler) Get(c *gin.Context) {
 	h.crud.HandleGet(c)
 }
@@ -71,7 +71,7 @@ func (h *LangHandler) Get(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        ids   path      string  true  "逗号分隔的语言ID"
 // @Success      200   {object}  response.Response
-// @Router       /lang/{ids} [delete]
+// @Router       /api/v1/sys/lang/{ids} [delete]
 func (h *LangHandler) BatchDelete(c *gin.Context) {
 	h.crud.HandleBatchDelete(c)
 }
@@ -83,7 +83,7 @@ func (h *LangHandler) BatchDelete(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /lang [get]
+// @Router       /api/v1/sys/lang [get]
 func (h *LangHandler) AvailableList(c *gin.Context) {
 	status := int16(0)
 	list, err := h.svc.List(&dto.LangQuery{Status: &status})
@@ -103,7 +103,7 @@ func (h *LangHandler) AvailableList(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      dto.CreateLangDTO  true  "新增语言"
 // @Success      200      {object}  response.Response
-// @Router       /lang [post]
+// @Router       /api/v1/sys/lang [post]
 func (h *LangHandler) Create(c *gin.Context) {
 	var d dto.CreateLangDTO
 	if err := c.ShouldBindJSON(&d); err != nil {
@@ -128,7 +128,7 @@ func (h *LangHandler) Create(c *gin.Context) {
 // @Param        id       path      int               true  "语言ID"
 // @Param        request  body      dto.UpdateLangDTO true  "修改语言"
 // @Success      200      {object}  response.Response
-// @Router       /lang/{id} [put]
+// @Router       /api/v1/sys/lang/{id} [put]
 func (h *LangHandler) Update(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)

@@ -13,7 +13,7 @@
     "host": "localhost:10705",
     "basePath": "/api/v1/job",
     "paths": {
-        "/job": {
+        "/api/v1/job": {
             "post": {
                 "security": [
                     {
@@ -51,7 +51,7 @@
                 }
             }
         },
-        "/job/log/page": {
+        "/api/v1/job/log/page": {
             "get": {
                 "security": [
                     {
@@ -75,7 +75,7 @@
                 }
             }
         },
-        "/job/log/{ids}": {
+        "/api/v1/job/log/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -108,7 +108,7 @@
                 }
             }
         },
-        "/job/log/{id}": {
+        "/api/v1/job/log/{id}": {
             "get": {
                 "security": [
                     {
@@ -141,7 +141,7 @@
                 }
             }
         },
-        "/job/page": {
+        "/api/v1/job/page": {
             "get": {
                 "security": [
                     {
@@ -165,7 +165,7 @@
                 }
             }
         },
-        "/job/{ids}": {
+        "/api/v1/job/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -198,7 +198,7 @@
                 }
             }
         },
-        "/job/{id}": {
+        "/api/v1/job/{id}": {
             "get": {
                 "security": [
                     {
@@ -274,7 +274,7 @@
                 }
             }
         },
-        "/job/{id}/status": {
+        "/api/v1/job/{id}/status": {
             "put": {
                 "security": [
                     {
@@ -319,7 +319,7 @@
                 }
             }
         },
-        "/job/{id}/trigger": {
+        "/api/v1/job/{id}/trigger": {
             "post": {
                 "security": [
                     {

@@ -26,9 +26,9 @@ type PasskeyService interface {
 	// FinishRegistration 完成注册：验证响应，保存凭据
 	FinishRegistration(ctx context.Context, userId int64, sessionKey string, responseJSON []byte) error
 	// BeginAuthentication 开始认证：生成 challenge，返回 PublicKeyCredentialRequestOptions
-	BeginAuthentication(ctx context.Context, username string) (optionsJSON []byte, sessionKey string, err error)
+	BeginAuthentication(ctx context.Context, username, clientId, clientSecret string) (optionsJSON []byte, sessionKey string, err error)
 	// FinishAuthentication 完成认证：验证响应，返回 TokenPair
-	FinishAuthentication(ctx context.Context, sessionKey string, responseJSON []byte, clientIP, userAgent string) (*authmodel.TokenPair, error)
+	FinishAuthentication(ctx context.Context, sessionKey string, responseJSON []byte, clientId, clientSecret, clientIP, userAgent string) (*authmodel.TokenPair, error)
 	// ListCredentials 列出用户所有凭据
 	ListCredentials(ctx context.Context, userId int64) ([]*credModel.UserCredential, error)
 	// RevokeCredential 吊销凭据
@@ -240,7 +240,11 @@ func (s *passkeyService) FinishRegistration(ctx context.Context, userId int64, s
 	return s.authRepo.CreateCredential(c)
 }
 
-func (s *passkeyService) BeginAuthentication(ctx context.Context, username string) ([]byte, string, error) {
+func (s *passkeyService) BeginAuthentication(ctx context.Context, username, clientId, clientSecret string) ([]byte, string, error) {
+	if _, err := s.authRepo.ValidateClient(clientId, clientSecret, "passkey"); err != nil {
+		return nil, "", err
+	}
+
 	// 支持 discoverable credential（不传 allowCredentials）
 	options, session, err := s.wa.BeginDiscoverableLogin(
 		webauthn.WithUserVerification(protocol.VerificationPreferred),
@@ -258,7 +262,11 @@ func (s *passkeyService) BeginAuthentication(ctx context.Context, username strin
 	return b, sessionKey, err
 }
 
-func (s *passkeyService) FinishAuthentication(ctx context.Context, sessionKey string, responseJSON []byte, clientIP, userAgent string) (*authmodel.TokenPair, error) {
+func (s *passkeyService) FinishAuthentication(ctx context.Context, sessionKey string, responseJSON []byte, clientId, clientSecret, clientIP, userAgent string) (*authmodel.TokenPair, error) {
+	if _, err := s.authRepo.ValidateClient(clientId, clientSecret, "passkey"); err != nil {
+		return nil, err
+	}
+
 	session, err := s.loadSession(ctx, sessionKey)
 	if err != nil {
 		return nil, &AuthError{Code: "auth.passkey_session_expired", HTTPStatus: 400}
@@ -274,14 +282,14 @@ func (s *passkeyService) FinishAuthentication(ctx context.Context, sessionKey st
 	cred, err := s.authRepo.GetCredentialByCredentialId(rawId)
 	if err != nil {
 		// 记录失败日志
-		s.authSvc.RecordLoginLog(ctx, "", "passkey", "passkey", 0, "Credential not found", userAgent, clientIP)
+		s.authSvc.RecordLoginLog(ctx, "", clientId, "passkey", 0, "Credential not found", userAgent, clientIP)
 		return nil, &AuthError{Code: "auth.passkey_credential_not_found", HTTPStatus: 401}
 	}
 
 	waUser, err := s.buildWAUser(cred.UserId)
 	if err != nil {
 		// 记录失败日志
-		s.authSvc.RecordLoginLog(ctx, cred.Username, "passkey", "passkey", 0, fmt.Sprintf("Build user failed: %v", err), userAgent, clientIP)
+		s.authSvc.RecordLoginLog(ctx, cred.Username, clientId, "passkey", 0, fmt.Sprintf("Build user failed: %v", err), userAgent, clientIP)
 		return nil, err
 	}
 
@@ -302,7 +310,7 @@ func (s *passkeyService) FinishAuthentication(ctx context.Context, sessionKey st
 		fmt.Printf("[Passkey] Response RawID: %x\n", rawId)
 		fmt.Printf("[Passkey] User ID: %d\n", cred.UserId)
 		// 记录失败日志
-		s.authSvc.RecordLoginLog(ctx, cred.Username, "passkey", "passkey", 0, "Passkey verification failed", userAgent, clientIP)
+		s.authSvc.RecordLoginLog(ctx, cred.Username, clientId, "passkey", 0, "Passkey verification failed", userAgent, clientIP)
 		return nil, &AuthError{Code: "auth.passkey_verify_failed", HTTPStatus: 401}
 	}
 
@@ -310,15 +318,15 @@ func (s *passkeyService) FinishAuthentication(ctx context.Context, sessionKey st
 	_ = s.authRepo.UpdateCredentialSignatureCount(cred.Id, uint64(credential.Authenticator.SignCount))
 
 	// 颁发 token（复用 authSvc 的内部方法，通过 grant_type=passkey 走 Login）
-	pair, err := s.authSvc.LoginByUserId(ctx, cred.UserId, "passkey")
+	pair, err := s.authSvc.LoginByUserId(ctx, cred.UserId, clientId)
 	if err != nil {
 		// 记录失败日志
-		s.authSvc.RecordLoginLog(ctx, cred.Username, "passkey", "passkey", 0, fmt.Sprintf("Token issuance failed: %v", err), userAgent, clientIP)
+		s.authSvc.RecordLoginLog(ctx, cred.Username, clientId, "passkey", 0, fmt.Sprintf("Token issuance failed: %v", err), userAgent, clientIP)
 		return nil, err
 	}
 
 	// 记录成功日志
-	s.authSvc.RecordLoginLog(ctx, cred.Username, "passkey", "passkey", 1, "Passkey login successful", userAgent, clientIP)
+	s.authSvc.RecordLoginLog(ctx, cred.Username, clientId, "passkey", 1, "Passkey login successful", userAgent, clientIP)
 
 	return pair, nil
 }
