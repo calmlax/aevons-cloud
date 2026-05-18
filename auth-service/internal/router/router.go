@@ -60,6 +60,9 @@ func Setup(app *core.App) (*gin.Engine, error) {
 
 	v1 := r.Group("/api/v1/auth")
 	{
+		v1.GET("ping", func(c *gin.Context) {
+			c.JSON(200, gin.H{"message": "pong"})
+		})
 		RegisterRoutes(v1, db, redisClient, cfg, logStore)
 	}
 
