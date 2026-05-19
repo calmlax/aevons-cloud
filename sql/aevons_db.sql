@@ -11,7 +11,7 @@
  Target Server Version : 80044
  File Encoding         : 65001
 
- Date: 19/05/2026 14:13:26
+ Date: 19/05/2026 17:14:04
 */
 
 SET NAMES utf8mb4;
@@ -991,7 +991,7 @@ CREATE TABLE `sys_job_log` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '日志生成时间',
   PRIMARY KEY (`id`),
   KEY `idx_job_id` (`job_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1416 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='定时任务执行日志表';
+) ENGINE=InnoDB AUTO_INCREMENT=1597 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='定时任务执行日志表';
 
 -- ----------------------------
 -- Records of sys_job_log
@@ -2208,6 +2208,187 @@ INSERT INTO `sys_job_log` VALUES (1412, 1, 'sys.test', '', 0, '[job] sys.test fi
 INSERT INTO `sys_job_log` VALUES (1413, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:11:00', 0, 'auto', '2026-05-19 14:11:00', '2026-05-19 14:11:00', '2026-05-19 14:11:00');
 INSERT INTO `sys_job_log` VALUES (1414, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:12:00', 0, 'auto', '2026-05-19 14:12:00', '2026-05-19 14:12:00', '2026-05-19 14:12:00');
 INSERT INTO `sys_job_log` VALUES (1415, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:13:00', 0, 'auto', '2026-05-19 14:13:00', '2026-05-19 14:13:00', '2026-05-19 14:13:00');
+INSERT INTO `sys_job_log` VALUES (1416, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:14:00', 0, 'auto', '2026-05-19 14:14:00', '2026-05-19 14:14:00', '2026-05-19 14:14:00');
+INSERT INTO `sys_job_log` VALUES (1417, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:15:00', 0, 'auto', '2026-05-19 14:15:00', '2026-05-19 14:15:00', '2026-05-19 14:15:00');
+INSERT INTO `sys_job_log` VALUES (1418, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:16:00', 0, 'auto', '2026-05-19 14:16:00', '2026-05-19 14:16:00', '2026-05-19 14:16:00');
+INSERT INTO `sys_job_log` VALUES (1419, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:17:00', 0, 'auto', '2026-05-19 14:17:00', '2026-05-19 14:17:00', '2026-05-19 14:17:00');
+INSERT INTO `sys_job_log` VALUES (1420, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:18:00', 0, 'auto', '2026-05-19 14:18:00', '2026-05-19 14:18:00', '2026-05-19 14:18:00');
+INSERT INTO `sys_job_log` VALUES (1421, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:19:00', 0, 'auto', '2026-05-19 14:19:00', '2026-05-19 14:19:00', '2026-05-19 14:19:00');
+INSERT INTO `sys_job_log` VALUES (1422, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:20:00', 0, 'auto', '2026-05-19 14:20:00', '2026-05-19 14:20:00', '2026-05-19 14:20:00');
+INSERT INTO `sys_job_log` VALUES (1423, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:21:00', 0, 'auto', '2026-05-19 14:21:00', '2026-05-19 14:21:00', '2026-05-19 14:21:00');
+INSERT INTO `sys_job_log` VALUES (1424, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:22:00', 0, 'auto', '2026-05-19 14:22:00', '2026-05-19 14:22:00', '2026-05-19 14:22:00');
+INSERT INTO `sys_job_log` VALUES (1425, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:23:00', 0, 'auto', '2026-05-19 14:23:00', '2026-05-19 14:23:00', '2026-05-19 14:23:00');
+INSERT INTO `sys_job_log` VALUES (1426, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:24:00', 0, 'auto', '2026-05-19 14:24:00', '2026-05-19 14:24:00', '2026-05-19 14:24:00');
+INSERT INTO `sys_job_log` VALUES (1427, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:25:00', 0, 'auto', '2026-05-19 14:25:00', '2026-05-19 14:25:00', '2026-05-19 14:25:00');
+INSERT INTO `sys_job_log` VALUES (1428, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:26:00', 0, 'auto', '2026-05-19 14:26:00', '2026-05-19 14:26:00', '2026-05-19 14:26:00');
+INSERT INTO `sys_job_log` VALUES (1429, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:27:00', 0, 'auto', '2026-05-19 14:27:00', '2026-05-19 14:27:00', '2026-05-19 14:27:00');
+INSERT INTO `sys_job_log` VALUES (1430, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:28:00', 0, 'auto', '2026-05-19 14:28:00', '2026-05-19 14:28:00', '2026-05-19 14:28:00');
+INSERT INTO `sys_job_log` VALUES (1431, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:29:00', 0, 'auto', '2026-05-19 14:29:00', '2026-05-19 14:29:00', '2026-05-19 14:29:00');
+INSERT INTO `sys_job_log` VALUES (1432, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:30:00', 0, 'auto', '2026-05-19 14:30:00', '2026-05-19 14:30:00', '2026-05-19 14:30:00');
+INSERT INTO `sys_job_log` VALUES (1433, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:31:00', 0, 'auto', '2026-05-19 14:31:00', '2026-05-19 14:31:00', '2026-05-19 14:31:00');
+INSERT INTO `sys_job_log` VALUES (1434, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:32:00', 0, 'auto', '2026-05-19 14:32:00', '2026-05-19 14:32:00', '2026-05-19 14:32:00');
+INSERT INTO `sys_job_log` VALUES (1435, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:33:00', 0, 'auto', '2026-05-19 14:33:00', '2026-05-19 14:33:00', '2026-05-19 14:33:00');
+INSERT INTO `sys_job_log` VALUES (1436, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:34:00', 0, 'auto', '2026-05-19 14:34:00', '2026-05-19 14:34:00', '2026-05-19 14:34:00');
+INSERT INTO `sys_job_log` VALUES (1437, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:35:00', 0, 'auto', '2026-05-19 14:35:00', '2026-05-19 14:35:00', '2026-05-19 14:35:00');
+INSERT INTO `sys_job_log` VALUES (1438, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:36:00', 0, 'auto', '2026-05-19 14:36:00', '2026-05-19 14:36:00', '2026-05-19 14:36:00');
+INSERT INTO `sys_job_log` VALUES (1439, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:37:00', 0, 'auto', '2026-05-19 14:37:00', '2026-05-19 14:37:00', '2026-05-19 14:37:00');
+INSERT INTO `sys_job_log` VALUES (1440, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:38:00', 0, 'auto', '2026-05-19 14:38:00', '2026-05-19 14:38:00', '2026-05-19 14:38:00');
+INSERT INTO `sys_job_log` VALUES (1441, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:39:00', 0, 'auto', '2026-05-19 14:39:00', '2026-05-19 14:39:00', '2026-05-19 14:39:00');
+INSERT INTO `sys_job_log` VALUES (1442, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:40:00', 0, 'auto', '2026-05-19 14:40:00', '2026-05-19 14:40:00', '2026-05-19 14:40:00');
+INSERT INTO `sys_job_log` VALUES (1443, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:41:00', 0, 'auto', '2026-05-19 14:41:00', '2026-05-19 14:41:00', '2026-05-19 14:41:00');
+INSERT INTO `sys_job_log` VALUES (1444, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:42:00', 0, 'auto', '2026-05-19 14:42:00', '2026-05-19 14:42:00', '2026-05-19 14:42:00');
+INSERT INTO `sys_job_log` VALUES (1445, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:43:00', 0, 'auto', '2026-05-19 14:43:00', '2026-05-19 14:43:00', '2026-05-19 14:43:00');
+INSERT INTO `sys_job_log` VALUES (1446, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:44:00', 0, 'auto', '2026-05-19 14:44:00', '2026-05-19 14:44:00', '2026-05-19 14:44:00');
+INSERT INTO `sys_job_log` VALUES (1447, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:45:00', 0, 'auto', '2026-05-19 14:45:00', '2026-05-19 14:45:00', '2026-05-19 14:45:00');
+INSERT INTO `sys_job_log` VALUES (1448, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:46:00', 0, 'auto', '2026-05-19 14:46:00', '2026-05-19 14:46:00', '2026-05-19 14:46:00');
+INSERT INTO `sys_job_log` VALUES (1449, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:47:00', 0, 'auto', '2026-05-19 14:47:00', '2026-05-19 14:47:00', '2026-05-19 14:47:00');
+INSERT INTO `sys_job_log` VALUES (1450, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:48:00', 0, 'auto', '2026-05-19 14:48:00', '2026-05-19 14:48:00', '2026-05-19 14:48:00');
+INSERT INTO `sys_job_log` VALUES (1451, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:49:00', 0, 'auto', '2026-05-19 14:49:00', '2026-05-19 14:49:00', '2026-05-19 14:49:00');
+INSERT INTO `sys_job_log` VALUES (1452, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:50:00', 0, 'auto', '2026-05-19 14:50:00', '2026-05-19 14:50:00', '2026-05-19 14:50:00');
+INSERT INTO `sys_job_log` VALUES (1453, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:51:00', 0, 'auto', '2026-05-19 14:51:00', '2026-05-19 14:51:00', '2026-05-19 14:51:00');
+INSERT INTO `sys_job_log` VALUES (1454, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:52:00', 0, 'auto', '2026-05-19 14:52:00', '2026-05-19 14:52:00', '2026-05-19 14:52:00');
+INSERT INTO `sys_job_log` VALUES (1455, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:53:00', 0, 'auto', '2026-05-19 14:53:00', '2026-05-19 14:53:00', '2026-05-19 14:53:00');
+INSERT INTO `sys_job_log` VALUES (1456, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:54:00', 0, 'auto', '2026-05-19 14:54:00', '2026-05-19 14:54:00', '2026-05-19 14:54:00');
+INSERT INTO `sys_job_log` VALUES (1457, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:55:00', 0, 'auto', '2026-05-19 14:55:00', '2026-05-19 14:55:00', '2026-05-19 14:55:00');
+INSERT INTO `sys_job_log` VALUES (1458, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:56:00', 0, 'auto', '2026-05-19 14:56:00', '2026-05-19 14:56:00', '2026-05-19 14:56:00');
+INSERT INTO `sys_job_log` VALUES (1459, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:57:00', 0, 'auto', '2026-05-19 14:57:00', '2026-05-19 14:57:00', '2026-05-19 14:57:00');
+INSERT INTO `sys_job_log` VALUES (1460, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:58:00', 0, 'auto', '2026-05-19 14:58:00', '2026-05-19 14:58:00', '2026-05-19 14:58:00');
+INSERT INTO `sys_job_log` VALUES (1461, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 14:59:00', 0, 'auto', '2026-05-19 14:59:00', '2026-05-19 14:59:00', '2026-05-19 14:59:00');
+INSERT INTO `sys_job_log` VALUES (1462, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:00:00', 0, 'auto', '2026-05-19 15:00:00', '2026-05-19 15:00:00', '2026-05-19 15:00:00');
+INSERT INTO `sys_job_log` VALUES (1463, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:01:00', 0, 'auto', '2026-05-19 15:01:00', '2026-05-19 15:01:00', '2026-05-19 15:01:00');
+INSERT INTO `sys_job_log` VALUES (1464, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:02:00', 0, 'auto', '2026-05-19 15:02:00', '2026-05-19 15:02:00', '2026-05-19 15:02:00');
+INSERT INTO `sys_job_log` VALUES (1465, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:03:00', 0, 'auto', '2026-05-19 15:03:00', '2026-05-19 15:03:00', '2026-05-19 15:03:00');
+INSERT INTO `sys_job_log` VALUES (1466, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:04:00', 0, 'auto', '2026-05-19 15:04:00', '2026-05-19 15:04:00', '2026-05-19 15:04:00');
+INSERT INTO `sys_job_log` VALUES (1467, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:05:00', 0, 'auto', '2026-05-19 15:05:00', '2026-05-19 15:05:00', '2026-05-19 15:05:00');
+INSERT INTO `sys_job_log` VALUES (1468, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:06:00', 0, 'auto', '2026-05-19 15:06:00', '2026-05-19 15:06:00', '2026-05-19 15:06:00');
+INSERT INTO `sys_job_log` VALUES (1469, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:07:00', 0, 'auto', '2026-05-19 15:07:00', '2026-05-19 15:07:00', '2026-05-19 15:07:00');
+INSERT INTO `sys_job_log` VALUES (1470, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:08:00', 0, 'auto', '2026-05-19 15:08:00', '2026-05-19 15:08:00', '2026-05-19 15:08:00');
+INSERT INTO `sys_job_log` VALUES (1471, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:09:00', 0, 'auto', '2026-05-19 15:09:00', '2026-05-19 15:09:00', '2026-05-19 15:09:00');
+INSERT INTO `sys_job_log` VALUES (1472, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:10:00', 0, 'auto', '2026-05-19 15:10:00', '2026-05-19 15:10:00', '2026-05-19 15:10:00');
+INSERT INTO `sys_job_log` VALUES (1473, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:11:00', 0, 'auto', '2026-05-19 15:11:00', '2026-05-19 15:11:00', '2026-05-19 15:11:00');
+INSERT INTO `sys_job_log` VALUES (1474, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:12:00', 0, 'auto', '2026-05-19 15:12:00', '2026-05-19 15:12:00', '2026-05-19 15:12:00');
+INSERT INTO `sys_job_log` VALUES (1475, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:13:00', 0, 'auto', '2026-05-19 15:13:00', '2026-05-19 15:13:00', '2026-05-19 15:13:00');
+INSERT INTO `sys_job_log` VALUES (1476, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:14:00', 0, 'auto', '2026-05-19 15:14:00', '2026-05-19 15:14:00', '2026-05-19 15:14:00');
+INSERT INTO `sys_job_log` VALUES (1477, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:15:00', 0, 'auto', '2026-05-19 15:15:00', '2026-05-19 15:15:00', '2026-05-19 15:15:00');
+INSERT INTO `sys_job_log` VALUES (1478, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:16:00', 0, 'auto', '2026-05-19 15:16:00', '2026-05-19 15:16:00', '2026-05-19 15:16:00');
+INSERT INTO `sys_job_log` VALUES (1479, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:17:00', 0, 'auto', '2026-05-19 15:17:00', '2026-05-19 15:17:00', '2026-05-19 15:17:00');
+INSERT INTO `sys_job_log` VALUES (1480, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:18:00', 0, 'auto', '2026-05-19 15:18:00', '2026-05-19 15:18:00', '2026-05-19 15:18:00');
+INSERT INTO `sys_job_log` VALUES (1481, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:19:00', 0, 'auto', '2026-05-19 15:19:00', '2026-05-19 15:19:00', '2026-05-19 15:19:00');
+INSERT INTO `sys_job_log` VALUES (1482, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:20:00', 0, 'auto', '2026-05-19 15:20:00', '2026-05-19 15:20:00', '2026-05-19 15:20:00');
+INSERT INTO `sys_job_log` VALUES (1483, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:21:00', 0, 'auto', '2026-05-19 15:21:00', '2026-05-19 15:21:00', '2026-05-19 15:21:00');
+INSERT INTO `sys_job_log` VALUES (1484, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:22:00', 0, 'auto', '2026-05-19 15:22:00', '2026-05-19 15:22:00', '2026-05-19 15:22:00');
+INSERT INTO `sys_job_log` VALUES (1485, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:23:00', 0, 'auto', '2026-05-19 15:23:00', '2026-05-19 15:23:00', '2026-05-19 15:23:00');
+INSERT INTO `sys_job_log` VALUES (1486, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:24:00', 0, 'auto', '2026-05-19 15:24:00', '2026-05-19 15:24:00', '2026-05-19 15:24:00');
+INSERT INTO `sys_job_log` VALUES (1487, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:25:00', 0, 'auto', '2026-05-19 15:25:00', '2026-05-19 15:25:00', '2026-05-19 15:25:00');
+INSERT INTO `sys_job_log` VALUES (1488, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:26:00', 0, 'auto', '2026-05-19 15:26:00', '2026-05-19 15:26:00', '2026-05-19 15:26:00');
+INSERT INTO `sys_job_log` VALUES (1489, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:27:00', 0, 'auto', '2026-05-19 15:27:00', '2026-05-19 15:27:00', '2026-05-19 15:27:00');
+INSERT INTO `sys_job_log` VALUES (1490, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:28:00', 0, 'auto', '2026-05-19 15:28:00', '2026-05-19 15:28:00', '2026-05-19 15:28:00');
+INSERT INTO `sys_job_log` VALUES (1491, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:29:00', 0, 'auto', '2026-05-19 15:29:00', '2026-05-19 15:29:00', '2026-05-19 15:29:00');
+INSERT INTO `sys_job_log` VALUES (1492, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:30:00', 0, 'auto', '2026-05-19 15:30:00', '2026-05-19 15:30:00', '2026-05-19 15:30:00');
+INSERT INTO `sys_job_log` VALUES (1493, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:31:00', 0, 'auto', '2026-05-19 15:31:00', '2026-05-19 15:31:00', '2026-05-19 15:31:00');
+INSERT INTO `sys_job_log` VALUES (1494, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:32:00', 0, 'auto', '2026-05-19 15:32:00', '2026-05-19 15:32:00', '2026-05-19 15:32:00');
+INSERT INTO `sys_job_log` VALUES (1495, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:33:00', 0, 'auto', '2026-05-19 15:33:00', '2026-05-19 15:33:00', '2026-05-19 15:33:00');
+INSERT INTO `sys_job_log` VALUES (1496, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:34:00', 0, 'auto', '2026-05-19 15:34:00', '2026-05-19 15:34:00', '2026-05-19 15:34:00');
+INSERT INTO `sys_job_log` VALUES (1497, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:35:00', 0, 'auto', '2026-05-19 15:35:00', '2026-05-19 15:35:00', '2026-05-19 15:35:00');
+INSERT INTO `sys_job_log` VALUES (1498, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:36:00', 0, 'auto', '2026-05-19 15:36:00', '2026-05-19 15:36:00', '2026-05-19 15:36:00');
+INSERT INTO `sys_job_log` VALUES (1499, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:37:00', 0, 'auto', '2026-05-19 15:37:00', '2026-05-19 15:37:00', '2026-05-19 15:37:00');
+INSERT INTO `sys_job_log` VALUES (1500, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:38:00', 0, 'auto', '2026-05-19 15:38:00', '2026-05-19 15:38:00', '2026-05-19 15:38:00');
+INSERT INTO `sys_job_log` VALUES (1501, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:39:00', 0, 'auto', '2026-05-19 15:39:00', '2026-05-19 15:39:00', '2026-05-19 15:39:00');
+INSERT INTO `sys_job_log` VALUES (1502, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:40:00', 0, 'auto', '2026-05-19 15:40:00', '2026-05-19 15:40:00', '2026-05-19 15:40:00');
+INSERT INTO `sys_job_log` VALUES (1503, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:41:00', 0, 'auto', '2026-05-19 15:41:00', '2026-05-19 15:41:00', '2026-05-19 15:41:00');
+INSERT INTO `sys_job_log` VALUES (1504, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:42:00', 0, 'auto', '2026-05-19 15:42:00', '2026-05-19 15:42:00', '2026-05-19 15:42:00');
+INSERT INTO `sys_job_log` VALUES (1505, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:43:00', 0, 'auto', '2026-05-19 15:43:00', '2026-05-19 15:43:00', '2026-05-19 15:43:00');
+INSERT INTO `sys_job_log` VALUES (1506, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:44:00', 0, 'auto', '2026-05-19 15:44:00', '2026-05-19 15:44:00', '2026-05-19 15:44:00');
+INSERT INTO `sys_job_log` VALUES (1507, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:45:00', 0, 'auto', '2026-05-19 15:45:00', '2026-05-19 15:45:00', '2026-05-19 15:45:00');
+INSERT INTO `sys_job_log` VALUES (1508, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:46:00', 0, 'auto', '2026-05-19 15:46:00', '2026-05-19 15:46:00', '2026-05-19 15:46:00');
+INSERT INTO `sys_job_log` VALUES (1509, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:47:00', 0, 'auto', '2026-05-19 15:47:00', '2026-05-19 15:47:00', '2026-05-19 15:47:00');
+INSERT INTO `sys_job_log` VALUES (1510, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:48:00', 0, 'auto', '2026-05-19 15:48:00', '2026-05-19 15:48:00', '2026-05-19 15:48:00');
+INSERT INTO `sys_job_log` VALUES (1511, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:49:00', 0, 'auto', '2026-05-19 15:49:00', '2026-05-19 15:49:00', '2026-05-19 15:49:00');
+INSERT INTO `sys_job_log` VALUES (1512, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:50:00', 0, 'auto', '2026-05-19 15:50:00', '2026-05-19 15:50:00', '2026-05-19 15:50:00');
+INSERT INTO `sys_job_log` VALUES (1513, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:51:00', 0, 'auto', '2026-05-19 15:51:00', '2026-05-19 15:51:00', '2026-05-19 15:51:00');
+INSERT INTO `sys_job_log` VALUES (1514, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:52:00', 0, 'auto', '2026-05-19 15:52:00', '2026-05-19 15:52:00', '2026-05-19 15:52:00');
+INSERT INTO `sys_job_log` VALUES (1515, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:53:00', 0, 'auto', '2026-05-19 15:53:00', '2026-05-19 15:53:00', '2026-05-19 15:53:00');
+INSERT INTO `sys_job_log` VALUES (1516, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:54:00', 0, 'auto', '2026-05-19 15:54:00', '2026-05-19 15:54:00', '2026-05-19 15:54:00');
+INSERT INTO `sys_job_log` VALUES (1517, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:55:00', 0, 'auto', '2026-05-19 15:55:00', '2026-05-19 15:55:00', '2026-05-19 15:55:00');
+INSERT INTO `sys_job_log` VALUES (1518, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:56:00', 0, 'auto', '2026-05-19 15:56:00', '2026-05-19 15:56:00', '2026-05-19 15:56:00');
+INSERT INTO `sys_job_log` VALUES (1519, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:57:00', 0, 'auto', '2026-05-19 15:57:00', '2026-05-19 15:57:00', '2026-05-19 15:57:00');
+INSERT INTO `sys_job_log` VALUES (1520, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:58:00', 0, 'auto', '2026-05-19 15:58:00', '2026-05-19 15:58:00', '2026-05-19 15:58:00');
+INSERT INTO `sys_job_log` VALUES (1521, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 15:59:00', 0, 'auto', '2026-05-19 15:59:00', '2026-05-19 15:59:00', '2026-05-19 15:59:00');
+INSERT INTO `sys_job_log` VALUES (1522, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:00:00', 0, 'auto', '2026-05-19 16:00:00', '2026-05-19 16:00:00', '2026-05-19 16:00:00');
+INSERT INTO `sys_job_log` VALUES (1523, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:01:00', 0, 'auto', '2026-05-19 16:01:00', '2026-05-19 16:01:00', '2026-05-19 16:01:00');
+INSERT INTO `sys_job_log` VALUES (1524, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:02:00', 0, 'auto', '2026-05-19 16:02:00', '2026-05-19 16:02:00', '2026-05-19 16:02:00');
+INSERT INTO `sys_job_log` VALUES (1525, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:03:00', 0, 'auto', '2026-05-19 16:03:00', '2026-05-19 16:03:00', '2026-05-19 16:03:00');
+INSERT INTO `sys_job_log` VALUES (1526, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:04:00', 0, 'auto', '2026-05-19 16:04:00', '2026-05-19 16:04:00', '2026-05-19 16:04:00');
+INSERT INTO `sys_job_log` VALUES (1527, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:05:00', 0, 'auto', '2026-05-19 16:05:00', '2026-05-19 16:05:00', '2026-05-19 16:05:00');
+INSERT INTO `sys_job_log` VALUES (1528, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:06:00', 0, 'auto', '2026-05-19 16:06:00', '2026-05-19 16:06:00', '2026-05-19 16:06:00');
+INSERT INTO `sys_job_log` VALUES (1529, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:07:00', 0, 'auto', '2026-05-19 16:07:00', '2026-05-19 16:07:00', '2026-05-19 16:07:00');
+INSERT INTO `sys_job_log` VALUES (1530, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:08:00', 0, 'auto', '2026-05-19 16:08:00', '2026-05-19 16:08:00', '2026-05-19 16:08:00');
+INSERT INTO `sys_job_log` VALUES (1531, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:09:00', 0, 'auto', '2026-05-19 16:09:00', '2026-05-19 16:09:00', '2026-05-19 16:09:00');
+INSERT INTO `sys_job_log` VALUES (1532, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:10:00', 0, 'auto', '2026-05-19 16:10:00', '2026-05-19 16:10:00', '2026-05-19 16:10:00');
+INSERT INTO `sys_job_log` VALUES (1533, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:11:00', 0, 'auto', '2026-05-19 16:11:00', '2026-05-19 16:11:00', '2026-05-19 16:11:00');
+INSERT INTO `sys_job_log` VALUES (1534, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:12:00', 0, 'auto', '2026-05-19 16:12:00', '2026-05-19 16:12:00', '2026-05-19 16:12:00');
+INSERT INTO `sys_job_log` VALUES (1535, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:13:00', 0, 'auto', '2026-05-19 16:13:00', '2026-05-19 16:13:00', '2026-05-19 16:13:00');
+INSERT INTO `sys_job_log` VALUES (1536, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:14:00', 0, 'auto', '2026-05-19 16:14:00', '2026-05-19 16:14:00', '2026-05-19 16:14:00');
+INSERT INTO `sys_job_log` VALUES (1537, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:15:00', 0, 'auto', '2026-05-19 16:15:00', '2026-05-19 16:15:00', '2026-05-19 16:15:00');
+INSERT INTO `sys_job_log` VALUES (1538, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:16:00', 0, 'auto', '2026-05-19 16:16:00', '2026-05-19 16:16:00', '2026-05-19 16:16:00');
+INSERT INTO `sys_job_log` VALUES (1539, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:17:00', 0, 'auto', '2026-05-19 16:17:00', '2026-05-19 16:17:00', '2026-05-19 16:17:00');
+INSERT INTO `sys_job_log` VALUES (1540, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:18:00', 0, 'auto', '2026-05-19 16:18:00', '2026-05-19 16:18:00', '2026-05-19 16:18:00');
+INSERT INTO `sys_job_log` VALUES (1541, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:19:00', 0, 'auto', '2026-05-19 16:19:00', '2026-05-19 16:19:00', '2026-05-19 16:19:00');
+INSERT INTO `sys_job_log` VALUES (1542, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:20:00', 0, 'auto', '2026-05-19 16:20:00', '2026-05-19 16:20:00', '2026-05-19 16:20:00');
+INSERT INTO `sys_job_log` VALUES (1543, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:21:00', 0, 'auto', '2026-05-19 16:21:00', '2026-05-19 16:21:00', '2026-05-19 16:21:00');
+INSERT INTO `sys_job_log` VALUES (1544, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:22:00', 0, 'auto', '2026-05-19 16:22:00', '2026-05-19 16:22:00', '2026-05-19 16:22:00');
+INSERT INTO `sys_job_log` VALUES (1545, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:23:00', 0, 'auto', '2026-05-19 16:23:00', '2026-05-19 16:23:00', '2026-05-19 16:23:00');
+INSERT INTO `sys_job_log` VALUES (1546, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:24:00', 0, 'auto', '2026-05-19 16:24:00', '2026-05-19 16:24:00', '2026-05-19 16:24:00');
+INSERT INTO `sys_job_log` VALUES (1547, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:25:00', 0, 'auto', '2026-05-19 16:25:00', '2026-05-19 16:25:00', '2026-05-19 16:25:00');
+INSERT INTO `sys_job_log` VALUES (1548, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:26:00', 0, 'auto', '2026-05-19 16:26:00', '2026-05-19 16:26:00', '2026-05-19 16:26:00');
+INSERT INTO `sys_job_log` VALUES (1549, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:27:00', 0, 'auto', '2026-05-19 16:27:00', '2026-05-19 16:27:00', '2026-05-19 16:27:00');
+INSERT INTO `sys_job_log` VALUES (1550, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:28:00', 0, 'auto', '2026-05-19 16:28:00', '2026-05-19 16:28:00', '2026-05-19 16:28:00');
+INSERT INTO `sys_job_log` VALUES (1551, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:29:00', 0, 'auto', '2026-05-19 16:29:00', '2026-05-19 16:29:00', '2026-05-19 16:29:00');
+INSERT INTO `sys_job_log` VALUES (1552, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:30:00', 0, 'auto', '2026-05-19 16:30:00', '2026-05-19 16:30:00', '2026-05-19 16:30:00');
+INSERT INTO `sys_job_log` VALUES (1553, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:31:00', 0, 'auto', '2026-05-19 16:31:00', '2026-05-19 16:31:00', '2026-05-19 16:31:00');
+INSERT INTO `sys_job_log` VALUES (1554, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:32:00', 0, 'auto', '2026-05-19 16:32:00', '2026-05-19 16:32:00', '2026-05-19 16:32:00');
+INSERT INTO `sys_job_log` VALUES (1555, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:33:00', 0, 'auto', '2026-05-19 16:33:00', '2026-05-19 16:33:00', '2026-05-19 16:33:00');
+INSERT INTO `sys_job_log` VALUES (1556, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:34:00', 0, 'auto', '2026-05-19 16:34:00', '2026-05-19 16:34:00', '2026-05-19 16:34:00');
+INSERT INTO `sys_job_log` VALUES (1557, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:35:00', 0, 'auto', '2026-05-19 16:35:00', '2026-05-19 16:35:00', '2026-05-19 16:35:00');
+INSERT INTO `sys_job_log` VALUES (1558, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:36:00', 0, 'auto', '2026-05-19 16:36:00', '2026-05-19 16:36:00', '2026-05-19 16:36:00');
+INSERT INTO `sys_job_log` VALUES (1559, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:37:00', 0, 'auto', '2026-05-19 16:37:00', '2026-05-19 16:37:00', '2026-05-19 16:37:00');
+INSERT INTO `sys_job_log` VALUES (1560, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:38:00', 0, 'auto', '2026-05-19 16:38:00', '2026-05-19 16:38:00', '2026-05-19 16:38:00');
+INSERT INTO `sys_job_log` VALUES (1561, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:39:00', 0, 'auto', '2026-05-19 16:39:00', '2026-05-19 16:39:00', '2026-05-19 16:39:00');
+INSERT INTO `sys_job_log` VALUES (1562, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:40:00', 0, 'auto', '2026-05-19 16:40:00', '2026-05-19 16:40:00', '2026-05-19 16:40:00');
+INSERT INTO `sys_job_log` VALUES (1563, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:41:00', 0, 'auto', '2026-05-19 16:41:00', '2026-05-19 16:41:00', '2026-05-19 16:41:00');
+INSERT INTO `sys_job_log` VALUES (1564, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:42:00', 0, 'auto', '2026-05-19 16:42:00', '2026-05-19 16:42:00', '2026-05-19 16:42:00');
+INSERT INTO `sys_job_log` VALUES (1565, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:43:00', 0, 'auto', '2026-05-19 16:43:00', '2026-05-19 16:43:00', '2026-05-19 16:43:00');
+INSERT INTO `sys_job_log` VALUES (1566, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:44:00', 0, 'auto', '2026-05-19 16:44:00', '2026-05-19 16:44:00', '2026-05-19 16:44:00');
+INSERT INTO `sys_job_log` VALUES (1567, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:45:00', 0, 'auto', '2026-05-19 16:45:00', '2026-05-19 16:45:00', '2026-05-19 16:45:00');
+INSERT INTO `sys_job_log` VALUES (1568, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:46:00', 0, 'auto', '2026-05-19 16:46:00', '2026-05-19 16:46:00', '2026-05-19 16:46:00');
+INSERT INTO `sys_job_log` VALUES (1569, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:47:00', 0, 'auto', '2026-05-19 16:47:00', '2026-05-19 16:47:00', '2026-05-19 16:47:00');
+INSERT INTO `sys_job_log` VALUES (1570, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:48:00', 0, 'auto', '2026-05-19 16:48:00', '2026-05-19 16:48:00', '2026-05-19 16:48:00');
+INSERT INTO `sys_job_log` VALUES (1571, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:49:00', 0, 'auto', '2026-05-19 16:49:00', '2026-05-19 16:49:00', '2026-05-19 16:49:00');
+INSERT INTO `sys_job_log` VALUES (1572, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:50:00', 0, 'auto', '2026-05-19 16:50:00', '2026-05-19 16:50:00', '2026-05-19 16:50:00');
+INSERT INTO `sys_job_log` VALUES (1573, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:51:00', 0, 'auto', '2026-05-19 16:51:00', '2026-05-19 16:51:00', '2026-05-19 16:51:00');
+INSERT INTO `sys_job_log` VALUES (1574, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:52:00', 0, 'auto', '2026-05-19 16:52:00', '2026-05-19 16:52:00', '2026-05-19 16:52:00');
+INSERT INTO `sys_job_log` VALUES (1575, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:53:00', 0, 'auto', '2026-05-19 16:53:00', '2026-05-19 16:53:00', '2026-05-19 16:53:00');
+INSERT INTO `sys_job_log` VALUES (1576, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:54:00', 0, 'auto', '2026-05-19 16:54:00', '2026-05-19 16:54:00', '2026-05-19 16:54:00');
+INSERT INTO `sys_job_log` VALUES (1577, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:55:00', 0, 'auto', '2026-05-19 16:55:00', '2026-05-19 16:55:00', '2026-05-19 16:55:00');
+INSERT INTO `sys_job_log` VALUES (1578, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:56:00', 0, 'auto', '2026-05-19 16:56:00', '2026-05-19 16:56:00', '2026-05-19 16:56:00');
+INSERT INTO `sys_job_log` VALUES (1579, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:57:00', 0, 'auto', '2026-05-19 16:57:00', '2026-05-19 16:57:00', '2026-05-19 16:57:00');
+INSERT INTO `sys_job_log` VALUES (1580, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:58:00', 0, 'auto', '2026-05-19 16:58:00', '2026-05-19 16:58:00', '2026-05-19 16:58:00');
+INSERT INTO `sys_job_log` VALUES (1581, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 16:59:00', 0, 'auto', '2026-05-19 16:59:00', '2026-05-19 16:59:00', '2026-05-19 16:59:00');
+INSERT INTO `sys_job_log` VALUES (1582, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 17:00:00', 0, 'auto', '2026-05-19 17:00:00', '2026-05-19 17:00:00', '2026-05-19 17:00:00');
+INSERT INTO `sys_job_log` VALUES (1583, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 17:01:00', 0, 'auto', '2026-05-19 17:01:00', '2026-05-19 17:01:00', '2026-05-19 17:01:00');
+INSERT INTO `sys_job_log` VALUES (1584, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 17:02:00', 0, 'auto', '2026-05-19 17:02:00', '2026-05-19 17:02:00', '2026-05-19 17:02:00');
+INSERT INTO `sys_job_log` VALUES (1585, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 17:03:00', 0, 'auto', '2026-05-19 17:03:00', '2026-05-19 17:03:00', '2026-05-19 17:03:00');
+INSERT INTO `sys_job_log` VALUES (1586, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 17:04:00', 0, 'auto', '2026-05-19 17:04:00', '2026-05-19 17:04:00', '2026-05-19 17:04:00');
+INSERT INTO `sys_job_log` VALUES (1587, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 17:05:00', 0, 'auto', '2026-05-19 17:05:00', '2026-05-19 17:05:00', '2026-05-19 17:05:00');
+INSERT INTO `sys_job_log` VALUES (1588, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 17:06:00', 0, 'auto', '2026-05-19 17:06:00', '2026-05-19 17:06:00', '2026-05-19 17:06:00');
+INSERT INTO `sys_job_log` VALUES (1589, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 17:07:00', 0, 'auto', '2026-05-19 17:07:00', '2026-05-19 17:07:00', '2026-05-19 17:07:00');
+INSERT INTO `sys_job_log` VALUES (1590, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 17:08:00', 0, 'auto', '2026-05-19 17:08:00', '2026-05-19 17:08:00', '2026-05-19 17:08:00');
+INSERT INTO `sys_job_log` VALUES (1591, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 17:09:00', 0, 'auto', '2026-05-19 17:09:00', '2026-05-19 17:09:00', '2026-05-19 17:09:00');
+INSERT INTO `sys_job_log` VALUES (1592, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 17:10:00', 0, 'auto', '2026-05-19 17:10:00', '2026-05-19 17:10:00', '2026-05-19 17:10:00');
+INSERT INTO `sys_job_log` VALUES (1593, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 17:11:00', 0, 'auto', '2026-05-19 17:11:00', '2026-05-19 17:11:00', '2026-05-19 17:11:00');
+INSERT INTO `sys_job_log` VALUES (1594, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 17:12:00', 0, 'auto', '2026-05-19 17:12:00', '2026-05-19 17:12:00', '2026-05-19 17:12:00');
+INSERT INTO `sys_job_log` VALUES (1595, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 17:13:00', 0, 'auto', '2026-05-19 17:13:00', '2026-05-19 17:13:00', '2026-05-19 17:13:00');
+INSERT INTO `sys_job_log` VALUES (1596, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-19 17:14:00', 0, 'auto', '2026-05-19 17:14:00', '2026-05-19 17:14:00', '2026-05-19 17:14:00');
 COMMIT;
 
 -- ----------------------------
@@ -2425,12 +2606,20 @@ CREATE TABLE `sys_login_log` (
   `msg` varchar(50) DEFAULT NULL COMMENT '模块标题',
   `login_at` datetime DEFAULT NULL COMMENT '登录时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='操作日志记录';
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='操作日志记录';
 
 -- ----------------------------
 -- Records of sys_login_log
 -- ----------------------------
 BEGIN;
+INSERT INTO `sys_login_log` VALUES (1, 'admin', '100000', 'password', 'Linux', 'Chrome', '192.168.0.102', '', 1, 'Login successful', '2026-05-19 16:14:20');
+INSERT INTO `sys_login_log` VALUES (2, 'admin', '100000', 'password', 'Linux', 'Chrome', '192.168.0.102', '', 1, 'Login successful', '2026-05-19 16:26:11');
+INSERT INTO `sys_login_log` VALUES (3, 'admin', '100000', 'password', 'Linux', 'Chrome', '192.168.0.102', '', 1, 'Login successful', '2026-05-19 16:36:35');
+INSERT INTO `sys_login_log` VALUES (4, 'admin', '100000', 'password', 'Linux', 'Chrome', '192.168.0.102', '', 1, 'Login successful', '2026-05-19 16:37:01');
+INSERT INTO `sys_login_log` VALUES (5, 'admin', '100000', 'password', 'Linux', 'Chrome', '192.168.0.102', '', 1, 'Login successful', '2026-05-19 16:37:21');
+INSERT INTO `sys_login_log` VALUES (6, 'admin', '100000', 'password', 'Linux', 'Chrome', '192.168.31.81', '', 1, 'Login successful', '2026-05-19 16:56:46');
+INSERT INTO `sys_login_log` VALUES (7, 'admin', '100000', 'password', 'Linux', 'Chrome', '192.168.31.81', '', 1, 'Login successful', '2026-05-19 17:10:38');
+INSERT INTO `sys_login_log` VALUES (8, 'admin', 'auth-demo', 'authorization_code', 'Linux', 'Chrome', '192.168.31.81', '', 1, 'Login successful', '2026-05-19 17:13:48');
 COMMIT;
 
 -- ----------------------------
@@ -2901,8 +3090,8 @@ CREATE TABLE `sys_oauth_client` (
 -- Records of sys_oauth_client
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_oauth_client` VALUES (1, '100000', '$2a$10$1UpM1wYjOm.LNpWeu/FouupAkoZoxugN30tiqMphbjsaoOuhy82ea', 'Master', 'ALL', '/assets/images/logo.png', 'openid,profile', 'password,refresh_token,mobile,passkey,authorization_code,email', 'http://localhost:5173/callback', 43200, 2592000, 1, 1, '2024-04-10 13:42:46', 1, '2026-04-20 16:22:22');
-INSERT INTO `sys_oauth_client` VALUES (3, 'auth-demo', '$2a$10$1UpM1wYjOm.LNpWeu/FouupAkoZoxugN30tiqMphbjsaoOuhy82ea', '授权应用示例', '/api/v1/auth/*', '/assets/images/logo.png', 'openid,profile', 'password,refresh_token,authorization_code,client_credentials,mobile,email,passkey', 'http://localhost:5174/callback', 43200, 2592000, 0, 1, '2024-04-10 13:42:46', 1, '2026-04-21 16:54:52');
+INSERT INTO `sys_oauth_client` VALUES (1, '100000', '$2a$10$1UpM1wYjOm.LNpWeu/FouupAkoZoxugN30tiqMphbjsaoOuhy82ea', 'Master', 'ALL', '/assets/images/logo.png', 'openid,profile', 'password,refresh_token,mobile,passkey,authorization_code,email', 'http://192.168.31.81:5173/callback', 7200, 604800, 1, 1, '2024-04-10 13:42:46', 1, '2026-04-20 16:22:22');
+INSERT INTO `sys_oauth_client` VALUES (3, 'auth-demo', '$2a$10$1UpM1wYjOm.LNpWeu/FouupAkoZoxugN30tiqMphbjsaoOuhy82ea', '授权应用示例', '/api/auth/*', '/assets/images/logo.png', 'openid,profile', 'password,refresh_token,authorization_code,client_credentials,mobile,email,passkey', 'http://192.168.31.81:5174/callback', 7200, 604800, 0, 1, '2024-04-10 13:42:46', 1, '2026-04-21 16:54:52');
 COMMIT;
 
 -- ----------------------------
@@ -2930,12 +3119,18 @@ CREATE TABLE `sys_oper_log` (
   `username` varchar(50) DEFAULT NULL COMMENT '用户名',
   `oper_at` datetime DEFAULT NULL COMMENT '操作时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='操作日志记录';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='操作日志记录';
 
 -- ----------------------------
 -- Records of sys_oper_log
 -- ----------------------------
 BEGIN;
+INSERT INTO `sys_oper_log` VALUES (4, 'Online-[在线用户]', 'DELETE', 'Online-[在线用户]', 'DELETE', '/api/sys/v1/monitor/online/dc9ca7b4-1c66-4933-bb0e-658ec7773827', '192.168.0.102', '', '', '{\"code\":0,\"message\":\"success\",\"data\":null}\n', 'PC', 'Linux', 'Chrome', 1, '', 0, 1, 'admin', '2026-05-19 16:36:25');
+INSERT INTO `sys_oper_log` VALUES (5, 'Redis-[缓存管理]', 'DELETE', 'Redis-[缓存管理]', 'DELETE', '/api/sys/v1/monitor/cache/prefix?prefix=aevons:auth:refresh_token:', '192.168.0.102', '', '', '{\"code\":0,\"message\":\"success\",\"data\":{\"deleted\":6}}\n', 'PC', 'Linux', 'Chrome', 1, '', 0, 1, 'admin', '2026-05-19 16:36:51');
+INSERT INTO `sys_oper_log` VALUES (6, 'Redis-[缓存管理]', 'DELETE', 'Redis-[缓存管理]', 'DELETE', '/api/sys/v1/monitor/cache/prefix?prefix=aevons:auth:access_token:', '192.168.0.102', '', '', '{\"code\":0,\"message\":\"success\",\"data\":{\"deleted\":2}}\n', 'PC', 'Linux', 'Chrome', 1, '', 0, 1, 'admin', '2026-05-19 16:36:54');
+INSERT INTO `sys_oper_log` VALUES (7, 'Redis-[缓存管理]', 'DELETE', 'Redis-[缓存管理]', 'DELETE', '/api/sys/v1/monitor/cache', '192.168.0.102', '', '{\"keys\":[\"aevons:auth:access_token:0a296d99-7034-4c19-9454-58548c91e4a2\"]}', '{\"code\":0,\"message\":\"success\",\"data\":null}\n', 'PC', 'Linux', 'Chrome', 1, '', 0, 1, 'admin', '2026-05-19 16:37:07');
+INSERT INTO `sys_oper_log` VALUES (8, 'Online-[在线用户]', 'DELETE', 'Online-[在线用户]', 'DELETE', '/api/sys/v1/monitor/online/bde7a32c-bb76-44bd-9778-c761b79e3940', '192.168.0.102', '', '', '{\"code\":0,\"message\":\"success\",\"data\":null}\n', 'PC', 'Linux', 'Chrome', 1, '', 0, 1, 'admin', '2026-05-19 16:37:15');
+INSERT INTO `sys_oper_log` VALUES (9, 'Redis-[缓存管理]', 'DELETE', 'Redis-[缓存管理]', 'DELETE', '/api/sys/v1/monitor/cache', '192.168.0.102', '', '{\"keys\":[\"aevons:auth:access_refresh:27f3fe3b-0bca-4e79-a7fc-088089d6bb4c\"]}', '{\"code\":0,\"message\":\"success\",\"data\":null}\n', 'PC', 'Linux', 'Chrome', 1, '', 0, 1, 'admin', '2026-05-19 16:47:18');
 COMMIT;
 
 -- ----------------------------
