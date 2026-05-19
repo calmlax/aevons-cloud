@@ -104,7 +104,7 @@ pnpm dev
    - 提供授权中心页面
    - 默认：`http://localhost:5173`
 
-2. `gateway-service` 或 APISIX 网关
+2. `aevons-gateway`
    - 提供 `/api/auth/v1/*`
    - 默认：`http://localhost:11080`
 
@@ -204,4 +204,3 @@ server: {
 - 授权确认
 - 回调拿 code
 - code 换 token
-

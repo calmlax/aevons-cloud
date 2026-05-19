@@ -15,7 +15,6 @@ aevons-cloud/
 ├── log-service/
 ├── gen-service/
 ├── job-service/
-├── gateway-service/
 ├── frontend/
 ├── frontend-demo/
 ├── internal-grpc/
@@ -40,9 +39,6 @@ aevons-cloud/
 - [job-service](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/job-service:1)
   - 定时任务服务
   - 任务管理、执行日志、任务调度
-- [gateway-service](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway-service:1)
-  - 统一业务网关
-  - 路由匹配、客户端识别、OAuth Client 资源校验、Bearer Token 校验、Consul 服务发现、反向代理、Swagger 聚合
 - [frontend](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/frontend:1)
   - 主前端管理台
   - Vite + Vue
@@ -77,14 +73,6 @@ internal/
   - gRPC 服务端实现
 - `sys-service/internal/middleware`
   - 系统管理侧操作日志等局部中间件
-- `gateway-service/internal`
-  - 网关侧独立拆分：
-    - `auth`
-    - `clientauth`
-    - `discovery`
-    - `proxy`
-    - `swagger`
-    - `gwcontext`
 
 **启动方式**
 
@@ -103,7 +91,6 @@ err = core.RunGin(app, engine)
 - `auth-service`
 - `sys-service`
 - `job-service`
-- `gateway-service`
 
 带额外运行时能力的服务：
 
@@ -129,38 +116,8 @@ err = core.RunGin(app, engine)
   - HTTP `10704`
 - `job-service`
   - HTTP `10705`
-- `gateway-service`
-  - HTTP `11080`
 - `frontend`
   - dev server `5173`
-
-**网关**
-
-现在项目里真正承接业务流量的是：
-
-- [gateway-service](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gateway-service:1)
-
-它承担：
-
-- 统一入口
-- 服务发现
-- 客户端资源校验
-- Token 校验
-- Swagger 聚合
-- 入口层 CORS / XSS
-
-业务服务侧已去掉统一入口治理中间件：
-
-- `CORS`
-- `XSSMiddleware`
-
-这些现在统一放到网关层处理。
-
-Swagger 页面入口：
-
-- `http://127.0.0.1:11080/swagger`
-
-Swagger 源通过 `service_id + Consul + path` 解析，不再写死实例 IP。
 
 **前端**
 
@@ -168,12 +125,12 @@ Swagger 源通过 `service_id + Consul + path` 解析，不再写死实例 IP。
 
 - 默认端口 `5173`
 - 接口走 `VITE_API_PROXY_TARGET`
-- 推荐代理到 `gateway-service`
+- 推荐代理到 `aevons-gateway`
 
 当前常见开发链路：
 
 ```text
-browser -> frontend(5173) -> gateway-service(11080) -> backend services
+browser -> frontend(5173) -> aevons-gateway(11080) -> backend services
 ```
 
 Passkey 登录已经和密码登录对齐：
@@ -199,7 +156,7 @@ Passkey 登录已经和密码登录对齐：
 
 **OAuth Client 资源控制**
 
-`gateway-service` 现在不再使用静态 fallback client 配置，唯一规则来源是：
+`aevons-gateway` 现在不再使用静态 fallback client 配置，唯一规则来源是：
 
 - `sys_oauth_client.resources`
 
@@ -211,7 +168,7 @@ Passkey 登录已经和密码登录对齐：
 
 同时：
 
-- `gateway-service` 读 Redis 优先
+- `aevons-gateway` 读 Redis 优先
 - miss 后 DB 回源
 - 有防击穿 / 防雪崩逻辑
 - `sys-service` 提供手动刷新缓存入口
@@ -251,7 +208,7 @@ go run github.com/swaggo/swag/cmd/swag@latest init -g cmd/server/main.go -d cmd/
 4. `sys-service`
 5. `gen-service`
 6. `job-service`
-7. `gateway-service`
+7. `aevons-gateway`
 8. `frontend`
 
 这样能减少：
