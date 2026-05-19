@@ -355,6 +355,7 @@ func (s *authService) loginByClientCredentials(ctx context.Context, req *authmod
 
 	accessToken := uuid.New().String()
 	refreshToken := uuid.New().String()
+	sessionID := uuid.New().String()
 
 	// 将 scope 拆分为独立权限项（Requirements 4.3）
 	var permissions []string
@@ -370,19 +371,16 @@ func (s *authService) loginByClientCredentials(ctx context.Context, req *authmod
 	}
 
 	loginUser := &authmodel.LoginUser{
-		UserId:       0,
-		Username:     client.ClientId,
-		Nickname:     client.ClientName,
-		Roles:        []authmodel.Role{},
-		Depts:        []authmodel.Dept{},
-		Permissions:  permissions,
-		ClientId:     client.ClientId,
+		UserId:      0,
+		Username:    client.ClientId,
+		Nickname:    client.ClientName,
+		Roles:       []authmodel.Role{},
+		Depts:       []authmodel.Dept{},
+		Permissions: permissions,
+		ClientId:    client.ClientId,
 	}
 
-	if err := s.store.SaveAccessToken(ctx, accessToken, loginUser, time.Duration(accessTTL)*time.Second); err != nil {
-		return nil, err
-	}
-	if err := s.store.SaveRefreshToken(ctx, refreshToken, buildRefreshSession(accessToken, loginUser), time.Duration(refreshTTL)*time.Second); err != nil {
+	if err := s.persistSessionTokens(ctx, sessionID, accessToken, refreshToken, loginUser, accessTTL, refreshTTL); err != nil {
 		return nil, err
 	}
 
@@ -398,7 +396,7 @@ func (s *authService) loginByClientCredentials(ctx context.Context, req *authmod
 // Refresh 验证 Refresh Token，撤销旧令牌对并颁发新的 TokenPair。
 // 新的 Refresh Token 继承原 Token 的剩余 TTL，防止无限滑动续期。
 func (s *authService) Refresh(ctx context.Context, refreshToken, clientId string) (*authmodel.TokenPair, error) {
-	session, err := s.store.GetRefreshSession(ctx, refreshToken)
+	sessionID, err := s.store.GetSessionIDByRefreshToken(ctx, refreshToken)
 	if err != nil {
 		return nil, &AuthError{Code: consts.ErrInvalidRefreshToken, HTTPStatus: 401}
 	}
@@ -409,8 +407,11 @@ func (s *authService) Refresh(ctx context.Context, refreshToken, clientId string
 		return nil, &AuthError{Code: consts.ErrInvalidRefreshToken, HTTPStatus: 401}
 	}
 
-	loginUser := &session.LoginUser
-	oldAccessToken := session.AccessToken
+	loginUser, err := s.store.GetLoginUserBySessionID(ctx, sessionID)
+	if err != nil {
+		return nil, &AuthError{Code: consts.ErrInvalidRefreshToken, HTTPStatus: 401}
+	}
+	oldAccessToken, _ := s.store.GetAccessTokenBySessionID(ctx, sessionID)
 
 	// 校验 client_id 一致性
 	if clientId != "" && loginUser.ClientId != clientId {
@@ -425,28 +426,25 @@ func (s *authService) Refresh(ctx context.Context, refreshToken, clientId string
 	refreshTTL := int64(remainingTTL.Seconds())
 
 	if loginUser.UserId == 0 {
-		return s.reissueClientToken(ctx, loginUser, s.cfg.AccessTokenTTL, refreshTTL)
+		return s.reissueClientToken(ctx, sessionID, loginUser, s.cfg.AccessTokenTTL, refreshTTL)
 	}
-	return s.issueTokenPair(ctx, loginUser.UserId, loginUser.ClientId, s.cfg.AccessTokenTTL, refreshTTL)
+	return s.reissueUserToken(ctx, sessionID, loginUser, s.cfg.AccessTokenTTL, refreshTTL)
 }
 
-func (s *authService) reissueClientToken(ctx context.Context, old *authmodel.LoginUser, accessTTL, refreshTTL int64) (*authmodel.TokenPair, error) {
+func (s *authService) reissueClientToken(ctx context.Context, sessionID string, old *authmodel.LoginUser, accessTTL, refreshTTL int64) (*authmodel.TokenPair, error) {
 	accessToken := uuid.New().String()
 	refreshToken := uuid.New().String()
 
 	loginUser := &authmodel.LoginUser{
-		UserId:       0,
-		Username:     old.Username,
-		Nickname:     old.Nickname,
-		Roles:        old.Roles,
-		Permissions:  old.Permissions,
-		ClientId:     old.ClientId,
+		UserId:      0,
+		Username:    old.Username,
+		Nickname:    old.Nickname,
+		Roles:       old.Roles,
+		Permissions: old.Permissions,
+		ClientId:    old.ClientId,
 	}
 
-	if err := s.store.SaveAccessToken(ctx, accessToken, loginUser, time.Duration(accessTTL)*time.Second); err != nil {
-		return nil, err
-	}
-	if err := s.store.SaveRefreshToken(ctx, refreshToken, buildRefreshSession(accessToken, loginUser), time.Duration(refreshTTL)*time.Second); err != nil {
+	if err := s.persistSessionTokens(ctx, sessionID, accessToken, refreshToken, loginUser, accessTTL, refreshTTL); err != nil {
 		return nil, err
 	}
 
@@ -459,22 +457,49 @@ func (s *authService) reissueClientToken(ctx context.Context, old *authmodel.Log
 	}, nil
 }
 
-func buildRefreshSession(accessToken string, loginUser *authmodel.LoginUser) *authmodel.RefreshSession {
-	return &authmodel.RefreshSession{
-		AccessToken: accessToken,
-		LoginUser:   *loginUser,
+func (s *authService) reissueUserToken(ctx context.Context, sessionID string, old *authmodel.LoginUser, accessTTL, refreshTTL int64) (*authmodel.TokenPair, error) {
+	accessToken := uuid.New().String()
+	refreshToken := uuid.New().String()
+
+	if err := s.persistSessionTokens(ctx, sessionID, accessToken, refreshToken, old, accessTTL, refreshTTL); err != nil {
+		return nil, err
 	}
+
+	return &authmodel.TokenPair{
+		AccessToken:      accessToken,
+		RefreshToken:     refreshToken,
+		ExpiresIn:        accessTTL,
+		RefreshExpiresIn: refreshTTL,
+		TokenType:        "Bearer",
+	}, nil
+}
+
+func (s *authService) persistSessionTokens(ctx context.Context, sessionID, accessToken, refreshToken string, loginUser *authmodel.LoginUser, accessTTL, refreshTTL int64) error {
+	if err := s.store.SaveSession(ctx, sessionID, loginUser, time.Duration(refreshTTL)*time.Second); err != nil {
+		return err
+	}
+	if err := s.store.SaveAccessToken(ctx, accessToken, sessionID, time.Duration(accessTTL)*time.Second); err != nil {
+		return err
+	}
+	if err := s.store.SaveRefreshToken(ctx, refreshToken, sessionID, time.Duration(refreshTTL)*time.Second); err != nil {
+		return err
+	}
+	return nil
 }
 
 // Logout 撤销当前会话的 Access Token 和 Refresh Token，并清除会话记录。
 func (s *authService) Logout(ctx context.Context, accessToken string) error {
 	loginUser, err := s.store.GetLoginUser(ctx, accessToken)
 	if err == nil {
-		if refreshToken, e := s.store.GetRefreshTokenByAccessToken(ctx, accessToken); e == nil && refreshToken != "" {
+		sessionID, _ := s.store.GetSessionIDByAccessToken(ctx, accessToken)
+		if refreshToken, e := s.store.GetRefreshTokenBySessionID(ctx, sessionID); e == nil && refreshToken != "" {
 			_ = s.store.DeleteRefreshToken(ctx, refreshToken)
 		}
 		if loginUser.UserId > 0 {
 			_ = s.store.RemoveUserSession(ctx, loginUser.UserId, loginUser.ClientId)
+		}
+		if sessionID != "" {
+			_ = s.store.DeleteSession(ctx, sessionID)
 		}
 	}
 	_ = s.store.DeleteAccessToken(ctx, accessToken)
@@ -495,11 +520,14 @@ func (s *authService) GlobalLogout(ctx context.Context, userId int64) error {
 		Timestamp: time.Now().Unix(),
 	}
 
-	for clientId, accessToken := range sessions {
-		if refreshToken, err := s.store.GetRefreshTokenByAccessToken(ctx, accessToken); err == nil && refreshToken != "" {
+	for clientId, sessionID := range sessions {
+		if accessToken, err := s.store.GetAccessTokenBySessionID(ctx, sessionID); err == nil && accessToken != "" {
+			_ = s.store.DeleteAccessToken(ctx, accessToken)
+		}
+		if refreshToken, err := s.store.GetRefreshTokenBySessionID(ctx, sessionID); err == nil && refreshToken != "" {
 			_ = s.store.DeleteRefreshToken(ctx, refreshToken)
 		}
-		_ = s.store.DeleteAccessToken(ctx, accessToken)
+		_ = s.store.DeleteSession(ctx, sessionID)
 		_ = s.store.RemoveUserSession(ctx, userId, clientId)
 
 		// 发送 Back-channel Logout 通知（失败不阻断）
@@ -722,26 +750,24 @@ func (s *authService) issueTokenPairWithScopes(ctx context.Context, userId int64
 
 	accessToken := uuid.New().String()
 	refreshToken := uuid.New().String()
+	sessionID := uuid.New().String()
 
 	loginUser := &authmodel.LoginUser{
-		UserId:       user.Id,
-		Username:     user.Username,
-		Nickname:     user.Nickname,
-		Avatar:       user.Avatar,
-		Depts:        depts,
-		Roles:        roles,
-		Permissions:  permissions,
-		ClientId:     clientId,
+		UserId:      user.Id,
+		Username:    user.Username,
+		Nickname:    user.Nickname,
+		Avatar:      user.Avatar,
+		Depts:       depts,
+		Roles:       roles,
+		Permissions: permissions,
+		ClientId:    clientId,
 	}
 
-	if err := s.store.SaveAccessToken(ctx, accessToken, loginUser, time.Duration(accessTTL)*time.Second); err != nil {
-		return nil, err
-	}
-	if err := s.store.SaveRefreshToken(ctx, refreshToken, buildRefreshSession(accessToken, loginUser), time.Duration(refreshTTL)*time.Second); err != nil {
+	if err := s.persistSessionTokens(ctx, sessionID, accessToken, refreshToken, loginUser, accessTTL, refreshTTL); err != nil {
 		return nil, err
 	}
 	// 记录用户全局会话，供 SLO 使用
-	_ = s.store.AddUserSession(ctx, userId, clientId, accessToken)
+	_ = s.store.AddUserSession(ctx, userId, clientId, sessionID)
 
 	return &authmodel.TokenPair{
 		AccessToken:      accessToken,
@@ -871,6 +897,7 @@ func (s *authService) IssueShortToken(ctx context.Context, userId int64) (string
 		return "", err
 	}
 	token := uuid.New().String()
+	sessionID := uuid.New().String()
 	loginUser := &authmodel.LoginUser{
 		UserId:   user.Id,
 		Username: user.Username,
@@ -879,7 +906,10 @@ func (s *authService) IssueShortToken(ctx context.Context, userId int64) (string
 		Depts:    []authmodel.Dept{},
 		ClientId: "__authorize__",
 	}
-	if err := s.store.SaveAccessToken(ctx, token, loginUser, 10*time.Minute); err != nil {
+	if err := s.store.SaveSession(ctx, sessionID, loginUser, 10*time.Minute); err != nil {
+		return "", err
+	}
+	if err := s.store.SaveAccessToken(ctx, token, sessionID, 10*time.Minute); err != nil {
 		return "", err
 	}
 	return token, nil

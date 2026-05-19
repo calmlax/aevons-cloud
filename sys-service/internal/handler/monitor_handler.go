@@ -2,14 +2,13 @@ package handler
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net"
 	"runtime"
 	"strings"
 	"time"
 
-	authmodel "github.com/calmlax/aevons-framework/auth/model"
+	authstore "github.com/calmlax/aevons-framework/auth/store"
 	"github.com/calmlax/aevons-framework/config"
 	"github.com/calmlax/aevons-framework/consts"
 	apperr "github.com/calmlax/aevons-framework/errors"
@@ -79,6 +78,9 @@ func (h *MonitorHandler) List(c *gin.Context) {
 	}{
 		{"访问令牌", consts.RedisKeyAccessToken},
 		{"刷新令牌", consts.RedisKeyRefreshToken},
+		{"会话信息", consts.RedisKeySession},
+		{"会话访问令牌索引", consts.RedisKeySessionAccess},
+		{"会话刷新令牌索引", consts.RedisKeySessionRefresh},
 		{"授权码", consts.RedisKeyAuthCode},
 		{"邮箱验证码", consts.RedisKeyEmailCode},
 		{"用户会话", consts.RedisKeyUserSessions},
@@ -86,6 +88,8 @@ func (h *MonitorHandler) List(c *gin.Context) {
 		{"RSA 私钥", consts.RedisKeyRSAPrivateKey},
 		{"系统配置缓存", consts.ConfCacheKeyPrefix},
 		{"字典数据缓存", consts.DictCacheKeyPrefix},
+		{"网关限流", "gateway-service:rate-limit:"},
+		{"网关OAuth客户端规则", "gateway:oauth-client-rules:"},
 	}
 
 	type GroupInfo struct {
@@ -203,6 +207,7 @@ func (h *MonitorHandler) DeleteByPrefix(c *gin.Context) {
 func (h *MonitorHandler) ListOnline(c *gin.Context) {
 	ctx := context.Background()
 	prefix := consts.RedisKeyAccessToken
+	store := authstore.NewRedisTokenStore(h.redisClient)
 
 	var users []OnlineUser
 	iter := h.redisClient.Scan(ctx, 0, prefix+"*", 500).Iterator()
@@ -210,16 +215,17 @@ func (h *MonitorHandler) ListOnline(c *gin.Context) {
 		key := iter.Val()
 		token := strings.TrimPrefix(key, prefix)
 
-		data, err := h.redisClient.Get(ctx, key).Bytes()
+		user, err := store.GetLoginUser(ctx, token)
 		if err != nil {
-			continue
-		}
-		var user authmodel.LoginUser
-		if err := json.Unmarshal(data, &user); err != nil {
 			continue
 		}
 		if user.UserId == 0 {
 			continue
+		}
+		sessionID, _ := store.GetSessionIDByAccessToken(ctx, token)
+		refreshToken := ""
+		if sessionID != "" {
+			refreshToken, _ = store.GetRefreshTokenBySessionID(ctx, sessionID)
 		}
 
 		ttl, _ := h.redisClient.TTL(ctx, key).Result()
@@ -235,7 +241,7 @@ func (h *MonitorHandler) ListOnline(c *gin.Context) {
 			Username:     user.Username,
 			Nickname:     user.Nickname,
 			ClientId:     user.ClientId,
-			RefreshToken: user.RefreshToken,
+			RefreshToken: refreshToken,
 			ExpireAt:     expireAt,
 			TTL:          ttlSec,
 		})
@@ -254,16 +260,17 @@ func (h *MonitorHandler) ForceLogout(c *gin.Context) {
 		return
 	}
 	ctx := context.Background()
+	store := authstore.NewRedisTokenStore(h.redisClient)
 
-	key := consts.RedisKeyAccessToken + token
-	data, err := h.redisClient.Get(ctx, key).Bytes()
-	if err == nil {
-		var user authmodel.LoginUser
-		if json.Unmarshal(data, &user) == nil && user.RefreshToken != "" {
-			h.redisClient.Del(ctx, consts.RedisKeyRefreshToken+user.RefreshToken)
+	if sessionID, err := store.GetSessionIDByAccessToken(ctx, token); err == nil && sessionID != "" {
+		if refreshToken, e := store.GetRefreshTokenBySessionID(ctx, sessionID); e == nil && refreshToken != "" {
+			_ = h.redisClient.Del(ctx, consts.RedisKeyRefreshToken+refreshToken).Err()
 		}
+		_ = h.redisClient.Del(ctx, consts.RedisKeySessionRefresh+sessionID).Err()
+		_ = h.redisClient.Del(ctx, consts.RedisKeySessionAccess+sessionID).Err()
+		_ = h.redisClient.Del(ctx, consts.RedisKeySession+sessionID).Err()
 	}
-	h.redisClient.Del(ctx, key)
+	_ = h.redisClient.Del(ctx, consts.RedisKeyAccessToken+token).Err()
 	response.Success(c, nil)
 }
 
