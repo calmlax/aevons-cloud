@@ -4,7 +4,7 @@
 
 公共框架见：
 
-- [aevons-framework/README.md](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-framework/README.md:1)
+- [aevons-framework/README.md](aevons-framework/README.md:1)
 
 **项目结构**
 
@@ -23,31 +23,31 @@ aevons-cloud/
 
 **模块说明**
 
-- [auth-service](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/auth-service:1)
+- [auth-service](aevons-cloud/auth-service:1)
   - 认证中心
   - 登录、刷新、登出、邮箱验证码、注册、密码重置、OAuth2 授权码、Passkey、用户路由、用户资料
-- [sys-service](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/sys-service:1)
+- [sys-service](aevons-cloud/sys-service:1)
   - 系统管理中心
   - 用户、角色、菜单、部门、岗位、字典、配置、语言、多语言资源、OAuth Client 管理
-- [log-service](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/log-service:1)
+- [log-service](aevons-cloud/log-service:1)
   - 日志中心
   - 登录日志、操作日志
   - 同时对外提供 gRPC 写入服务
-- [gen-service](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/gen-service:1)
+- [gen-service](aevons-cloud/gen-service:1)
   - 代码生成服务
   - 生成表、字段设计、预览、下载、数据库导入
-- [job-service](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/job-service:1)
+- [job-service](aevons-cloud/job-service:1)
   - 定时任务服务
   - 任务管理、执行日志、任务调度
-- [frontend](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/frontend:1)
+- [frontend](aevons-cloud/frontend:1)
   - 主前端管理台
   - Vite + Vue
-- [frontend-demo](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/frontend-demo:1)
+- [frontend-demo](aevons-cloud/frontend-demo:1)
   - 示例前端
-- [internal-grpc](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/internal-grpc:1)
+- [internal-grpc](aevons-cloud/internal-grpc:1)
   - 内部 gRPC 契约
   - 当前主要是 `log_grpc`
-- [sql](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/sql:1)
+- [sql](aevons-cloud/sql:1)
   - SQL 脚本与初始化相关内容
 
 **统一后端结构**
@@ -121,7 +121,7 @@ err = core.RunGin(app, engine)
 
 **前端**
 
-[frontend](/home/yhj/Desktop/data/mydata/aevons-cloud-dev/aevons-cloud/frontend:1) 当前开发时：
+[frontend](aevons-cloud/frontend:1) 当前开发时：
 
 - 默认端口 `5173`
 - 接口走 `VITE_API_PROXY_TARGET`
