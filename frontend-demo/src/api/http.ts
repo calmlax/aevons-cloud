@@ -2,7 +2,7 @@ import axios from 'axios'
 import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios'
 
 const http: AxiosInstance = axios.create({
-  baseURL: '/api/v1',
+  baseURL: '/api',
   timeout: 10000,
   withCredentials: true,
 })

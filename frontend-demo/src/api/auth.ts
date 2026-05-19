@@ -12,7 +12,7 @@ export async function exchangeCode(
   code: string,
 ): Promise<TokenPair> {
   const response = await http.post<TokenPair>(
-    '/auth/login',
+    '/auth/v1/login',
     { grant_type: 'authorization_code', code },
     { headers: { Authorization: buildBasicAuth(clientId, clientSecret) } },
   )
