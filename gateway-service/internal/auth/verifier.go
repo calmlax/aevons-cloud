@@ -19,6 +19,7 @@ import (
 type Verifier struct {
 	resolver        *discovery.Resolver
 	authServiceName string
+	authRule        model.ServiceRule
 	httpClient      *http.Client
 }
 
@@ -29,6 +30,11 @@ func NewVerifier(resolver *discovery.Resolver, authServiceName string, timeout t
 	return &Verifier{
 		resolver:        resolver,
 		authServiceName: authServiceName,
+		authRule: model.ServiceRule{
+			Name:        authServiceName,
+			Discovery:   "consul",
+			LoadBalance: "round_robin",
+		},
 		httpClient:      &http.Client{Timeout: timeout},
 	}
 }
@@ -38,11 +44,7 @@ func (v *Verifier) Verify(ctx context.Context, rule *model.ServiceRule, authHead
 		return nil, errors.New("authorization.token.missing")
 	}
 
-	instance, err := v.resolver.Resolve(&model.ServiceRule{
-		Name:        v.authServiceName,
-		Discovery:   "consul",
-		LoadBalance: "round_robin",
-	})
+	instance, err := v.resolver.Resolve(&v.authRule)
 	if err != nil {
 		return nil, err
 	}

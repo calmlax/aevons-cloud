@@ -4,7 +4,13 @@ type GatewayConfig struct {
 	TrustedProxies []string        `yaml:"trusted_proxies"`
 	TimeoutSeconds int             `yaml:"timeout_seconds"`
 	MaxBodyBytes   int64           `yaml:"max_body_bytes"`
+	Discovery      DiscoveryConfig `yaml:"discovery"`
 	RateLimit      RateLimitConfig `yaml:"rate_limit"`
+}
+
+type DiscoveryConfig struct {
+	RefreshSeconds      int `yaml:"refresh_seconds"`
+	StaleIfErrorSeconds int `yaml:"stale_if_error_seconds"`
 }
 
 type RateLimitConfig struct {

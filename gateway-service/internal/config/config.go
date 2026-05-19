@@ -44,6 +44,10 @@ func LoadWithConsul(configDir, env string, consulCfg frameworkconfig.ConsulConfi
 			TrustedProxies: []string{"127.0.0.1"},
 			TimeoutSeconds: 15,
 			MaxBodyBytes:   10 * 1024 * 1024,
+			Discovery: model.DiscoveryConfig{
+				RefreshSeconds:      3,
+				StaleIfErrorSeconds: 30,
+			},
 			RateLimit: model.RateLimitConfig{
 				Enabled:   false,
 				FailOpen:  true,
@@ -111,6 +115,12 @@ func mergeFile(path string, cfg *Settings) error {
 	}
 	if next.Gateway.MaxBodyBytes > 0 {
 		cfg.Gateway.MaxBodyBytes = next.Gateway.MaxBodyBytes
+	}
+	if next.Gateway.Discovery.RefreshSeconds > 0 {
+		cfg.Gateway.Discovery.RefreshSeconds = next.Gateway.Discovery.RefreshSeconds
+	}
+	if next.Gateway.Discovery.StaleIfErrorSeconds > 0 {
+		cfg.Gateway.Discovery.StaleIfErrorSeconds = next.Gateway.Discovery.StaleIfErrorSeconds
 	}
 	cfg.Gateway.RateLimit.Enabled = next.Gateway.RateLimit.Enabled
 	cfg.Gateway.RateLimit.FailOpen = next.Gateway.RateLimit.FailOpen

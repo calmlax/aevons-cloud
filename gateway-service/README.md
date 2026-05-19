@@ -62,6 +62,7 @@ gateway-service/
 
 - `services` 定义服务路由前缀、发现方式、负载策略、公开接口白名单
 - `client_auth.enabled=true` 时才启用 `oauth_client` 资源校验流程
+- `gateway.discovery` 定义服务发现本地缓存刷新和失败兜底窗口
 - `gateway.rate_limit` 定义限流能力开关、Redis key 前缀和 Consul KV 配置入口
 - `swagger.allowed_ips` 控制 Swagger UI 和聚合接口访问来源
 - `swagger.docs` 定义聚合展示的文档源，实际文档地址通过 `service_id + Consul 服务发现 + path` 解析
@@ -71,6 +72,13 @@ gateway-service/
 - 当前使用单个 `prefix`
 - 路由匹配走固定前缀判断，性能路径更简单直接
 - 当前实现不支持 `/api/*/auth/**` 这类中间通配模式
+
+服务发现缓存说明：
+
+- 网关不会在每个请求上直接访问 Consul
+- `gateway.discovery.refresh_seconds` 控制本地实例缓存刷新周期
+- `gateway.discovery.stale_if_error_seconds` 控制 Consul 刷新失败时的短期旧实例兜底窗口
+- 这样可以同时降低 Consul 压力，并减少 Consul 短暂抖动时的 503 放大
 
 限流能力说明：
 

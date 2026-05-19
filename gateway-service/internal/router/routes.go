@@ -45,7 +45,7 @@ func Setup(app *core.App, settings gatewayconfig.Settings) (*gin.Engine, error) 
 		}
 	}
 
-	resolver := discovery.NewResolver(registry)
+	resolver := discovery.NewResolver(registry, settings.Gateway.Discovery)
 	checker := gatewayclientauth.NewChecker(settings.ClientAuth.Enabled, db, 30*time.Second)
 	verifier := gatewayauth.NewVerifier(resolver, "auth-service", 5*time.Second)
 	limiter, err := ratelimit.New(settings.Gateway.RateLimit)
