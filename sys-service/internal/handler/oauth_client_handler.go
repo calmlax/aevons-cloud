@@ -227,6 +227,18 @@ func (h *OauthClientHandler) RefreshGatewayCache(c *gin.Context) {
 				rule.AllowAll = true
 				continue
 			}
+			if strings.HasPrefix(resource, "/") {
+				if strings.HasSuffix(resource, "/**") {
+					rule.PrefixRules = append(rule.PrefixRules, strings.TrimSuffix(resource, "**"))
+					continue
+				}
+				if strings.HasSuffix(resource, "/*") {
+					rule.PrefixRules = append(rule.PrefixRules, strings.TrimSuffix(resource, "*"))
+					continue
+				}
+				rule.ExactRules[resource] = struct{}{}
+				continue
+			}
 			rule.ServiceNames[resource] = struct{}{}
 		}
 		rules[clientID] = rule

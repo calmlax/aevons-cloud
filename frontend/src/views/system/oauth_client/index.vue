@@ -214,6 +214,7 @@ async function resetForm(id:string){
       clientId:'',
       clientSecret:'',
       clientName:'',
+      resources:'',
       logoUri:'',
       scope:[],
       authorizedGrantTypes:[],
@@ -528,6 +529,18 @@ loadPage();
             <a-form-item :label="t('oauthClient.appSecret')" field="clientSecret" v-else
             :rules="[{ required: true, message: t('common.required') },{ maxLength: 32, message: t('common.maxLength', { max: 32 }) }]" :validate-trigger="['blur']">
               <a-input v-model="form.clientSecret" :placeholder="t('oauthClient.appSecret')" />
+            </a-form-item>
+          </a-col>
+        <a-col :span="24">
+            <a-form-item :label="t('oauthClient.resources')" field="resources"
+            :rules="[{ maxLength: 2048, message: t('common.maxLength', { max: 2048 }) }]" :validate-trigger="['blur']">
+              <a-input
+                v-model="form.resources"
+                :placeholder="t('oauthClient.resourcesPlaceholder')"
+              />
+              <template #extra>
+                {{ t('oauthClient.resourcesHint') }}
+              </template>
             </a-form-item>
           </a-col>
         <a-col :span="isMobile ? 24 : 12">

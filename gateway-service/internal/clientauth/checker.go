@@ -62,7 +62,7 @@ func NewChecker(enabled bool, db *gorm.DB, refreshEvery time.Duration) *Checker 
 	}
 }
 
-func (c *Checker) Allow(clientID string, service *model.ServiceRule) bool {
+func (c *Checker) Allow(clientID string, service *model.ServiceRule, path string) bool {
 	if c == nil || !c.enabled {
 		return true
 	}
@@ -72,6 +72,17 @@ func (c *Checker) Allow(clientID string, service *model.ServiceRule) bool {
 	}
 	if rule.AllowAll {
 		return true
+	}
+	path = strings.TrimSpace(path)
+	if path != "" {
+		if _, ok = rule.ExactRules[path]; ok {
+			return true
+		}
+		for _, prefix := range rule.PrefixRules {
+			if strings.HasPrefix(path, prefix) {
+				return true
+			}
+		}
 	}
 	if service == nil {
 		return false
@@ -291,6 +302,7 @@ func buildRules(configs []model.ClientRuleConfig) map[string]model.ClientRule {
 			Enabled:      cfg.Enabled,
 			ServiceNames: map[string]struct{}{},
 			ExactRules:   map[string]struct{}{},
+			PrefixRules:  []string{},
 		}
 
 		for _, resource := range cfg.Resources {
@@ -300,6 +312,18 @@ func buildRules(configs []model.ClientRuleConfig) map[string]model.ClientRule {
 			}
 			if strings.EqualFold(resource, "ALL") {
 				rule.AllowAll = true
+				continue
+			}
+			if strings.HasPrefix(resource, "/") {
+				if strings.HasSuffix(resource, "/**") {
+					rule.PrefixRules = append(rule.PrefixRules, strings.TrimSuffix(resource, "**"))
+					continue
+				}
+				if strings.HasSuffix(resource, "/*") {
+					rule.PrefixRules = append(rule.PrefixRules, strings.TrimSuffix(resource, "*"))
+					continue
+				}
+				rule.ExactRules[resource] = struct{}{}
 				continue
 			}
 			rule.ServiceNames[resource] = struct{}{}

@@ -26,6 +26,10 @@ func main() {
 	if err != nil {
 		xlog.Fatal("failed to bootstrap gateway service: %v", err)
 	}
+	frameworkCfg, err := app.RawConfig()
+	if err != nil {
+		xlog.Fatal("failed to read framework config: %v", err)
+	}
 
 	configPath := "configs"
 	for i, arg := range os.Args {
@@ -40,7 +44,7 @@ func main() {
 		env = "development"
 	}
 
-	settings, err := gatewayconfig.Load(configPath, env)
+	settings, err := gatewayconfig.LoadWithConsul(configPath, env, frameworkCfg.Consul)
 	if err != nil {
 		xlog.Fatal("failed to load gateway config: %v", err)
 	}

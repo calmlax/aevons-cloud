@@ -10,6 +10,7 @@ import (
 	gatewayconfig "gateway-service/internal/config"
 	"gateway-service/internal/discovery"
 	gatewayproxy "gateway-service/internal/proxy"
+	"gateway-service/internal/ratelimit"
 	gatewayswagger "gateway-service/internal/swagger"
 
 	"github.com/calmlax/aevons-framework/core"
@@ -47,11 +48,16 @@ func Setup(app *core.App, settings gatewayconfig.Settings) (*gin.Engine, error) 
 	resolver := discovery.NewResolver(registry)
 	checker := gatewayclientauth.NewChecker(settings.ClientAuth.Enabled, db, 30*time.Second)
 	verifier := gatewayauth.NewVerifier(resolver, "auth-service", 5*time.Second)
+	limiter, err := ratelimit.New(settings.Gateway.RateLimit)
+	if err != nil {
+		return nil, fmt.Errorf("router: init rate limiter failed: %w", err)
+	}
 	proxyHandler := gatewayproxy.NewHandler(
 		matcher,
 		checker,
 		resolver,
 		verifier,
+		limiter,
 		time.Duration(settings.Gateway.TimeoutSeconds)*time.Second,
 	)
 	swaggerHandler := gatewayswagger.NewHandler(settings, resolver, matcher.Rules())

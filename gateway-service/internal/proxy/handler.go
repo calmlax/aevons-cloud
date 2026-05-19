@@ -13,7 +13,9 @@ import (
 	"gateway-service/internal/discovery"
 	"gateway-service/internal/gwcontext"
 	"gateway-service/internal/model"
+	"gateway-service/internal/ratelimit"
 	gatewayresp "gateway-service/internal/response"
+	"github.com/calmlax/aevons-framework/middleware"
 	"github.com/calmlax/aevons-framework/xlog"
 	"github.com/gin-gonic/gin"
 )
@@ -28,14 +30,18 @@ type Handler struct {
 	resolverID *clientauth.Resolver
 	resolver   *discovery.Resolver
 	verifier   *gatewayauth.Verifier
+	limiter    *ratelimit.Limiter
 	httpClient *http.Transport
 }
 
+// NewHandler wires the gateway proxy pipeline:
+// route matching, client auth, token verification, rate limiting and upstream forwarding.
 func NewHandler(
 	matcher matcher,
 	checker *clientauth.Checker,
 	resolver *discovery.Resolver,
 	verifier *gatewayauth.Verifier,
+	limiter *ratelimit.Limiter,
 	timeout time.Duration,
 ) *Handler {
 	transport := http.DefaultTransport.(*http.Transport).Clone()
@@ -47,10 +53,15 @@ func NewHandler(
 		resolverID: clientauth.NewResolver(),
 		resolver:   resolver,
 		verifier:   verifier,
+		limiter:    limiter,
 		httpClient: transport,
 	}
 }
 
+// Forward is the main request pipeline of the gateway.
+// The order is deliberate:
+// route match -> public route check -> user auth -> client identity -> client authorization
+// -> rate limit -> service discovery -> reverse proxy.
 func (h *Handler) Forward(c *gin.Context) {
 	startedAt := time.Now()
 	rule, ok := h.matcher.Match(c.Request.URL.Path)
@@ -61,6 +72,8 @@ func (h *Handler) Forward(c *gin.Context) {
 
 	authHeader := c.GetHeader("Authorization")
 	publicRoute := isExcluded(rule, c.Request.Method, c.Request.URL.Path)
+	// RequestContext is shared across downstream gateway components so logging,
+	// proxying and governance logic can use the same resolved identities.
 	requestCtx := &model.RequestContext{
 		RequestID: c.GetString("X-Request-ID"),
 		Service:   rule,
@@ -69,6 +82,7 @@ func (h *Handler) Forward(c *gin.Context) {
 
 	var user *model.UserIdentity
 	if !publicRoute {
+		// Protected routes must pass token verification before any client/resource checks.
 		verified, err := h.verifier.Verify(c.Request.Context(), rule, authHeader)
 		if err != nil {
 			gatewayresp.Fail(c, http.StatusUnauthorized, "GATEWAY_TOKEN_INVALID", err.Error())
@@ -79,6 +93,8 @@ func (h *Handler) Forward(c *gin.Context) {
 		gwcontext.SetGin(c, requestCtx)
 	}
 
+	// Client identity is resolved even for public routes, because client-based governance
+	// such as oauth_client resource checks and rate limiting still depends on it.
 	client, err := h.resolverID.Resolve(c.Request.Header, user)
 	if err != nil {
 		gatewayresp.Fail(c, http.StatusUnauthorized, "GATEWAY_CLIENT_INVALID", err.Error())
@@ -94,7 +110,9 @@ func (h *Handler) Forward(c *gin.Context) {
 
 	allowedByAll := false
 	if clientID != "" {
-		allowed, allowAll := h.checkWithMode(clientID, rule)
+		// Resource authorization primarily uses configured path rules, while still
+		// keeping service-name rules as a backward-compatible fallback.
+		allowed, allowAll := h.checkWithMode(clientID, rule, c.Request.URL.Path)
 		if !allowed {
 			gatewayresp.Fail(c, http.StatusForbidden, "GATEWAY_CLIENT_FORBIDDEN", "gateway.client_resource_forbidden")
 			h.logAudit(c, startedAt, requestCtx, "", http.StatusForbidden, false, true)
@@ -103,6 +121,40 @@ func (h *Handler) Forward(c *gin.Context) {
 		allowedByAll = allowAll
 	}
 
+	if h.limiter != nil {
+		// Rate limiting runs after identities are resolved, so rules can bucket by
+		// client/user/ip/service/path/method using the same normalized gateway context.
+		decision, err := h.limiter.Allow(c.Request.Context(), ratelimit.Input{
+			Method:  c.Request.Method,
+			Path:    c.Request.URL.Path,
+			IP:      c.ClientIP(),
+			Service: rule,
+			Client:  client,
+			User:    user,
+		})
+		if err != nil {
+			xlog.Error("gateway rate limit failed: %v", err)
+			gatewayresp.Fail(c, http.StatusInternalServerError, "GATEWAY_RATE_LIMIT_ERROR", "gateway.rate_limit_error")
+			h.logAudit(c, startedAt, requestCtx, "", http.StatusInternalServerError, allowedByAll, false)
+			return
+		}
+		if decision.Limit > 0 {
+			c.Header("X-RateLimit-Limit", strconv.FormatInt(decision.Limit, 10))
+			c.Header("X-RateLimit-Remaining", strconv.FormatInt(decision.Remaining, 10))
+			c.Header("X-RateLimit-Reset", strconv.FormatInt(decision.ResetAfter, 10))
+		}
+		if !decision.Allowed {
+			if decision.ResetAfter > 0 {
+				c.Header("Retry-After", strconv.FormatInt(decision.ResetAfter, 10))
+			}
+			gatewayresp.Fail(c, decision.StatusCode, "GATEWAY_RATE_LIMITED", decision.Message)
+			h.logRateLimit(c, startedAt, requestCtx, decision)
+			return
+		}
+	}
+
+	// Upstream instances are resolved late so auth/authorization/limit failures do not
+	// waste service-discovery work or create unnecessary upstream pressure.
 	instance, err := h.resolver.Resolve(rule)
 	if err != nil {
 		xlog.Error("gateway resolve %s failed: %v", rule.Name, err)
@@ -129,6 +181,8 @@ func (h *Handler) Forward(c *gin.Context) {
 	}
 
 	proxy.Rewrite = func(pr *httputil.ProxyRequest) {
+		// The gateway rewrites the request into the selected upstream and injects the
+		// normalized headers that downstream services rely on for context propagation.
 		pr.SetURL(target)
 		pr.Out.URL.Host = instance.Address + ":" + strconv.Itoa(instance.Port)
 		pr.Out.Host = pr.Out.URL.Host
@@ -174,6 +228,7 @@ func forwardedFor(c *gin.Context) string {
 	return c.ClientIP()
 }
 
+// isExcluded checks whether a route is explicitly declared as public in service config.
 func isExcluded(rule *model.ServiceRule, method, path string) bool {
 	if rule == nil {
 		return false
@@ -218,18 +273,18 @@ func toUserIdentity(user *model.UserContext) *model.UserIdentity {
 	}
 }
 
-func (h *Handler) checkWithMode(clientID string, service *model.ServiceRule) (allowed bool, allowAll bool) {
+func (h *Handler) checkWithMode(clientID string, service *model.ServiceRule, path string) (allowed bool, allowAll bool) {
 	if h.checker == nil {
 		return true, false
 	}
 	rule, ok := h.checker.Rule(clientID)
 	if !ok {
-		return h.checker.Allow(clientID, service), false
+		return h.checker.Allow(clientID, service, path), false
 	}
 	if rule.AllowAll {
 		return true, true
 	}
-	return h.checker.Allow(clientID, service), false
+	return h.checker.Allow(clientID, service, path), false
 }
 
 func (h *Handler) logAudit(
@@ -267,6 +322,43 @@ func (h *Handler) logAudit(
 		status,
 		allowAll,
 		denied,
+		float64(time.Since(startedAt).Microseconds())/1000.0,
+	)
+}
+
+func (h *Handler) logRateLimit(
+	c *gin.Context,
+	startedAt time.Time,
+	requestCtx *model.RequestContext,
+	decision model.RateLimitDecision,
+) {
+	serviceName := ""
+	clientID := ""
+	userID := ""
+	if requestCtx != nil {
+		if requestCtx.Service != nil {
+			serviceName = requestCtx.Service.Name
+		}
+		if requestCtx.Client != nil {
+			clientID = requestCtx.Client.ClientID
+		}
+		if requestCtx.User != nil {
+			userID = requestCtx.User.UserID
+		}
+	}
+	xlog.Warn(
+		"[gateway rate-limit reqId:%s] [method:%s] [path:%s] [service:%s] [client:%s] [user:%s] [rule:%s] [limit:%d] [remaining:%d] [reset:%ds] [status:%d] [latency:%.2fms]",
+		c.GetString(middleware.RequestIdKey),
+		c.Request.Method,
+		c.Request.URL.Path,
+		serviceName,
+		clientID,
+		userID,
+		decision.RuleName,
+		decision.Limit,
+		decision.Remaining,
+		decision.ResetAfter,
+		decision.StatusCode,
 		float64(time.Since(startedAt).Microseconds())/1000.0,
 	)
 }
