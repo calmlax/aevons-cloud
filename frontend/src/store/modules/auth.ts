@@ -88,10 +88,22 @@ export const useAuthStore = defineStore('auth', () => {
     window.localStorage.removeItem('aevo-user');
     const menuStore = useMenuStore();
     menuStore.resetMenu();
-    // if (redirect && window.location.pathname !== '/login') {
-    //   // 延迟跳转，让 toast 有时间显示
-    //   setTimeout(() => { window.location.href = '/login'; }, 300);
-    // }
+    if (redirect) {
+      void redirectToLogin();
+    }
+  };
+
+  const redirectToLogin = async (redirectPath?: string) => {
+    if (window.location.pathname === '/login') {
+      return;
+    }
+
+    const target = redirectPath || `${window.location.pathname}${window.location.search}`;
+    const { default: router } = await import('@/router');
+    await router.replace({
+      path: '/login',
+      query: target ? { redirect: target } : undefined,
+    });
   };
 
   const logout = async () => {
@@ -212,5 +224,6 @@ export const useAuthStore = defineStore('auth', () => {
     getCurrentUser,
     getAuthHomePath,
     clearAuth,
+    redirectToLogin,
   };
 });
