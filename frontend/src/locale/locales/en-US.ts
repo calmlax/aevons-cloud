@@ -998,7 +998,7 @@ const enUS = {
     title: 'Auth App', addTitle: 'Add App', editTitle: 'Edit App',
     appId: 'AppID', appName: 'App Name', appSecret: 'App Secret',
     resources: 'Resource Rules',
-    resourcesPlaceholder: 'e.g. ALL or /api/v1/sys/conf/*,/api/v1/auth/authorize',
+    resourcesPlaceholder: 'e.g. ALL or /api/sys/v1/conf/*,/api/auth/v1/authorize',
     resourcesHint: 'Supports ALL, exact paths and prefix paths; separate multiple rules with commas.',
     scope: 'Authorized Scope', grantType: 'Grant Type',
     redirectUri: 'Redirect URI', autoApprove: 'Auto Approve',

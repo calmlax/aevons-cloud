@@ -16,7 +16,7 @@ export default {
      * @param query 查询参数
      */
     page: (query: any) => {
-        return request.get('/v1/sys/role/page',{params: query})
+        return request.get('/sys/v1/role/page',{params: query})
     },
 
     /**
@@ -24,7 +24,7 @@ export default {
      * @param query 查询参数
      */
     list: (query: any) => {
-        return request.get('/v1/sys/role/list',{params: query})
+        return request.get('/sys/v1/role/list',{params: query})
     },
 
     /**
@@ -32,7 +32,7 @@ export default {
      * @param query 查询参数
      */
     getById: (id: string) => {
-        return request.get(`/v1/sys/role/${id}`)
+        return request.get(`/sys/v1/role/${id}`)
     },
 
     /**
@@ -40,7 +40,7 @@ export default {
      * @param data 新增数据
      */
     add: (data: any) => {
-        return request.post('/v1/sys/role',data)
+        return request.post('/sys/v1/role',data)
     },
 
     /**
@@ -48,7 +48,7 @@ export default {
      * @param data 修改数据
      */
     update: (id: string,data: any) => {
-        return request.put(`/v1/sys/role/${id}`,data)
+        return request.put(`/sys/v1/role/${id}`,data)
     },
 
     /**
@@ -56,14 +56,14 @@ export default {
      * @param ids 删除Ids
      */
     delete: (ids: any) => {
-        return request.delete(`/v1/sys/role/${ids}`)
+        return request.delete(`/sys/v1/role/${ids}`)
     },
 
     /**
      * 获取角色已关联的菜单ID列表
      */
     getMenuIds: (id: string) => {
-        return request.get(`/v1/sys/role/${id}/menu`)
+        return request.get(`/sys/v1/role/${id}/menu`)
     },
 
     /**
@@ -72,7 +72,7 @@ export default {
      * @param query 查询参数
      */
     download: (query: any, filename: string) => {
-        download("/v1/sys/role/export", { ...query }, `${filename}.xlsx`,{});
+        download("/sys/v1/role/export", { ...query }, `${filename}.xlsx`,{});
     },
 
 }

@@ -2,7 +2,7 @@
 // @version         1.0.0
 // @description     Aevons 定时任务服务接口文档，提供任务配置、状态切换、手动触发以及任务执行日志查询等能力
 // @host            localhost:10705
-// @BasePath        /api/v1/job
+// @BasePath        /api/job/v1
 // @schemes         http https
 // @securityDefinitions.apikey  BearerAuth
 // @in                          header

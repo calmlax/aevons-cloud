@@ -32,11 +32,11 @@ function passkeyClientHeaders() {
 // ── 注册流程 ──────────────────────────────────────────────────────────────────
 
 export const passkeyRegisterBegin = (): Promise<PasskeyBeginResponse> =>
-  request({ url: '/v1/auth/passkey/register/begin', method: 'post' });
+  request({ url: '/auth/v1/passkey/register/begin', method: 'post' });
 
 export const passkeyRegisterFinish = (sessionKey: string, credential: PublicKeyCredential): Promise<void> =>
   request({
-    url: '/v1/auth/passkey/register/finish',
+    url: '/auth/v1/passkey/register/finish',
     method: 'post',
     data: { session_key: sessionKey, response: credentialToJSON(credential) },
   });
@@ -45,7 +45,7 @@ export const passkeyRegisterFinish = (sessionKey: string, credential: PublicKeyC
 
 export const passkeyLoginBegin = (username?: string): Promise<PasskeyBeginResponse> =>
   request({
-    url: '/v1/auth/passkey/login/begin',
+    url: '/auth/v1/passkey/login/begin',
     method: 'post',
     headers: passkeyClientHeaders(),
     data: username ? { username } : {},
@@ -54,7 +54,7 @@ export const passkeyLoginBegin = (username?: string): Promise<PasskeyBeginRespon
 
 export const passkeyLoginFinish = (sessionKey: string, credential: PublicKeyCredential): Promise<any> =>
   request({
-    url: '/v1/auth/passkey/login/finish',
+    url: '/auth/v1/passkey/login/finish',
     method: 'post',
     headers: passkeyClientHeaders(),
     data: { session_key: sessionKey, response: credentialToJSON(credential) },
@@ -64,10 +64,10 @@ export const passkeyLoginFinish = (sessionKey: string, credential: PublicKeyCred
 // ── 凭据管理 ──────────────────────────────────────────────────────────────────
 
 export const passkeyListCredentials = (): Promise<PasskeyCredential[]> =>
-  request({ url: '/v1/auth/passkey/credentials', method: 'get' });
+  request({ url: '/auth/v1/passkey/credentials', method: 'get' });
 
 export const passkeyRevokeCredential = (id: string): Promise<void> =>
-  request({ url: `/v1/auth/passkey/credentials/${id}`, method: 'delete' });
+  request({ url: `/auth/v1/passkey/credentials/${id}`, method: 'delete' });
 
 // ── 工具：ArrayBuffer ↔ base64url ─────────────────────────────────────────────
 

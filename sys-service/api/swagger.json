@@ -11,9 +11,9 @@
         "version": "1.0.0"
     },
     "host": "localhost:10702",
-    "basePath": "/api/v1/sys",
+    "basePath": "/api/sys/v1",
     "paths": {
-        "/api/v1/sys/conf": {
+        "/api/sys/v1/conf": {
             "post": {
                 "security": [
                     {
@@ -51,7 +51,7 @@
                 }
             }
         },
-        "/api/v1/sys/conf/key/{key}": {
+        "/api/sys/v1/conf/key/{key}": {
             "get": {
                 "produces": [
                     "application/json"
@@ -85,7 +85,7 @@
                 }
             }
         },
-        "/api/v1/sys/conf/list": {
+        "/api/sys/v1/conf/list": {
             "get": {
                 "security": [
                     {
@@ -109,7 +109,7 @@
                 }
             }
         },
-        "/api/v1/sys/conf/page": {
+        "/api/sys/v1/conf/page": {
             "get": {
                 "security": [
                     {
@@ -133,7 +133,7 @@
                 }
             }
         },
-        "/api/v1/sys/conf/refresh-cache": {
+        "/api/sys/v1/conf/refresh-cache": {
             "post": {
                 "security": [
                     {
@@ -157,7 +157,7 @@
                 }
             }
         },
-        "/api/v1/sys/conf/{id}": {
+        "/api/sys/v1/conf/{id}": {
             "get": {
                 "security": [
                     {
@@ -264,7 +264,7 @@
                 }
             }
         },
-        "/api/v1/sys/dept": {
+        "/api/sys/v1/dept": {
             "post": {
                 "security": [
                     {
@@ -302,7 +302,7 @@
                 }
             }
         },
-        "/api/v1/sys/dept/list": {
+        "/api/sys/v1/dept/list": {
             "get": {
                 "security": [
                     {
@@ -326,7 +326,7 @@
                 }
             }
         },
-        "/api/v1/sys/dept/{id}": {
+        "/api/sys/v1/dept/{id}": {
             "get": {
                 "security": [
                     {
@@ -433,7 +433,7 @@
                 }
             }
         },
-        "/api/v1/sys/dict": {
+        "/api/sys/v1/dict": {
             "post": {
                 "security": [
                     {
@@ -471,7 +471,7 @@
                 }
             }
         },
-        "/api/v1/sys/dict/data": {
+        "/api/sys/v1/dict/data": {
             "post": {
                 "security": [
                     {
@@ -509,7 +509,7 @@
                 }
             }
         },
-        "/api/v1/sys/dict/data/list": {
+        "/api/sys/v1/dict/data/list": {
             "get": {
                 "security": [
                     {
@@ -533,7 +533,7 @@
                 }
             }
         },
-        "/api/v1/sys/dict/data/sort": {
+        "/api/sys/v1/dict/data/sort": {
             "put": {
                 "security": [
                     {
@@ -574,7 +574,7 @@
                 }
             }
         },
-        "/api/v1/sys/dict/data/{ids}": {
+        "/api/sys/v1/dict/data/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -607,7 +607,7 @@
                 }
             }
         },
-        "/api/v1/sys/dict/data/{id}": {
+        "/api/sys/v1/dict/data/{id}": {
             "get": {
                 "security": [
                     {
@@ -683,7 +683,7 @@
                 }
             }
         },
-        "/api/v1/sys/dict/list": {
+        "/api/sys/v1/dict/list": {
             "get": {
                 "security": [
                     {
@@ -707,7 +707,7 @@
                 }
             }
         },
-        "/api/v1/sys/dict/page": {
+        "/api/sys/v1/dict/page": {
             "get": {
                 "security": [
                     {
@@ -731,7 +731,7 @@
                 }
             }
         },
-        "/api/v1/sys/dict/refresh-cache": {
+        "/api/sys/v1/dict/refresh-cache": {
             "delete": {
                 "security": [
                     {
@@ -755,7 +755,7 @@
                 }
             }
         },
-        "/api/v1/sys/dict/type/{id}": {
+        "/api/sys/v1/dict/type/{id}": {
             "get": {
                 "security": [
                     {
@@ -788,7 +788,7 @@
                 }
             }
         },
-        "/api/v1/sys/dict/{id}": {
+        "/api/sys/v1/dict/{id}": {
             "get": {
                 "security": [
                     {
@@ -895,7 +895,7 @@
                 }
             }
         },
-        "/api/v1/sys/lang": {
+        "/api/sys/v1/lang": {
             "get": {
                 "security": [
                     {
@@ -955,7 +955,7 @@
                 }
             }
         },
-        "/api/v1/sys/lang/list": {
+        "/api/sys/v1/lang/list": {
             "get": {
                 "security": [
                     {
@@ -979,7 +979,7 @@
                 }
             }
         },
-        "/api/v1/sys/lang/page": {
+        "/api/sys/v1/lang/page": {
             "get": {
                 "security": [
                     {
@@ -1003,7 +1003,7 @@
                 }
             }
         },
-        "/api/v1/sys/lang/resource": {
+        "/api/sys/v1/lang/resource": {
             "post": {
                 "security": [
                     {
@@ -1041,7 +1041,7 @@
                 }
             }
         },
-        "/api/v1/sys/lang/resource/keys": {
+        "/api/sys/v1/lang/resource/keys": {
             "get": {
                 "security": [
                     {
@@ -1065,7 +1065,7 @@
                 }
             }
         },
-        "/api/v1/sys/lang/resource/keys/page": {
+        "/api/sys/v1/lang/resource/keys/page": {
             "get": {
                 "security": [
                     {
@@ -1089,7 +1089,7 @@
                 }
             }
         },
-        "/api/v1/sys/lang/resource/list": {
+        "/api/sys/v1/lang/resource/list": {
             "get": {
                 "security": [
                     {
@@ -1113,7 +1113,7 @@
                 }
             }
         },
-        "/api/v1/sys/lang/resource/page": {
+        "/api/sys/v1/lang/resource/page": {
             "get": {
                 "security": [
                     {
@@ -1137,7 +1137,7 @@
                 }
             }
         },
-        "/api/v1/sys/lang/resource/save-translations": {
+        "/api/sys/v1/lang/resource/save-translations": {
             "post": {
                 "security": [
                     {
@@ -1175,7 +1175,7 @@
                 }
             }
         },
-        "/api/v1/sys/lang/resource/translations": {
+        "/api/sys/v1/lang/resource/translations": {
             "get": {
                 "security": [
                     {
@@ -1199,7 +1199,7 @@
                 }
             }
         },
-        "/api/v1/sys/lang/resource/{ids}": {
+        "/api/sys/v1/lang/resource/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -1232,7 +1232,7 @@
                 }
             }
         },
-        "/api/v1/sys/lang/resource/{id}": {
+        "/api/sys/v1/lang/resource/{id}": {
             "get": {
                 "security": [
                     {
@@ -1308,7 +1308,7 @@
                 }
             }
         },
-        "/api/v1/sys/lang/{ids}": {
+        "/api/sys/v1/lang/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -1341,7 +1341,7 @@
                 }
             }
         },
-        "/api/v1/sys/lang/{id}": {
+        "/api/sys/v1/lang/{id}": {
             "get": {
                 "security": [
                     {
@@ -1417,7 +1417,7 @@
                 }
             }
         },
-        "/api/v1/sys/menu": {
+        "/api/sys/v1/menu": {
             "post": {
                 "security": [
                     {
@@ -1455,7 +1455,7 @@
                 }
             }
         },
-        "/api/v1/sys/menu/list": {
+        "/api/sys/v1/menu/list": {
             "get": {
                 "security": [
                     {
@@ -1479,7 +1479,7 @@
                 }
             }
         },
-        "/api/v1/sys/menu/{ids}": {
+        "/api/sys/v1/menu/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -1512,7 +1512,7 @@
                 }
             }
         },
-        "/api/v1/sys/menu/{id}": {
+        "/api/sys/v1/menu/{id}": {
             "get": {
                 "security": [
                     {
@@ -1588,7 +1588,7 @@
                 }
             }
         },
-        "/api/v1/sys/notice": {
+        "/api/sys/v1/notice": {
             "post": {
                 "security": [
                     {
@@ -1626,7 +1626,7 @@
                 }
             }
         },
-        "/api/v1/sys/notice/list": {
+        "/api/sys/v1/notice/list": {
             "get": {
                 "security": [
                     {
@@ -1650,7 +1650,7 @@
                 }
             }
         },
-        "/api/v1/sys/notice/page": {
+        "/api/sys/v1/notice/page": {
             "get": {
                 "security": [
                     {
@@ -1674,7 +1674,7 @@
                 }
             }
         },
-        "/api/v1/sys/notice/{ids}": {
+        "/api/sys/v1/notice/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -1707,7 +1707,7 @@
                 }
             }
         },
-        "/api/v1/sys/notice/{id}": {
+        "/api/sys/v1/notice/{id}": {
             "get": {
                 "security": [
                     {
@@ -1783,7 +1783,7 @@
                 }
             }
         },
-        "/api/v1/sys/oauth/client": {
+        "/api/sys/v1/oauth/client": {
             "post": {
                 "security": [
                     {
@@ -1821,7 +1821,7 @@
                 }
             }
         },
-        "/api/v1/sys/oauth/client/list": {
+        "/api/sys/v1/oauth/client/list": {
             "get": {
                 "security": [
                     {
@@ -1845,7 +1845,7 @@
                 }
             }
         },
-        "/api/v1/sys/oauth/client/page": {
+        "/api/sys/v1/oauth/client/page": {
             "get": {
                 "security": [
                     {
@@ -1869,7 +1869,7 @@
                 }
             }
         },
-        "/api/v1/sys/oauth/client/refresh-cache": {
+        "/api/sys/v1/oauth/client/refresh-cache": {
             "post": {
                 "security": [
                     {
@@ -1893,7 +1893,7 @@
                 }
             }
         },
-        "/api/v1/sys/oauth/client/{ids}": {
+        "/api/sys/v1/oauth/client/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -1926,7 +1926,7 @@
                 }
             }
         },
-        "/api/v1/sys/oauth/client/{id}": {
+        "/api/sys/v1/oauth/client/{id}": {
             "get": {
                 "security": [
                     {
@@ -2002,7 +2002,7 @@
                 }
             }
         },
-        "/api/v1/sys/post": {
+        "/api/sys/v1/post": {
             "post": {
                 "security": [
                     {
@@ -2040,7 +2040,7 @@
                 }
             }
         },
-        "/api/v1/sys/post/list": {
+        "/api/sys/v1/post/list": {
             "get": {
                 "security": [
                     {
@@ -2064,7 +2064,7 @@
                 }
             }
         },
-        "/api/v1/sys/post/page": {
+        "/api/sys/v1/post/page": {
             "get": {
                 "security": [
                     {
@@ -2088,7 +2088,7 @@
                 }
             }
         },
-        "/api/v1/sys/post/{ids}": {
+        "/api/sys/v1/post/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -2121,7 +2121,7 @@
                 }
             }
         },
-        "/api/v1/sys/post/{id}": {
+        "/api/sys/v1/post/{id}": {
             "get": {
                 "security": [
                     {
@@ -2197,7 +2197,7 @@
                 }
             }
         },
-        "/api/v1/sys/role": {
+        "/api/sys/v1/role": {
             "post": {
                 "security": [
                     {
@@ -2235,7 +2235,7 @@
                 }
             }
         },
-        "/api/v1/sys/role/list": {
+        "/api/sys/v1/role/list": {
             "get": {
                 "security": [
                     {
@@ -2259,7 +2259,7 @@
                 }
             }
         },
-        "/api/v1/sys/role/page": {
+        "/api/sys/v1/role/page": {
             "get": {
                 "security": [
                     {
@@ -2283,7 +2283,7 @@
                 }
             }
         },
-        "/api/v1/sys/role/{ids}": {
+        "/api/sys/v1/role/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -2316,7 +2316,7 @@
                 }
             }
         },
-        "/api/v1/sys/role/{id}": {
+        "/api/sys/v1/role/{id}": {
             "get": {
                 "security": [
                     {
@@ -2392,7 +2392,7 @@
                 }
             }
         },
-        "/api/v1/sys/role/{id}/menu": {
+        "/api/sys/v1/role/{id}/menu": {
             "get": {
                 "security": [
                     {
@@ -2425,7 +2425,7 @@
                 }
             }
         },
-        "/api/v1/sys/user": {
+        "/api/sys/v1/user": {
             "post": {
                 "security": [
                     {
@@ -2463,7 +2463,7 @@
                 }
             }
         },
-        "/api/v1/sys/user/list": {
+        "/api/sys/v1/user/list": {
             "get": {
                 "security": [
                     {
@@ -2487,7 +2487,7 @@
                 }
             }
         },
-        "/api/v1/sys/user/page": {
+        "/api/sys/v1/user/page": {
             "get": {
                 "security": [
                     {
@@ -2511,7 +2511,7 @@
                 }
             }
         },
-        "/api/v1/sys/user/{ids}": {
+        "/api/sys/v1/user/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -2544,7 +2544,7 @@
                 }
             }
         },
-        "/api/v1/sys/user/{id}": {
+        "/api/sys/v1/user/{id}": {
             "get": {
                 "security": [
                     {
@@ -2620,7 +2620,7 @@
                 }
             }
         },
-        "/api/v1/sys/user/{id}/relations": {
+        "/api/sys/v1/user/{id}/relations": {
             "get": {
                 "security": [
                     {
@@ -2653,7 +2653,7 @@
                 }
             }
         },
-        "/api/v1/sys/user/{id}/reset-password": {
+        "/api/sys/v1/user/{id}/reset-password": {
             "put": {
                 "security": [
                     {
@@ -2698,7 +2698,7 @@
                 }
             }
         },
-        "/api/v1/sys/user/{id}/status": {
+        "/api/sys/v1/user/{id}/status": {
             "put": {
                 "security": [
                     {

@@ -42,7 +42,7 @@ func NewUserHandler(svc service.UserService) *UserHandler {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/user/list [get]
+// @Router       /api/sys/v1/user/list [get]
 func (h *UserHandler) List(c *gin.Context) {
 	h.crud.HandleList(c)
 }
@@ -54,7 +54,7 @@ func (h *UserHandler) List(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/user/page [get]
+// @Router       /api/sys/v1/user/page [get]
 func (h *UserHandler) Page(c *gin.Context) {
 	h.crud.HandlePage(c)
 }
@@ -67,7 +67,7 @@ func (h *UserHandler) Page(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "用户ID"
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/user/{id} [get]
+// @Router       /api/sys/v1/user/{id} [get]
 func (h *UserHandler) Get(c *gin.Context) {
 	h.crud.HandleGet(c)
 }
@@ -80,7 +80,7 @@ func (h *UserHandler) Get(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        ids   path      string  true  "逗号分隔的用户ID"
 // @Success      200   {object}  response.Response
-// @Router       /api/v1/sys/user/{ids} [delete]
+// @Router       /api/sys/v1/user/{ids} [delete]
 func (h *UserHandler) BatchDelete(c *gin.Context) {
 	h.crud.HandleBatchDelete(c)
 }
@@ -94,7 +94,7 @@ func (h *UserHandler) BatchDelete(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      dto.CreateUserDTO  true  "新增用户"
 // @Success      200      {object}  response.Response
-// @Router       /api/v1/sys/user [post]
+// @Router       /api/sys/v1/user [post]
 func (h *UserHandler) Create(c *gin.Context) {
 	var d dto.CreateUserDTO
 	if err := c.ShouldBindJSON(&d); err != nil {
@@ -119,7 +119,7 @@ func (h *UserHandler) Create(c *gin.Context) {
 // @Param        id       path      int                true  "用户ID"
 // @Param        request  body      dto.UpdateUserDTO  true  "修改用户"
 // @Success      200      {object}  response.Response
-// @Router       /api/v1/sys/user/{id} [put]
+// @Router       /api/sys/v1/user/{id} [put]
 func (h *UserHandler) Update(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
@@ -147,7 +147,7 @@ func (h *UserHandler) Update(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "用户ID"
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/user/{id}/relations [get]
+// @Router       /api/sys/v1/user/{id}/relations [get]
 func (h *UserHandler) GetRelations(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
@@ -186,7 +186,7 @@ func (h *UserHandler) GetRelations(c *gin.Context) {
 // @Param        id       path      int                   true  "用户ID"
 // @Param        request  body      dto.ResetPasswordDTO  true  "重置密码"
 // @Success      200      {object}  response.Response
-// @Router       /api/v1/sys/user/{id}/reset-password [put]
+// @Router       /api/sys/v1/user/{id}/reset-password [put]
 func (h *UserHandler) ResetPassword(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
@@ -216,7 +216,7 @@ func (h *UserHandler) ResetPassword(c *gin.Context) {
 // @Param        id       path      int   true  "用户ID"
 // @Param        request  body      object  true  "状态信息"
 // @Success      200      {object}  response.Response
-// @Router       /api/v1/sys/user/{id}/status [put]
+// @Router       /api/sys/v1/user/{id}/status [put]
 func (h *UserHandler) UpdateStatus(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)

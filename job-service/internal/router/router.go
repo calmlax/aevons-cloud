@@ -66,7 +66,7 @@ func Setup(app *core.App) (*gin.Engine, error) {
 	svc := service.NewJobService(jobRepo, logRepo)
 	h := handler.NewJobHandler(svc)
 
-	v1 := r.Group("/api/v1/job")
+	v1 := r.Group("/api/job/v1")
 	{
 		v1.GET("ping", func(c *gin.Context) {
 			c.JSON(200, gin.H{"message": "pong"})

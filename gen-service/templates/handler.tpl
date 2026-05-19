@@ -38,7 +38,7 @@ func New{{.ClassName}}Handler(svc service.{{.ClassName}}Service) *{{.ClassName}}
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/{{.ModuleName}}/{{.Router}}/list [get]
+// @Router       /api/{{.ModuleName}}/v1/{{.Router}}/list [get]
 func (h *{{.ClassName}}Handler) List(c *gin.Context) {
 	h.crud.HandleList(c)
 }
@@ -50,7 +50,7 @@ func (h *{{.ClassName}}Handler) List(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/{{.ModuleName}}/{{.Router}}/page [get]
+// @Router       /api/{{.ModuleName}}/v1/{{.Router}}/page [get]
 func (h *{{.ClassName}}Handler) Page(c *gin.Context) {
 	h.crud.HandlePage(c)
 }
@@ -63,7 +63,7 @@ func (h *{{.ClassName}}Handler) Page(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "{{.Comment}}ID"
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/{{.ModuleName}}/{{.Router}}/{id} [get]
+// @Router       /api/{{.ModuleName}}/v1/{{.Router}}/{id} [get]
 func (h *{{.ClassName}}Handler) Get(c *gin.Context) {
 	h.crud.HandleGet(c)
 }
@@ -77,7 +77,7 @@ func (h *{{.ClassName}}Handler) Get(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      dto.Create{{.ClassName}}DTO  true  "新增{{.Comment}}"
 // @Success      200      {object}  response.Response
-// @Router       /api/v1/{{.ModuleName}}/{{.Router}} [post]
+// @Router       /api/{{.ModuleName}}/v1/{{.Router}} [post]
 func (h *{{.ClassName}}Handler) Create(c *gin.Context) {
 	h.crud.HandleCreate(c)
 }
@@ -92,7 +92,7 @@ func (h *{{.ClassName}}Handler) Create(c *gin.Context) {
 // @Param        id       path      int                        true  "{{.Comment}}ID"
 // @Param        request  body      dto.Update{{.ClassName}}DTO  true  "修改{{.Comment}}"
 // @Success      200      {object}  response.Response
-// @Router       /api/v1/{{.ModuleName}}/{{.Router}}/{id} [put]
+// @Router       /api/{{.ModuleName}}/v1/{{.Router}}/{id} [put]
 func (h *{{.ClassName}}Handler) Update(c *gin.Context) {
 	h.crud.HandleUpdate(c)
 }
@@ -105,7 +105,7 @@ func (h *{{.ClassName}}Handler) Update(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        ids   path      string  true  "逗号分隔的{{.Comment}}ID"
 // @Success      200   {object}  response.Response
-// @Router       /api/v1/{{.ModuleName}}/{{.Router}}/{ids} [delete]
+// @Router       /api/{{.ModuleName}}/v1/{{.Router}}/{ids} [delete]
 func (h *{{.ClassName}}Handler) BatchDelete(c *gin.Context) {
 	h.crud.HandleBatchDelete(c)
 }

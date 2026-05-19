@@ -56,8 +56,8 @@ redis:
 auth:
   excludes:
     - /api/swagger.json
-    - /api/v1/sys/ping
-    - /api/v1/sys/lang
+    - /api/sys/v1/ping
+    - /api/sys/v1/lang
 
 rocketmq:
   enabled: false

@@ -46,7 +46,7 @@ func NewConfHandler(svc service.ConfService) *ConfHandler {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/conf/list [get]
+// @Router       /api/sys/v1/conf/list [get]
 func (h *ConfHandler) List(c *gin.Context) {
 	h.crud.HandleList(c)
 }
@@ -58,7 +58,7 @@ func (h *ConfHandler) List(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/conf/page [get]
+// @Router       /api/sys/v1/conf/page [get]
 func (h *ConfHandler) Page(c *gin.Context) {
 	h.crud.HandlePage(c)
 }
@@ -71,7 +71,7 @@ func (h *ConfHandler) Page(c *gin.Context) {
 // @Param        key   path      string  true  "配置键"
 // @Success      200   {object}  response.Response
 // @Failure      400   {object}  response.Response
-// @Router       /api/v1/sys/conf/key/{key} [get]
+// @Router       /api/sys/v1/conf/key/{key} [get]
 func (h *ConfHandler) GetConfByKey(c *gin.Context) {
 	key := c.Param("key")
 	if key == "" {
@@ -97,7 +97,7 @@ func (h *ConfHandler) GetConfByKey(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/conf/refresh-cache [post]
+// @Router       /api/sys/v1/conf/refresh-cache [post]
 func (h *ConfHandler) RefreshCache(c *gin.Context) {
 	if err := h.svc.RefreshCache(); err != nil {
 		response.Fail(c, http.StatusInternalServerError, 1013, "err.api.failed_to_refresh_cache")
@@ -114,7 +114,7 @@ func (h *ConfHandler) RefreshCache(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "配置ID"
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/conf/{id} [get]
+// @Router       /api/sys/v1/conf/{id} [get]
 func (h *ConfHandler) Get(c *gin.Context) {
 	id, ok := base.GetId(c)
 	if !ok {
@@ -138,7 +138,7 @@ func (h *ConfHandler) Get(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "配置ID"
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/conf/{id} [delete]
+// @Router       /api/sys/v1/conf/{id} [delete]
 func (h *ConfHandler) Delete(c *gin.Context) {
 	h.crud.HandleDelete(c)
 }
@@ -152,7 +152,7 @@ func (h *ConfHandler) Delete(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      dto.CreateConfDTO  true  "新增参数配置"
 // @Success      200      {object}  response.Response
-// @Router       /api/v1/sys/conf [post]
+// @Router       /api/sys/v1/conf [post]
 func (h *ConfHandler) CreateConf(c *gin.Context) {
 	var confDto dto.CreateConfDTO
 	if err := c.ShouldBindJSON(&confDto); err != nil {
@@ -185,7 +185,7 @@ func (h *ConfHandler) CreateConf(c *gin.Context) {
 // @Param        id       path      int                true  "配置ID"
 // @Param        request  body      dto.UpdateConfDTO  true  "修改参数配置"
 // @Success      200      {object}  response.Response
-// @Router       /api/v1/sys/conf/{id} [put]
+// @Router       /api/sys/v1/conf/{id} [put]
 func (h *ConfHandler) UpdateConf(c *gin.Context) {
 	id, ok := base.GetId(c)
 	if !ok {

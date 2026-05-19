@@ -66,4 +66,4 @@ gen:
 auth:
   excludes:
     - /api/swagger.json
-    - /api/v1/job/ping
+    - /api/job/v1/ping

@@ -32,7 +32,7 @@ func NewGenTableColumnHandler(svc service.GenTableColumnService) *GenTableColumn
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/gen/table/column/list [get]
+// @Router       /api/gen/v1/table/column/list [get]
 func (h *GenTableColumnHandler) List(c *gin.Context) {
 	h.crud.HandleList(c)
 }
@@ -46,7 +46,7 @@ func (h *GenTableColumnHandler) List(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      []dto.UpdateGenTableColumnDTO  true  "批量更新字段信息"
 // @Success      200      {object}  response.Response
-// @Router       /api/v1/gen/table/column/batch-update [put]
+// @Router       /api/gen/v1/table/column/batch-update [put]
 func (h *GenTableColumnHandler) BatchUpdate(c *gin.Context) {
 	var reqList []dto.UpdateGenTableColumnDTO
 	if err := c.ShouldBindJSON(&reqList); err != nil {

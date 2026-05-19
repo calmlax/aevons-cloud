@@ -2,7 +2,7 @@
 // @version         1.0.0
 // @description     Aevons 认证服务接口文档，提供登录、令牌刷新、退出登录、邮箱验证码、注册、密码重置、SSO 授权码和通行密钥认证等能力
 // @host            localhost:10701
-// @BasePath        /api/v1/auth
+// @BasePath        /api/auth/v1
 // @schemes         http https
 // @securityDefinitions.apikey  BearerAuth
 // @in                          header

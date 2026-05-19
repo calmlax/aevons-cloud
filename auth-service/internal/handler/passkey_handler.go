@@ -35,7 +35,7 @@ func NewPasskeyHandler(svc service.PasskeyService, authSvc service.AuthService) 
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /api/v1/auth/passkey/register/begin [post]
+// @Router       /api/auth/v1/passkey/register/begin [post]
 func (h *PasskeyHandler) BeginRegistration(c *gin.Context) {
 	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
@@ -68,7 +68,7 @@ func (h *PasskeyHandler) BeginRegistration(c *gin.Context) {
 // @Success      200  {object}  response.Response
 // @Failure      400  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /api/v1/auth/passkey/register/finish [post]
+// @Router       /api/auth/v1/passkey/register/finish [post]
 func (h *PasskeyHandler) FinishRegistration(c *gin.Context) {
 	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
@@ -104,7 +104,7 @@ func (h *PasskeyHandler) FinishRegistration(c *gin.Context) {
 // @Param        username  body  string  false  "用户名（可选，discoverable credential 无需传）"
 // @Success      200  {object}  response.Response
 // @Failure      500  {object}  response.Response
-// @Router       /api/v1/auth/passkey/login/begin [post]
+// @Router       /api/auth/v1/passkey/login/begin [post]
 func (h *PasskeyHandler) BeginAuthentication(c *gin.Context) {
 	clientId, clientSecret, ok := extractBasicAuth(c)
 	if !ok || strings.TrimSpace(clientId) == "" {
@@ -147,7 +147,7 @@ func (h *PasskeyHandler) BeginAuthentication(c *gin.Context) {
 // @Success      200  {object}  response.Response
 // @Failure      400  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /api/v1/auth/passkey/login/finish [post]
+// @Router       /api/auth/v1/passkey/login/finish [post]
 func (h *PasskeyHandler) FinishAuthentication(c *gin.Context) {
 	clientId, clientSecret, ok := extractBasicAuth(c)
 	if !ok || strings.TrimSpace(clientId) == "" {
@@ -200,7 +200,7 @@ func (h *PasskeyHandler) FinishAuthentication(c *gin.Context) {
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /api/v1/auth/passkey/credentials [get]
+// @Router       /api/auth/v1/passkey/credentials [get]
 func (h *PasskeyHandler) ListCredentials(c *gin.Context) {
 	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
@@ -227,7 +227,7 @@ func (h *PasskeyHandler) ListCredentials(c *gin.Context) {
 // @Success      200  {object}  response.Response
 // @Failure      400  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /api/v1/auth/passkey/credentials/{id} [delete]
+// @Router       /api/auth/v1/passkey/credentials/{id} [delete]
 func (h *PasskeyHandler) RevokeCredential(c *gin.Context) {
 	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {

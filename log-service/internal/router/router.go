@@ -44,7 +44,7 @@ func Setup(app *core.App) (*gin.Engine, error) {
 	server.RegisterOpenApiRoute(r, cfg)
 	r.Use(middleware.AuthMiddleware(store.NewRedisTokenStore(redisClient), cfg.Auth.Excludes))
 
-	v1 := r.Group("/api/v1/log")
+	v1 := r.Group("/api/log/v1")
 	{
 		registerLoginLogRoutes(v1, db)
 		registerOperLogRoutes(v1, db)

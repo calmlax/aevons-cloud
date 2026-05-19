@@ -66,7 +66,7 @@ func NewOauthClientHandler(svc service.OauthClientService) *OauthClientHandler {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/oauth/client/list [get]
+// @Router       /api/sys/v1/oauth/client/list [get]
 func (h *OauthClientHandler) List(c *gin.Context) {
 	h.crud.HandleList(c)
 }
@@ -78,7 +78,7 @@ func (h *OauthClientHandler) List(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/oauth/client/page [get]
+// @Router       /api/sys/v1/oauth/client/page [get]
 func (h *OauthClientHandler) Page(c *gin.Context) {
 	h.crud.HandlePage(c)
 }
@@ -91,7 +91,7 @@ func (h *OauthClientHandler) Page(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "终端应用ID"
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/oauth/client/{id} [get]
+// @Router       /api/sys/v1/oauth/client/{id} [get]
 func (h *OauthClientHandler) Get(c *gin.Context) {
 	h.crud.HandleGet(c)
 }
@@ -104,7 +104,7 @@ func (h *OauthClientHandler) Get(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        ids   path      string  true  "逗号分隔的终端应用ID"
 // @Success      200   {object}  response.Response
-// @Router       /api/v1/sys/oauth/client/{ids} [delete]
+// @Router       /api/sys/v1/oauth/client/{ids} [delete]
 func (h *OauthClientHandler) BatchDelete(c *gin.Context) {
 	h.crud.HandleBatchDelete(c)
 }
@@ -118,7 +118,7 @@ func (h *OauthClientHandler) BatchDelete(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      dto.CreateOauthClientDTO  true  "新增终端应用"
 // @Success      200      {object}  response.Response
-// @Router       /api/v1/sys/oauth/client [post]
+// @Router       /api/sys/v1/oauth/client [post]
 func (h *OauthClientHandler) CreateOAuthClient(c *gin.Context) {
 	var oauthClientDto dto.CreateOauthClientDTO
 	if err := c.ShouldBindJSON(&oauthClientDto); err != nil {
@@ -156,7 +156,7 @@ func (h *OauthClientHandler) CreateOAuthClient(c *gin.Context) {
 // @Param        id       path      int                       true  "终端应用ID"
 // @Param        request  body      dto.UpdateOauthClientDTO  true  "修改终端应用"
 // @Success      200      {object}  response.Response
-// @Router       /api/v1/sys/oauth/client/{id} [put]
+// @Router       /api/sys/v1/oauth/client/{id} [put]
 func (h *OauthClientHandler) UpdateOAuthClient(c *gin.Context) {
 	id, ok := base.GetId(c)
 	if !ok {
@@ -199,7 +199,7 @@ func (h *OauthClientHandler) UpdateOAuthClient(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/oauth/client/refresh-cache [post]
+// @Router       /api/sys/v1/oauth/client/refresh-cache [post]
 func (h *OauthClientHandler) RefreshGatewayCache(c *gin.Context) {
 	list, err := h.svc.List(&dto.OauthClientQuery{})
 	if err != nil {

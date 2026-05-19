@@ -16,7 +16,7 @@ export default {
      * @param query 查询参数
      */
     page: (query: any) => {
-        return request.get('/v1/sys/lang/resource/page',{params: query})
+        return request.get('/sys/v1/lang/resource/page',{params: query})
     },
 
     /**
@@ -24,7 +24,7 @@ export default {
      * @param query 查询参数
      */
     list: (query: any) => {
-        return request.get('/v1/sys/lang/resource/list',{params: query})
+        return request.get('/sys/v1/lang/resource/list',{params: query})
     },
 
     /**
@@ -32,7 +32,7 @@ export default {
      * @param query 查询参数
      */
     getById: (id: string) => {
-        return request.get(`/v1/sys/lang/resource/${id}`)
+        return request.get(`/sys/v1/lang/resource/${id}`)
     },
 
     /**
@@ -40,7 +40,7 @@ export default {
      * @param data 新增数据
      */
     add: (data: any) => {
-        return request.post('/v1/sys/lang/resource',data)
+        return request.post('/sys/v1/lang/resource',data)
     },
 
     /**
@@ -48,7 +48,7 @@ export default {
      * @param data 修改数据
      */
     update: (id: string,data: any) => {
-        return request.put(`/v1/sys/lang/resource/${id}`,data)
+        return request.put(`/sys/v1/lang/resource/${id}`,data)
     },
 
     /**
@@ -56,24 +56,24 @@ export default {
      * @param ids 删除Ids
      */
     delete: (ids: any) => {
-        return request.delete(`/v1/sys/lang/resource/${ids}`)
+        return request.delete(`/sys/v1/lang/resource/${ids}`)
     },
     
     /** 获取命名空间下的所有 resourceKey */
     getKeysByNamespace: (namespace: string) =>
-        request.get('/v1/sys/lang/resource/keys', { params: { namespace } }),
+        request.get('/sys/v1/lang/resource/keys', { params: { namespace } }),
 
     /** 去重分页查询 resourceKey（支持 key/content 搜索） */
     pageKeys: (params: { namespace: string; resourceKey?: string; content?: string; pageNum?: number; pageSize?: number }) =>
-        request.get('/v1/sys/lang/resource/keys/page', { params }),
+        request.get('/sys/v1/lang/resource/keys/page', { params }),
 
     /** 获取某个 namespace+resourceKey 的所有语言翻译 */
     getTranslations: (namespace: string, resourceKey: string) =>
-        request.get('/v1/sys/lang/resource/translations', { params: { namespace, resourceKey } }),
+        request.get('/sys/v1/lang/resource/translations', { params: { namespace, resourceKey } }),
 
     /** 批量保存翻译（upsert） */
     saveTranslations: (data: { namespace: string; resourceKey: string; items: { langCode: string; content: string }[] }) =>
-        request.post('/v1/sys/lang/resource/save-translations', data),
+        request.post('/sys/v1/lang/resource/save-translations', data),
 
     /**
      * 导出Excel
@@ -81,7 +81,7 @@ export default {
      * @param query 查询参数
      */
     download: (query: any, filename: string) => {
-        download("/v1/sys/lang/resource/export", { ...query }, `${filename}.xlsx`,{});
+        download("/sys/v1/lang/resource/export", { ...query }, `${filename}.xlsx`,{});
     },
 
 }

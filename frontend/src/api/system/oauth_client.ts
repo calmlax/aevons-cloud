@@ -16,7 +16,7 @@ export default {
      * @param query 查询参数
      */
     page: (query: any) => {
-        return request.get('/v1/sys/oauth/client/page',{params: query})
+        return request.get('/sys/v1/oauth/client/page',{params: query})
     },
 
     /**
@@ -24,7 +24,7 @@ export default {
      * @param query 查询参数
      */
     list: (query: any) => {
-        return request.get('/v1/sys/oauth/client/list',{params: query})
+        return request.get('/sys/v1/oauth/client/list',{params: query})
     },
 
     /**
@@ -32,7 +32,7 @@ export default {
      * @param query 查询参数
      */
     getById: (id: string) => {
-        return request.get(`/v1/sys/oauth/client/${id}`)
+        return request.get(`/sys/v1/oauth/client/${id}`)
     },
 
     /**
@@ -40,7 +40,7 @@ export default {
      * @param data 新增数据
      */
     add: (data: any) => {
-        return request.post('/v1/sys/oauth/client',data)
+        return request.post('/sys/v1/oauth/client',data)
     },
 
     /**
@@ -48,7 +48,7 @@ export default {
      * @param data 修改数据
      */
     update: (id: string,data: any) => {
-        return request.put(`/v1/sys/oauth/client/${id}`,data)
+        return request.put(`/sys/v1/oauth/client/${id}`,data)
     },
 
     /**
@@ -56,7 +56,7 @@ export default {
      * @param ids 删除Ids
      */
     delete: (ids: any) => {
-        return request.delete(`/v1/sys/oauth/client/${ids}`)
+        return request.delete(`/sys/v1/oauth/client/${ids}`)
     },
 
     /**
@@ -65,14 +65,14 @@ export default {
      * @param query 查询参数
      */
     download: (query: any, filename: string) => {
-        download("/v1/sys/oauth/client/export", { ...query }, `${filename}.xlsx`,{});
+        download("/sys/v1/oauth/client/export", { ...query }, `${filename}.xlsx`,{});
     },
 
     /**
      * 刷新网关 oauth_client 资源缓存
      */
     refreshGatewayCache: () => {
-        return request.post('/v1/sys/oauth/client/refresh-cache')
+        return request.post('/sys/v1/oauth/client/refresh-cache')
     },
 
 }

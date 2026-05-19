@@ -42,7 +42,7 @@ func NewRoleHandler(svc service.RoleService) *RoleHandler {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/role/list [get]
+// @Router       /api/sys/v1/role/list [get]
 func (h *RoleHandler) List(c *gin.Context) {
 	h.crud.HandleList(c)
 }
@@ -54,7 +54,7 @@ func (h *RoleHandler) List(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/role/page [get]
+// @Router       /api/sys/v1/role/page [get]
 func (h *RoleHandler) Page(c *gin.Context) {
 	h.crud.HandlePage(c)
 }
@@ -67,7 +67,7 @@ func (h *RoleHandler) Page(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "角色ID"
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/role/{id} [get]
+// @Router       /api/sys/v1/role/{id} [get]
 func (h *RoleHandler) Get(c *gin.Context) {
 	h.crud.HandleGet(c)
 }
@@ -80,7 +80,7 @@ func (h *RoleHandler) Get(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        ids   path      string  true  "逗号分隔的角色ID"
 // @Success      200   {object}  response.Response
-// @Router       /api/v1/sys/role/{ids} [delete]
+// @Router       /api/sys/v1/role/{ids} [delete]
 func (h *RoleHandler) BatchDelete(c *gin.Context) {
 	h.crud.HandleBatchDelete(c)
 }
@@ -94,7 +94,7 @@ func (h *RoleHandler) BatchDelete(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        request  body      dto.CreateRoleDTO  true  "新增角色"
 // @Success      200      {object}  response.Response
-// @Router       /api/v1/sys/role [post]
+// @Router       /api/sys/v1/role [post]
 func (h *RoleHandler) Create(c *gin.Context) {
 	var d dto.CreateRoleDTO
 	if err := c.ShouldBindJSON(&d); err != nil {
@@ -119,7 +119,7 @@ func (h *RoleHandler) Create(c *gin.Context) {
 // @Param        id       path      int                true  "角色ID"
 // @Param        request  body      dto.UpdateRoleDTO  true  "修改角色"
 // @Success      200      {object}  response.Response
-// @Router       /api/v1/sys/role/{id} [put]
+// @Router       /api/sys/v1/role/{id} [put]
 func (h *RoleHandler) Update(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
@@ -147,7 +147,7 @@ func (h *RoleHandler) Update(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "角色ID"
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/role/{id}/menu [get]
+// @Router       /api/sys/v1/role/{id}/menu [get]
 func (h *RoleHandler) GetMenuIds(c *gin.Context) {
 	idStr := c.Param("id")
 	roleId, err := strconv.ParseInt(idStr, 10, 64)

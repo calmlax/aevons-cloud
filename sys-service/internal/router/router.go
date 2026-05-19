@@ -57,7 +57,7 @@ func Setup(app *core.App) (*gin.Engine, error) {
 	server.RegisterOpenApiRoute(r, cfg)
 	r.Use(middleware.AuthMiddleware(store.NewRedisTokenStore(redisClient), cfg.Auth.Excludes))
 
-	v1 := r.Group("/api/v1/sys")
+	v1 := r.Group("/api/sys/v1")
 	{
 		v1.GET("ping", func(c *gin.Context) {
 			c.JSON(200, gin.H{"message": "pong"})

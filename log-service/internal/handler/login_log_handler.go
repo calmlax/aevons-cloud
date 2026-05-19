@@ -42,7 +42,7 @@ func NewLoginLogHandler(svc service.LoginLogService) *LoginLogHandler {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/log/login/log/list [get]
+// @Router       /api/log/v1/login/log/list [get]
 func (h *LoginLogHandler) List(c *gin.Context) {
 	h.crud.HandleList(c)
 }
@@ -54,7 +54,7 @@ func (h *LoginLogHandler) List(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/log/login/log/page [get]
+// @Router       /api/log/v1/login/log/page [get]
 func (h *LoginLogHandler) Page(c *gin.Context) {
 	h.crud.HandlePage(c)
 }
@@ -67,7 +67,7 @@ func (h *LoginLogHandler) Page(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "登录日志ID"
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/log/login/log/{id} [get]
+// @Router       /api/log/v1/login/log/{id} [get]
 func (h *LoginLogHandler) Get(c *gin.Context) {
 	h.crud.HandleGet(c)
 }
@@ -80,7 +80,7 @@ func (h *LoginLogHandler) Get(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        ids   path      string  true  "逗号分隔的登录日志ID"
 // @Success      200   {object}  response.Response
-// @Router       /api/v1/log/login/log/{ids} [delete]
+// @Router       /api/log/v1/login/log/{ids} [delete]
 func (h *LoginLogHandler) BatchDelete(c *gin.Context) {
 	h.crud.HandleBatchDelete(c)
 }
@@ -92,7 +92,7 @@ func (h *LoginLogHandler) BatchDelete(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/log/login/log [delete]
+// @Router       /api/log/v1/login/log [delete]
 func (h *LoginLogHandler) Clear(c *gin.Context) {
 	if err := h.svc.TruncateAll(); err != nil {
 		response.FailBy(c, apperr.ErrDeleteFailed)

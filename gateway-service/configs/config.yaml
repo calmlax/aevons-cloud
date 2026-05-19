@@ -56,15 +56,15 @@ redis:
 xss:
   enabled: true
   excludes:
-    - /api/v1/auth/login
-    - /api/v1/auth/register
-    - /api/v1/auth/reset-password
-    - /api/v1/auth/passkey/register/finish
-    - /api/v1/auth/passkey/login/finish
-    - /api/v1/sys/conf/*
-    - /api/v1/sys/conf
-    - /api/v1/sys/menu/*
-    - /api/v1/sys/menu
+    - /api/auth/v1/login
+    - /api/auth/v1/register
+    - /api/auth/v1/reset-password
+    - /api/auth/v1/passkey/register/finish
+    - /api/auth/v1/passkey/login/finish
+    - /api/sys/v1/conf/*
+    - /api/sys/v1/conf
+    - /api/sys/v1/menu/*
+    - /api/sys/v1/menu
 
 # 网关核心运行配置
 gateway:
@@ -98,7 +98,7 @@ gateway:
       # - client: 按 OAuth client_id 分桶，未识别时记为 anonymous
       # - user: 按登录用户分桶，未登录时记为 anonymous
       # - ip: 按客户端 IP 分桶
-      # - path: 按请求路径分桶，例如 /api/v1/auth/login
+      # - path: 按请求路径分桶，例如 /api/auth/v1/login
       # - method: 按 HTTP 方法分桶，例如 GET / POST
       # 组合示例：
       # - [ip] = 单 IP 限流
@@ -153,7 +153,7 @@ services:
     # Consul 中的真实服务名
     name: auth-service
     # 该服务负责的请求前缀
-    prefix: /api/v1/auth/**
+    prefix: /api/auth/v1/**
     # 当前支持 consul 发现
     discovery: consul
     # 当前支持 round_robin
@@ -163,58 +163,58 @@ services:
     # 不走统一鉴权的公开接口白名单。
     # 格式：METHOD:/path 或 METHOD:/prefix/**
     exclude_auth_routes:
-      - GET:/api/v1/auth/ping
-      - GET:/api/v1/auth/public-key
-      - POST:/api/v1/auth/login
-      - POST:/api/v1/auth/refresh
-      - POST:/api/v1/auth/email/code
-      - POST:/api/v1/auth/register
-      - POST:/api/v1/auth/reset-password
-      - GET:/api/v1/auth/authorize
-      - POST:/api/v1/auth/authorize
-      - GET:/api/v1/auth/callback
-      - POST:/api/v1/auth/passkey/login/begin
-      - POST:/api/v1/auth/passkey/login/finish
+      - GET:/api/auth/v1/ping
+      - GET:/api/auth/v1/public-key
+      - POST:/api/auth/v1/login
+      - POST:/api/auth/v1/refresh
+      - POST:/api/auth/v1/email/code
+      - POST:/api/auth/v1/register
+      - POST:/api/auth/v1/reset-password
+      - GET:/api/auth/v1/authorize
+      - POST:/api/auth/v1/authorize
+      - GET:/api/auth/v1/callback
+      - POST:/api/auth/v1/passkey/login/begin
+      - POST:/api/auth/v1/passkey/login/finish
   - id: sys
     name: sys-service
-    prefix: /api/v1/sys/**
+    prefix: /api/sys/v1/**
     discovery: consul
     load_balance: round_robin
     pass_access_token: true
     exclude_auth_routes:
-      - GET:/api/v1/sys/ping
-      - GET:/api/v1/sys/lang
+      - GET:/api/sys/v1/ping
+      - GET:/api/sys/v1/lang
   - id: log
     name: log-service
-    prefix: /api/v1/log/**
+    prefix: /api/log/v1/**
     discovery: consul
     load_balance: round_robin
     pass_access_token: true
     exclude_auth_routes:
-      - GET:/api/v1/log/ping
+      - GET:/api/log/v1/ping
   - id: gen
     name: gen-service
-    prefix: /api/v1/gen/**
+    prefix: /api/gen/v1/**
     discovery: consul
     load_balance: round_robin
     pass_access_token: true
     exclude_auth_routes:
-      - GET:/api/v1/gen/ping
+      - GET:/api/gen/v1/ping
   - id: job
     name: job-service
-    prefix: /api/v1/job/**
+    prefix: /api/job/v1/**
     discovery: consul
     load_balance: round_robin
     pass_access_token: true
     exclude_auth_routes:
-      - GET:/api/v1/job/ping
+      - GET:/api/job/v1/ping
 
 # 是否启用 oauth_client 资源校验流程。
 # 开启后会按 client_id -> Redis -> DB(sys_oauth_client.resources) 进行授权判断，
 # resources 推荐使用：
 # - ALL
-# - /api/v1/sys/conf/*
-# - /api/v1/auth/authorize
+# - /api/sys/v1/conf/*
+# - /api/auth/v1/authorize
 # 其中路径规则支持精确路径和前缀路径。
 client_auth:
   enabled: true

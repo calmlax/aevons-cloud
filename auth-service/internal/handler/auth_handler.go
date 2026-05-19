@@ -43,7 +43,7 @@ func NewAuthHandler(svc service.AuthService) *AuthHandler {
 // @Success      200  {object}  response.Response
 // @Failure      400  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /api/v1/auth/login [post]
+// @Router       /api/auth/v1/login [post]
 func (h *AuthHandler) Login(c *gin.Context) {
 	var req authmodel.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -92,7 +92,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 // @Param        Authorization  header    string  true  "Basic base64(client_id:client_secret)"
 // @Success      200  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /api/v1/auth/refresh [post]
+// @Router       /api/auth/v1/refresh [post]
 func (h *AuthHandler) Refresh(c *gin.Context) {
 	clientId, _, ok := extractBasicAuth(c)
 	if !ok {
@@ -123,7 +123,7 @@ func (h *AuthHandler) Refresh(c *gin.Context) {
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /api/v1/auth/logout [post]
+// @Router       /api/auth/v1/logout [post]
 func (h *AuthHandler) Logout(c *gin.Context) {
 	token := extractBearerToken(c)
 	if token == "" {
@@ -135,7 +135,7 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 		handleAuthError(c, err)
 		return
 	}
-	c.SetCookie("refreshToken", "", -1, "/api/v1/auth/refresh", "", true, true)
+	c.SetCookie("refreshToken", "", -1, "/api/auth/v1/refresh", "", true, true)
 	response.Success(c, nil)
 }
 
@@ -150,7 +150,7 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 // @Param        purpose  body      string  true  "用途：register | reset"
 // @Success      200  {object}  response.Response
 // @Failure      400  {object}  response.Response
-// @Router       /api/v1/auth/email/code [post]
+// @Router       /api/auth/v1/email/code [post]
 func (h *AuthHandler) SendEmailCode(c *gin.Context) {
 	var body struct {
 		Email   string `json:"email" binding:"required,email"`
@@ -181,7 +181,7 @@ func (h *AuthHandler) SendEmailCode(c *gin.Context) {
 // @Param        code      body      string  true  "邮箱验证码"
 // @Success      200  {object}  response.Response
 // @Failure      400  {object}  response.Response
-// @Router       /api/v1/auth/register [post]
+// @Router       /api/auth/v1/register [post]
 func (h *AuthHandler) Register(c *gin.Context) {
 	var req struct {
 		Name     string `json:"name" binding:"required"`
@@ -215,7 +215,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 // @Param        code      body      string  true  "邮箱验证码"
 // @Success      200  {object}  response.Response
 // @Failure      400  {object}  response.Response
-// @Router       /api/v1/auth/reset-password [post]
+// @Router       /api/auth/v1/reset-password [post]
 func (h *AuthHandler) ResetPassword(c *gin.Context) {
 	var req struct {
 		Email    string `json:"email" binding:"required,email"`
@@ -244,7 +244,7 @@ func (h *AuthHandler) ResetPassword(c *gin.Context) {
 // @Success      200  {object}  response.Response
 // @Failure      401  {object}  response.Response
 // @Failure      500  {object}  response.Response
-// @Router       /api/v1/auth/user/login-logs [get]
+// @Router       /api/auth/v1/user/login-logs [get]
 func (h *AuthHandler) GetLatestLoginLog(c *gin.Context) {
 	entries, err := h.svc.GetLatestLoginLog(c.Request.Context())
 	if err != nil {
@@ -266,7 +266,7 @@ func (h *AuthHandler) GetLatestLoginLog(c *gin.Context) {
 // @Success      200  {object}  response.Response
 // @Failure      400  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /api/v1/auth/code [post]
+// @Router       /api/auth/v1/code [post]
 func (h *AuthHandler) GenerateAuthCode(c *gin.Context) {
 	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
@@ -302,7 +302,7 @@ func (h *AuthHandler) GenerateAuthCode(c *gin.Context) {
 // @Param        state          query     string  false  "客户端随机状态值"
 // @Success      200  {object}  response.Response
 // @Failure      400  {object}  response.Response
-// @Router       /api/v1/auth/authorize [get]
+// @Router       /api/auth/v1/authorize [get]
 func (h *AuthHandler) Authorize(c *gin.Context) {
 	clientId := c.Query("client_id")
 	if clientId == "" {
@@ -341,7 +341,7 @@ func (h *AuthHandler) Authorize(c *gin.Context) {
 // @Success      200  {object}  response.Response
 // @Failure      400  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /api/v1/auth/authorize [post]
+// @Router       /api/auth/v1/authorize [post]
 func (h *AuthHandler) ApproveAuthorize(c *gin.Context) {
 	var body struct {
 		AccessToken string   `json:"access_token" binding:"required"`
@@ -377,7 +377,7 @@ func (h *AuthHandler) ApproveAuthorize(c *gin.Context) {
 // @Param        state  query     string  true  "state 值"
 // @Success      200  {object}  response.Response
 // @Failure      400  {object}  response.Response
-// @Router       /api/v1/auth/callback [get]
+// @Router       /api/auth/v1/callback [get]
 func (h *AuthHandler) Callback(c *gin.Context) {
 	code := c.Query("code")
 	state := c.Query("state")
@@ -403,7 +403,7 @@ func (h *AuthHandler) Callback(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  response.Response
 // @Failure      500  {object}  response.Response
-// @Router       /api/v1/auth/public-key [get]
+// @Router       /api/auth/v1/public-key [get]
 func (h *AuthHandler) GetPublicKey(c *gin.Context) {
 	resp, err := h.svc.GetPublicKey(c.Request.Context())
 	if err != nil {
@@ -422,7 +422,7 @@ func (h *AuthHandler) GetPublicKey(c *gin.Context) {
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /api/v1/auth/routers [get]
+// @Router       /api/auth/v1/routers [get]
 func (h *AuthHandler) Routers(c *gin.Context) {
 	langCode := c.GetHeader(consts.AcceptLanguage)
 	routers, err := h.svc.GetRouters(c.Request.Context(), langCode)
@@ -442,7 +442,7 @@ func (h *AuthHandler) Routers(c *gin.Context) {
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /api/v1/auth/user [get]
+// @Router       /api/auth/v1/user [get]
 func (h *AuthHandler) GetUserInfo(c *gin.Context) {
 	user, err := authctx.GetCurrentUser(c.Request.Context())
 	if err != nil {
@@ -461,7 +461,7 @@ func (h *AuthHandler) GetUserInfo(c *gin.Context) {
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /api/v1/auth/user/profile [get]
+// @Router       /api/auth/v1/user/profile [get]
 func (h *AuthHandler) GetProfile(c *gin.Context) {
 	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
@@ -489,7 +489,7 @@ func (h *AuthHandler) GetProfile(c *gin.Context) {
 // @Success      200  {object}  response.Response
 // @Failure      400  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /api/v1/auth/user/profile [put]
+// @Router       /api/auth/v1/user/profile [put]
 func (h *AuthHandler) UpdateProfile(c *gin.Context) {
 	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
@@ -525,7 +525,7 @@ func (h *AuthHandler) UpdateProfile(c *gin.Context) {
 // @Success      200  {object}  response.Response
 // @Failure      400  {object}  response.Response
 // @Failure      401  {object}  response.Response
-// @Router       /api/v1/auth/user/password [put]
+// @Router       /api/auth/v1/user/password [put]
 func (h *AuthHandler) UpdatePassword(c *gin.Context) {
 	userId, err := authctx.GetCurrentUserId(c.Request.Context())
 	if err != nil {
@@ -593,7 +593,7 @@ func handleAuthError(c *gin.Context, err error) {
 func respondWithTokenPair(c *gin.Context, pair *authmodel.TokenPair) {
 	if pair.RefreshToken != "" {
 		c.SetSameSite(http.SameSiteLaxMode)
-		c.SetCookie("refreshToken", pair.RefreshToken, int(pair.RefreshExpiresIn), "/api/v1/auth/refresh", "", true, true)
+		c.SetCookie("refreshToken", pair.RefreshToken, int(pair.RefreshExpiresIn), "/api/auth/v1/refresh", "", true, true)
 	}
 	response.Success(c, gin.H{
 		"access_token": pair.AccessToken,

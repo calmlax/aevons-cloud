@@ -11,9 +11,9 @@
         "version": "1.0.0"
     },
     "host": "localhost:10704",
-    "basePath": "/api/v1/gen",
+    "basePath": "/api/gen/v1",
     "paths": {
-        "/api/v1/gen/table": {
+        "/api/gen/v1/table": {
             "post": {
                 "security": [
                     {
@@ -51,7 +51,7 @@
                 }
             }
         },
-        "/api/v1/gen/table/column/batch-update": {
+        "/api/gen/v1/table/column/batch-update": {
             "put": {
                 "security": [
                     {
@@ -92,7 +92,7 @@
                 }
             }
         },
-        "/api/v1/gen/table/column/list": {
+        "/api/gen/v1/table/column/list": {
             "get": {
                 "security": [
                     {
@@ -116,7 +116,7 @@
                 }
             }
         },
-        "/api/v1/gen/table/db": {
+        "/api/gen/v1/table/db": {
             "get": {
                 "security": [
                     {
@@ -140,7 +140,7 @@
                 }
             }
         },
-        "/api/v1/gen/table/download": {
+        "/api/gen/v1/table/download": {
             "get": {
                 "security": [
                     {
@@ -173,7 +173,7 @@
                 }
             }
         },
-        "/api/v1/gen/table/import": {
+        "/api/gen/v1/table/import": {
             "post": {
                 "security": [
                     {
@@ -214,7 +214,7 @@
                 }
             }
         },
-        "/api/v1/gen/table/list": {
+        "/api/gen/v1/table/list": {
             "get": {
                 "security": [
                     {
@@ -238,7 +238,7 @@
                 }
             }
         },
-        "/api/v1/gen/table/page": {
+        "/api/gen/v1/table/page": {
             "get": {
                 "security": [
                     {
@@ -262,7 +262,7 @@
                 }
             }
         },
-        "/api/v1/gen/table/preview": {
+        "/api/gen/v1/table/preview": {
             "get": {
                 "security": [
                     {
@@ -295,7 +295,7 @@
                 }
             }
         },
-        "/api/v1/gen/table/synch": {
+        "/api/gen/v1/table/synch": {
             "get": {
                 "security": [
                     {
@@ -328,7 +328,7 @@
                 }
             }
         },
-        "/api/v1/gen/table/{ids}": {
+        "/api/gen/v1/table/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -361,7 +361,7 @@
                 }
             }
         },
-        "/api/v1/gen/table/{id}": {
+        "/api/gen/v1/table/{id}": {
             "get": {
                 "security": [
                     {

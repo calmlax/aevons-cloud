@@ -50,19 +50,19 @@ export interface LoginLogItem {
  * 获取当前登录用户的完整个人资料
  */
 export const getUserProfileRequest = async (): Promise<UserProfileResponse> => {
-  return request<UserProfileResponse>({ url: '/v1/auth/user/profile', method: 'get' });
+  return request<UserProfileResponse>({ url: '/auth/v1/user/profile', method: 'get' });
 };
 
 /**
  * 更新个人资料
  */
 export const updateUserProfileRequest = async (payload: UpdateProfilePayload) => {
-  return request({ url: '/v1/auth/user/profile', method: 'put', data: payload });
+  return request({ url: '/auth/v1/user/profile', method: 'put', data: payload });
 };
 
 /**
  * 获取当前登录用户的最新10条登录日志
  */
 export const getProfileLoginLogsRequest = async (): Promise<LoginLogItem[]> => {
-  return request<LoginLogItem[]>({ url: '/v1/auth/user/login-logs', method: 'get' });
+  return request<LoginLogItem[]>({ url: '/auth/v1/user/login-logs', method: 'get' });
 };

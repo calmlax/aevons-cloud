@@ -11,9 +11,9 @@
         "version": "1.0.0"
     },
     "host": "localhost:10703",
-    "basePath": "/api/v1/log",
+    "basePath": "/api/log/v1",
     "paths": {
-        "/api/v1/log/login/log": {
+        "/api/log/v1/login/log": {
             "delete": {
                 "security": [
                     {
@@ -37,7 +37,7 @@
                 }
             }
         },
-        "/api/v1/log/login/log/list": {
+        "/api/log/v1/login/log/list": {
             "get": {
                 "security": [
                     {
@@ -61,7 +61,7 @@
                 }
             }
         },
-        "/api/v1/log/login/log/page": {
+        "/api/log/v1/login/log/page": {
             "get": {
                 "security": [
                     {
@@ -85,7 +85,7 @@
                 }
             }
         },
-        "/api/v1/log/login/log/{ids}": {
+        "/api/log/v1/login/log/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -118,7 +118,7 @@
                 }
             }
         },
-        "/api/v1/log/login/log/{id}": {
+        "/api/log/v1/login/log/{id}": {
             "get": {
                 "security": [
                     {
@@ -151,7 +151,7 @@
                 }
             }
         },
-        "/api/v1/log/oper/log": {
+        "/api/log/v1/oper/log": {
             "delete": {
                 "security": [
                     {
@@ -175,7 +175,7 @@
                 }
             }
         },
-        "/api/v1/log/oper/log/list": {
+        "/api/log/v1/oper/log/list": {
             "get": {
                 "security": [
                     {
@@ -199,7 +199,7 @@
                 }
             }
         },
-        "/api/v1/log/oper/log/page": {
+        "/api/log/v1/oper/log/page": {
             "get": {
                 "security": [
                     {
@@ -223,7 +223,7 @@
                 }
             }
         },
-        "/api/v1/log/oper/log/{ids}": {
+        "/api/log/v1/oper/log/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -256,7 +256,7 @@
                 }
             }
         },
-        "/api/v1/log/oper/log/{id}": {
+        "/api/log/v1/oper/log/{id}": {
             "get": {
                 "security": [
                     {

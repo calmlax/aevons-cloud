@@ -11,9 +11,9 @@
         "version": "1.0.0"
     },
     "host": "localhost:10705",
-    "basePath": "/api/v1/job",
+    "basePath": "/api/job/v1",
     "paths": {
-        "/api/v1/job": {
+        "/api/job/v1": {
             "post": {
                 "security": [
                     {
@@ -51,7 +51,7 @@
                 }
             }
         },
-        "/api/v1/job/log/page": {
+        "/api/job/v1/log/page": {
             "get": {
                 "security": [
                     {
@@ -75,7 +75,7 @@
                 }
             }
         },
-        "/api/v1/job/log/{ids}": {
+        "/api/job/v1/log/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -108,7 +108,7 @@
                 }
             }
         },
-        "/api/v1/job/log/{id}": {
+        "/api/job/v1/log/{id}": {
             "get": {
                 "security": [
                     {
@@ -141,7 +141,7 @@
                 }
             }
         },
-        "/api/v1/job/page": {
+        "/api/job/v1/page": {
             "get": {
                 "security": [
                     {
@@ -165,7 +165,7 @@
                 }
             }
         },
-        "/api/v1/job/{ids}": {
+        "/api/job/v1/{ids}": {
             "delete": {
                 "security": [
                     {
@@ -198,7 +198,7 @@
                 }
             }
         },
-        "/api/v1/job/{id}": {
+        "/api/job/v1/{id}": {
             "get": {
                 "security": [
                     {
@@ -274,7 +274,7 @@
                 }
             }
         },
-        "/api/v1/job/{id}/status": {
+        "/api/job/v1/{id}/status": {
             "put": {
                 "security": [
                     {
@@ -319,7 +319,7 @@
                 }
             }
         },
-        "/api/v1/job/{id}/trigger": {
+        "/api/job/v1/{id}/trigger": {
             "post": {
                 "security": [
                     {

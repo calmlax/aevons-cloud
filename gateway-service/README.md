@@ -119,7 +119,7 @@ rules:
     enabled: true
     services: [auth-service]
     methods: [POST]
-    paths: [/api/v1/auth/login]
+    paths: [/api/auth/v1/login]
     key_by: [ip, client]
     limit: 20
     window_seconds: 60
@@ -127,7 +127,7 @@ rules:
     enabled: true
     services: [auth-service]
     methods: [POST]
-    paths: [/api/v1/auth/passkey/login/begin]
+    paths: [/api/auth/v1/passkey/login/begin]
     key_by: [ip, client]
     limit: 15
     window_seconds: 60
@@ -135,7 +135,7 @@ rules:
     enabled: true
     services: [auth-service]
     methods: [GET, POST]
-    paths: [/api/v1/auth/authorize]
+    paths: [/api/auth/v1/authorize]
     key_by: [client, user]
     limit: 120
     window_seconds: 60
@@ -180,7 +180,7 @@ rules:
 - `ip`
   按客户端 IP 分桶。适合防刷、防爆破、防验证码滥用。
 - `path`
-  按请求路径分桶，例如 `/api/v1/auth/login`、`/api/v1/auth/authorize`。适合同一个服务下对不同接口做细分限制。
+  按请求路径分桶，例如 `/api/auth/v1/login`、`/api/auth/v1/authorize`。适合同一个服务下对不同接口做细分限制。
 - `method`
   按 HTTP 方法分桶，例如 `GET`、`POST`。通常和 `service` 或 `path` 组合使用。
 
@@ -210,15 +210,15 @@ rules:
 - 优先读 Redis
 - Redis 未命中时回源数据库表 `sys_oauth_client`
 - 回源结果写回 Redis，并按网关内部刷新周期自动过期
-- 管理端修改 `sys_oauth_client.resources` 后，可调用 `sys-service` 的 `/api/v1/sys/oauth/client/refresh-cache` 立即更新网关缓存
+- 管理端修改 `sys_oauth_client.resources` 后，可调用 `sys-service` 的 `/api/sys/v1/oauth/client/refresh-cache` 立即更新网关缓存
 
 `sys_oauth_client.resources` 规则说明：
 
 - 推荐直接写路径规则，而不是服务名称
 - 支持三种形式：
   - `ALL`
-  - 精确路径：`/api/v1/auth/authorize`
-  - 前缀路径：`/api/v1/sys/conf/*` 或 `/api/v1/sys/conf/**`
+  - 精确路径：`/api/auth/v1/authorize`
+  - 前缀路径：`/api/sys/v1/conf/*` 或 `/api/sys/v1/conf/**`
 
 示例：
 
@@ -227,11 +227,11 @@ ALL
 ```
 
 ```text
-/api/v1/auth/authorize,/api/v1/auth/callback
+/api/auth/v1/authorize,/api/auth/v1/callback
 ```
 
 ```text
-/api/v1/sys/conf/*,/api/v1/sys/menu/*
+/api/sys/v1/conf/*,/api/sys/v1/menu/*
 ```
 
 兼容说明：

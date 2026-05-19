@@ -2,7 +2,7 @@
 // @version         1.0.0
 // @description     Aevons 日志服务接口文档，提供登录日志、操作日志的查询、清理以及跨服务日志写入能力
 // @host            localhost:10703
-// @BasePath        /api/v1/log
+// @BasePath        /api/log/v1
 // @schemes         http https
 // @securityDefinitions.apikey  BearerAuth
 // @in                          header

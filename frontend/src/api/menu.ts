@@ -16,13 +16,13 @@ const commonMenuNodes: MenuSourceNode[] = [
 ];
 
 // ===============================================
-// The backend /v1/auth/routers already filters by role
+// The backend /auth/v1/routers already filters by role
 // so we no longer need local `filterMenuByPermission`
 // ===============================================
 
 export const fetchMenuTree = async (): Promise<MenuNode[]> => {
   // Pull authenticated dynamic menu payload from API endpoint
-  const dynamicMenuTree = await request<MenuSourceNode[]>({ url: '/v1/auth/routers', method: 'get' });
+  const dynamicMenuTree = await request<MenuSourceNode[]>({ url: '/auth/v1/routers', method: 'get' });
   
   // Directly hydrate since the backend guarantees permitted routes only
   return hydrateMenuTree([...commonMenuNodes, ...(dynamicMenuTree || [])]);

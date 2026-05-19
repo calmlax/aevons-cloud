@@ -218,7 +218,7 @@ Passkey 登录已经和密码登录对齐：
 
 对应刷新接口：
 
-- `POST /api/v1/sys/oauth/client/refresh-cache`
+- `POST /api/sys/v1/oauth/client/refresh-cache`
 
 **OpenAPI / Swagger**
 

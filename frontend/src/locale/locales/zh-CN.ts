@@ -1004,7 +1004,7 @@ const zhCN = {
     title: '终端应用', addTitle: '新增终端应用', editTitle: '编辑终端应用',
     appId: 'AppID', appName: '应用名称', appSecret: '应用密钥',
     resources: '资源规则',
-    resourcesPlaceholder: '如：ALL 或 /api/v1/sys/conf/*,/api/v1/auth/authorize',
+    resourcesPlaceholder: '如：ALL 或 /api/sys/v1/conf/*,/api/auth/v1/authorize',
     resourcesHint: '支持 ALL、精确路径、前缀路径；多个规则用英文逗号分隔。',
     scope: '授权范围', grantType: '授权类型',
     redirectUri: '回调地址', autoApprove: '自动授权',

@@ -35,7 +35,7 @@
    `VITE_REDIRECT_URI`
 4. 回调页拿到 `code`
 5. 回调页通过 `postMessage` 把 `code` 发回首页
-6. 首页调用 `/api/v1/auth/login`
+6. 首页调用 `/api/auth/v1/login`
    - `grant_type=authorization_code`
    - `code=<授权码>`
    - `Authorization: Basic base64(client_id:client_secret)`
@@ -105,7 +105,7 @@ pnpm dev
    - 默认：`http://localhost:5173`
 
 2. `gateway-service` 或 APISIX 网关
-   - 提供 `/api/v1/auth/*`
+   - 提供 `/api/auth/v1/*`
    - 默认：`http://localhost:11080`
 
 3. `auth-service`

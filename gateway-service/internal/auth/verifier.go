@@ -47,7 +47,7 @@ func (v *Verifier) Verify(ctx context.Context, rule *model.ServiceRule, authHead
 		return nil, err
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://"+instance.Address+":"+strconv.Itoa(instance.Port)+"/api/v1/auth/user", nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://"+instance.Address+":"+strconv.Itoa(instance.Port)+"/api/auth/v1/user", nil)
 	if err != nil {
 		return nil, err
 	}

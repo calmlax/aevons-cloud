@@ -57,39 +57,39 @@ export interface DBTableInfo {
 
 // ── Table API ──────────────────────────────────────────
 export const getTablePage = (params: TablePageQuery) =>
-  request<PageResult<GenTable>>({ url: '/v1/gen/table/page', method: 'get', params });
+  request<PageResult<GenTable>>({ url: '/gen/v1/table/page', method: 'get', params });
 
 export const getTableList = (params?: { tableName?: string; tableComment?: string; moduleName?: string }) =>
-  request<GenTable[]>({ url: '/v1/gen/table/list', method: 'get', params });
+  request<GenTable[]>({ url: '/gen/v1/table/list', method: 'get', params });
 
 export const getTableById = (id: string) =>
-  request<GenTable>({ url: `/v1/gen/table/${id}`, method: 'get' });
+  request<GenTable>({ url: `/gen/v1/table/${id}`, method: 'get' });
 
 export const updateTable = (id: string, data: Partial<GenTable>) =>
-  request({ url: `/v1/gen/table/${id}`, method: 'put', data });
+  request({ url: `/gen/v1/table/${id}`, method: 'put', data });
 
 export const deleteTable = (ids: string[]) =>
-  request({ url: `/v1/gen/table/${ids.join(',')}`, method: 'delete' });
+  request({ url: `/gen/v1/table/${ids.join(',')}`, method: 'delete' });
 
 // ── Import API ─────────────────────────────────────────
 export const getDBTableList = () =>
-  request<DBTableInfo[]>({ url: '/v1/gen/table/db', method: 'get' });
+  request<DBTableInfo[]>({ url: '/gen/v1/table/db', method: 'get' });
 
 export const importTables = (tableNames: string[]) =>
-  request({ url: '/v1/gen/table/import', method: 'post', data: tableNames });
+  request({ url: '/gen/v1/table/import', method: 'post', data: tableNames });
 
 // ── TableColumn API ────────────────────────────────────
 export const getColumnList = (params: { tableId: string; columnName?: string; columnComment?: string }) =>
-  request<GenTableColumn[]>({ url: '/v1/gen/table/column/list', method: 'get', params });
+  request<GenTableColumn[]>({ url: '/gen/v1/table/column/list', method: 'get', params });
 
 export const getColumnById = (id: string) =>
-  request<GenTableColumn>({ url: `/v1/gen/table/column/${id}`, method: 'get' });
+  request<GenTableColumn>({ url: `/gen/v1/table/column/${id}`, method: 'get' });
 
 export const batchUpdateColumn = (data: Partial<GenTableColumn>[]) =>
-  request({ url: `/v1/gen/table/column/batch-update`, method: 'put', data });
+  request({ url: `/gen/v1/table/column/batch-update`, method: 'put', data });
 
 export const deleteColumn = (ids: string[]) =>
-  request({ url: `/v1/gen/table/column/${ids.join(',')}`, method: 'delete' });
+  request({ url: `/gen/v1/table/column/${ids.join(',')}`, method: 'delete' });
 
 // ── Preview & Download API ─────────────────────────────
 export interface PreviewFile {
@@ -99,10 +99,10 @@ export interface PreviewFile {
 }
 
 export const previewCode = (tableId: string) =>
-  request<PreviewFile[]>({ url: '/v1/gen/table/preview', method: 'get', params: { tableId } });
+  request<PreviewFile[]>({ url: '/gen/v1/table/preview', method: 'get', params: { tableId } });
 
 export const synchTable = (tableId: string) =>
-  request({ url: '/v1/gen/table/synch', method: 'get', params: { tableId } });
+  request({ url: '/gen/v1/table/synch', method: 'get', params: { tableId } });
 
 export const downloadCode = (tableIds: string[]) =>
-  request<Blob>({ url: '/v1/gen/table/download', method: 'get', params: { tableIds: tableIds.join(',') }, responseType: 'blob' });
+  request<Blob>({ url: '/gen/v1/table/download', method: 'get', params: { tableIds: tableIds.join(',') }, responseType: 'blob' });

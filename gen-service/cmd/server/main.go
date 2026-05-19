@@ -2,7 +2,7 @@
 // @version         1.0.0
 // @description     Aevons 代码生成服务接口文档，提供数据库表导入、字段设计、代码预览与代码下载等能力
 // @host            localhost:10704
-// @BasePath        /api/v1/gen
+// @BasePath        /api/gen/v1
 // @schemes         http https
 // @securityDefinitions.apikey  BearerAuth
 // @in                          header

@@ -16,7 +16,7 @@ export default {
      * @param query 查询参数
      */
     list: (query: any) => {
-        return request.get('/v1/sys/dept/list',{params: query})
+        return request.get('/sys/v1/dept/list',{params: query})
     },
 
     /**
@@ -24,7 +24,7 @@ export default {
      * @param query 查询参数
      */
     getById: (id: string) => {
-        return request.get(`/v1/sys/dept/${id}`)
+        return request.get(`/sys/v1/dept/${id}`)
     },
 
     /**
@@ -32,7 +32,7 @@ export default {
      * @param data 新增数据
      */
     add: (data: any) => {
-        return request.post('/v1/sys/dept',data)
+        return request.post('/sys/v1/dept',data)
     },
 
     /**
@@ -40,7 +40,7 @@ export default {
      * @param data 修改数据
      */
     update: (id: string,data: any) => {
-        return request.put(`/v1/sys/dept/${id}`,data)
+        return request.put(`/sys/v1/dept/${id}`,data)
     },
 
     /**
@@ -48,7 +48,7 @@ export default {
      * @param ids 删除Ids
      */
     delete: (ids: any) => {
-        return request.delete(`/v1/sys/dept/${ids}`)
+        return request.delete(`/sys/v1/dept/${ids}`)
     },
 
     /**
@@ -57,7 +57,7 @@ export default {
      * @param query 查询参数
      */
     download: (query: any, filename: string) => {
-        download("/v1/sys/dept/export", { ...query }, `${filename}.xlsx`,{});
+        download("/sys/v1/dept/export", { ...query }, `${filename}.xlsx`,{});
     },
 
 }

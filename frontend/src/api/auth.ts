@@ -33,7 +33,7 @@ export function buildBasicAuth(clientId: string, clientSecret: string): string {
 }
 
 export const getPublicKey = (): Promise<PublicKeyResp> => {
-  return request({ url: '/v1/auth/public-key', method: 'get', ...{ isToken: false } as any });
+  return request({ url: '/auth/v1/public-key', method: 'get', ...{ isToken: false } as any });
 };
 
 export const backendLoginRequest = async (
@@ -42,7 +42,7 @@ export const backendLoginRequest = async (
   payload: any
 ): Promise<TokenPair> => {
   return request({
-    url: '/v1/auth/login',
+    url: '/auth/v1/login',
     method: 'post',
     data: payload,
     headers: {
@@ -53,11 +53,11 @@ export const backendLoginRequest = async (
 };
 
 export const sendBackendEmailCode = async (email: string, purpose: string) => {
-  return request({ url: '/v1/auth/email/code', method: 'post', data: { email, purpose }, ...{ isToken: false } as any });
+  return request({ url: '/auth/v1/email/code', method: 'post', data: { email, purpose }, ...{ isToken: false } as any });
 };
 
 export const getUserInfoRequest = async (): Promise<AuthUser> => {
-  const data = await request<AuthUser>({ url: '/v1/auth/user', method: 'get' });
+  const data = await request<AuthUser>({ url: '/auth/v1/user', method: 'get' });
   return data;
 };
 
@@ -73,7 +73,7 @@ export const getAuthorizeInfo = async (
   state: string;
   autoapprove: boolean;
 }> => {
-  return request({ url: '/v1/auth/authorize', method: 'get', params: { client_id: clientId, redirect_uri: redirectUri, response_type: 'code' } });
+  return request({ url: '/auth/v1/authorize', method: 'get', params: { client_id: clientId, redirect_uri: redirectUri, response_type: 'code' } });
 };
 
 export const approveAuthorize = async (params: {
@@ -81,7 +81,7 @@ export const approveAuthorize = async (params: {
   access_token?: string;
   scopes?: string[];
 }): Promise<{ redirect_uri: string }> => {
-  return request({ url: '/v1/auth/authorize', method: 'post', data: params });
+  return request({ url: '/auth/v1/authorize', method: 'post', data: params });
 };
 
 
@@ -309,7 +309,7 @@ export const loginRequest = async ({ email, password }: LoginPayload) => {
 };
 
 export const logoutRequest = async (): Promise<void> => {
-  await request({ url: '/v1/auth/logout', method: 'post' });
+  await request({ url: '/auth/v1/logout', method: 'post' });
 };
 
 export const sendEmailCodeRequest = async (email: string, purpose: VerificationPurpose) => {
@@ -343,15 +343,15 @@ export const sendEmailCodeRequest = async (email: string, purpose: VerificationP
 };
 
 export const registerRequest = async (payload: RegisterPayload) => {
-  return request({ url: '/v1/auth/register', method: 'post', data: payload, ...{ isToken: false } as any });
+  return request({ url: '/auth/v1/register', method: 'post', data: payload, ...{ isToken: false } as any });
 };
 
 export const resetPasswordRequest = async (payload: ResetPasswordPayload) => {
-  return request({ url: '/v1/auth/reset-password', method: 'post', data: payload, ...{ isToken: false } as any });
+  return request({ url: '/auth/v1/reset-password', method: 'post', data: payload, ...{ isToken: false } as any });
 };
 
 export const updatePasswordRequest = async (payload: UpdatePasswordPayload) => {
-  return request({ url: '/v1/auth/user/password', method: 'put', data: payload, ...{ isToken: true } as any });
+  return request({ url: '/auth/v1/user/password', method: 'put', data: payload, ...{ isToken: true } as any });
 };
 
 export interface UpdateProfilePayload {
@@ -360,5 +360,5 @@ export interface UpdateProfilePayload {
 }
 
 export const updateProfileRequest = async (payload: UpdateProfilePayload) => {
-  return request({ url: '/v1/auth/user/profile', method: 'put', data: payload, ...{ isToken: true } as any });
+  return request({ url: '/auth/v1/user/profile', method: 'put', data: payload, ...{ isToken: true } as any });
 };

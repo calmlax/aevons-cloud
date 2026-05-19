@@ -45,7 +45,7 @@ func NewMenuHandler(svc service.MenuService) *MenuHandler {
 // @Security     BearerAuth
 // @Param        request  body      dto.CreateMenuDTO  true  "新增菜单"
 // @Success      200      {object}  response.Response
-// @Router       /api/v1/sys/menu [post]
+// @Router       /api/sys/v1/menu [post]
 func (h *MenuHandler) CreateMenu(c *gin.Context) {
 	var Menu dto.CreateMenuDTO
 	if err := c.ShouldBindJSON(&Menu); err != nil {
@@ -70,7 +70,7 @@ func (h *MenuHandler) CreateMenu(c *gin.Context) {
 // @Param        id       path      int               true  "菜单ID"
 // @Param        request  body      dto.UpdateMenuDTO true  "修改菜单"
 // @Success      200      {object}  response.Response
-// @Router       /api/v1/sys/menu/{id} [put]
+// @Router       /api/sys/v1/menu/{id} [put]
 func (h *MenuHandler) UpdateMenu(c *gin.Context) {
 	var Menu dto.UpdateMenuDTO
 	if err := c.ShouldBindJSON(&Menu); err != nil {
@@ -91,7 +91,7 @@ func (h *MenuHandler) UpdateMenu(c *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/menu/list [get]
+// @Router       /api/sys/v1/menu/list [get]
 func (h *MenuHandler) ListByLangCode(c *gin.Context) {
 	langCode := c.GetHeader(consts.AcceptLanguage)
 
@@ -112,7 +112,7 @@ func (h *MenuHandler) ListByLangCode(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        id   path      int  true  "菜单ID"
 // @Success      200  {object}  response.Response
-// @Router       /api/v1/sys/menu/{id} [get]
+// @Router       /api/sys/v1/menu/{id} [get]
 func (h *MenuHandler) GetDetail(c *gin.Context) {
 	id, ok := base.GetId(c)
 	if !ok {
@@ -134,7 +134,7 @@ func (h *MenuHandler) GetDetail(c *gin.Context) {
 // @Security     BearerAuth
 // @Param        ids   path      string  true  "逗号分隔的菜单ID"
 // @Success      200   {object}  response.Response
-// @Router       /api/v1/sys/menu/{ids} [delete]
+// @Router       /api/sys/v1/menu/{ids} [delete]
 func (h *MenuHandler) BatchDelete(c *gin.Context) {
 	ids, ok := base.GetIds(c)
 	if !ok {

@@ -185,7 +185,7 @@ service.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const skipUrls = ['/v1/auth/login', '/v1/auth/refresh', '/v1/auth/logout', '/auth/login', '/auth/refresh', '/auth/logout'];
+    const skipUrls = ['/auth/v1/login', '/auth/v1/refresh', '/auth/v1/logout', '/auth/login', '/auth/refresh', '/auth/logout'];
     const isAuthEndpoint = config.url && skipUrls.some((url) => config.url?.includes(url));
     // ====== 开启短效 401 无感刷新 Token 的守护动作 ======
     // 判断条件：撞墙状态为401，且该次请求它还没有被自动抢救过 (!config._retry) 以及并非核心接口
@@ -217,7 +217,7 @@ service.interceptors.response.use(
 
         // 利用浏览器的双凭证特性，让 纯净的 Axios（避免拦截器死循环）带上 Basic Auth 标准头去换取新 AccessToken
         const refreshRes = await axios.post(
-          `${baseURL}/v1/auth/refresh`,
+          `${baseURL}/auth/v1/refresh`,
           {},
           {
             headers: {
