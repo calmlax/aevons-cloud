@@ -384,7 +384,7 @@ loadMenuList()
         <a-alert :show-icon="false">
           <h4>{{ t('tool.gen.cmdTitle') }}</h4>
           <pre class="language-shell" style="background-color: black;color:#fff"> 
- $ cd aevons-cloud/sys-service
+ $ cd aevons-cloud/gen-service
  $ go run ./cmd/server/main.go gen &lt;表名1,表名2...&gt; &lt;模块名称&gt;
           </pre>
           <ul>
