@@ -4,7 +4,7 @@
       <iframe
         class="swagger-frame"
         title="Swagger UI"
-        src="http://localhost:11080/swagger/"
+        src="http://192.168.31.81:11080/swagger/"
       />
     </a-card>
   </div>
