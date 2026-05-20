@@ -219,8 +219,8 @@ async function resetForm(id:string){
       scope:[],
       authorizedGrantTypes:[],
       webServerRedirectUri:'',
-      accessTokenValidity:43200,
-      refreshTokenValidity:2592000,
+      accessTokenValidity:7200,
+      refreshTokenValidity:604800,
       autoapprove:0,
     });
   }
