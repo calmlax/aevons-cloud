@@ -13,9 +13,9 @@ import (
 	"github.com/calmlax/aevons-framework/config"
 	"github.com/calmlax/aevons-framework/consts"
 	"github.com/calmlax/aevons-framework/core"
+	"github.com/calmlax/aevons-framework/core/scope"
 	"github.com/calmlax/aevons-framework/core/server"
 	"github.com/calmlax/aevons-framework/middleware"
-	dsmodel "github.com/calmlax/aevons-framework/model"
 	"github.com/calmlax/aevons-framework/xlog"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -102,19 +102,20 @@ func registerUserRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.Ope
 	h := handler.NewUserHandler(service.NewUserService(repository.NewUserRepository(db)))
 	g := rg.Group("/user")
 	{
-		dataScope := middleware.DataScope(dsmodel.DataScope{
+		dataScope := middleware.DataScope(scope.DataScope{
 			UserAlias:  "sys_user",
 			UserIdName: "id",
+			Resolver:   scope.DefaultDataScopeResolver(),
 		})
 		g.GET("/list", middleware.HasPermission("sys:user$list"), dataScope, h.List)
 		g.GET("/page", middleware.HasPermission("sys:user$list"), dataScope, h.Page)
-		g.GET("/:id", middleware.HasPermission("sys:user$query"), h.Get)
+		g.GET("/:id", middleware.HasPermission("sys:user$query"), dataScope, h.Get)
 		g.GET("/:id/relations", middleware.HasPermission("sys:user$query"), h.GetRelations)
 		g.POST("", middleware.HasPermission("sys:user$add"), localmiddleware.OperLog(logWriter, "User-[用户管理]", consts.INSERT), h.Create)
-		g.PUT("/:id", middleware.HasPermission("sys:user$edit"), localmiddleware.OperLog(logWriter, "User-[用户管理]", consts.UPDATE), h.Update)
-		g.PUT("/:id/status", middleware.HasPermission("sys:user$edit"), localmiddleware.OperLog(logWriter, "User-[用户管理]", consts.UPDATE), h.UpdateStatus)
-		g.PUT("/:id/reset-password", middleware.HasPermission("sys:user$edit"), localmiddleware.OperLog(logWriter, "User-[用户管理]", consts.UPDATE), h.ResetPassword)
-		g.DELETE("/:ids", middleware.HasPermission("sys:user$delete"), localmiddleware.OperLog(logWriter, "User-[用户管理]", consts.DELETE), h.BatchDelete)
+		g.PUT("/:id", middleware.HasPermission("sys:user$edit"), dataScope, localmiddleware.OperLog(logWriter, "User-[用户管理]", consts.UPDATE), h.Update)
+		g.PUT("/:id/status", middleware.HasPermission("sys:user$edit"), dataScope, localmiddleware.OperLog(logWriter, "User-[用户管理]", consts.UPDATE), h.UpdateStatus)
+		g.PUT("/:id/reset-password", middleware.HasPermission("sys:user$edit"), dataScope, localmiddleware.OperLog(logWriter, "User-[用户管理]", consts.UPDATE), h.ResetPassword)
+		g.DELETE("/:ids", middleware.HasPermission("sys:user$delete"), dataScope, localmiddleware.OperLog(logWriter, "User-[用户管理]", consts.DELETE), h.BatchDelete)
 	}
 }
 

@@ -1,6 +1,6 @@
 # Aevons Cloud
 
-`aevons-cloud` 是基于 `aevons-framework` 组织的一套微服务项目，当前包含认证、系统管理、日志、代码生成、定时任务、前端、统一网关和 gRPC 契约。
+`aevons-cloud` 是基于 `aevons-framework` 组织的一套微服务项目，当前包含认证、系统管理、日志、代码生成、定时任务、前端和 gRPC 契约。
 
 公共框架见：
 
@@ -43,7 +43,7 @@ aevons-cloud/
   - 主前端管理台
   - Vite + Vue
 - [frontend-demo](aevons-cloud/frontend-demo:1)
-  - 示例前端
+  - OAuth2 授权码接入示例前端
 - [internal-grpc](aevons-cloud/internal-grpc:1)
   - 内部 gRPC 契约
   - 当前主要是 `log_grpc`
@@ -118,6 +118,13 @@ err = core.RunGin(app, engine)
   - HTTP `10705`
 - `frontend`
   - dev server `5173`
+- `frontend-demo`
+  - dev server `5174`
+
+独立网关仓库：
+
+- `aevons-gateway`
+  - HTTP `11080`
 
 **前端**
 
@@ -137,6 +144,26 @@ Passkey 登录已经和密码登录对齐：
 
 - 前端会带 `client_id/client_secret`
 - `auth-service` 会按 `passkey` grant type 校验客户端
+
+`frontend-demo` 当前用于演示：
+
+- OAuth2 授权码模式
+- 回调页接收 `code`
+- 使用 `authorization_code` 交换 token
+
+**认证与会话**
+
+`auth-service` 当前已经使用 `session_id` 模型：
+
+- `access token -> session_id`
+- `refresh token -> session_id`
+- `session_id -> LoginUser`
+
+这意味着：
+
+- access token 失效后，只要 refresh token 仍有效，仍可刷新
+- `ForceLogout` 会彻底踢掉当前会话
+- `GlobalLogout` 可以按用户维度清理全部会话
 
 **登录日志与操作日志**
 
@@ -163,8 +190,10 @@ Passkey 登录已经和密码登录对齐：
 语义：
 
 - `ALL`
-- 或按服务名称逗号分割，例如：
-  - `auth-service,sys-service,job-service`
+- 或路径规则，例如：
+  - `/api/auth/v1/authorize`
+  - `/api/sys/v1/conf/*`
+  - `/api/sys/v1/menu/*`
 
 同时：
 
@@ -177,13 +206,40 @@ Passkey 登录已经和密码登录对齐：
 
 - `POST /api/sys/v1/oauth/client/refresh-cache`
 
+**数据范围**
+
+角色数据范围当前枚举已经调整为：
+
+- `0` 全部
+- `1` 仅本人
+- `2` 本部门
+- `3` 本部门及以下
+- `9` 自定义
+
+`sys-service` 当前已经把数据范围真正接到：
+
+- 用户列表 / 分页
+- 用户详情
+- 用户新增 / 修改 / 删除
+- 状态变更
+- 重置密码
+
+底层能力来自 `aevons-framework/core/scope` 与 `middleware/datascope.go`。
+
 **OpenAPI / Swagger**
 
 每个后端服务都有自己的：
 
 - `api/swagger.json`
 
-各服务 handler 里的 `@Router` 现在都已统一补成带 `/api/v1` 的完整路径。
+各服务 handler 里的 `@Router` 现在都已统一补成带服务前缀的完整路径。
+各服务 Swagger `@BasePath` 当前统一为：
+
+- `/api/auth/v1`
+- `/api/sys/v1`
+- `/api/log/v1`
+- `/api/gen/v1`
+- `/api/job/v1`
 
 如果重新生成某个服务的 Swagger JSON，可以使用：
 
