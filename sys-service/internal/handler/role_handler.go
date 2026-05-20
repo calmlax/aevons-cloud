@@ -162,3 +162,27 @@ func (h *RoleHandler) GetMenuIds(c *gin.Context) {
 	}
 	response.Success(c, ids)
 }
+
+// GetDeptIds 获取角色已关联的部门ID列表
+//
+// @Summary      获取角色部门ID列表
+// @Tags         角色管理
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "角色ID"
+// @Success      200  {object}  response.Response
+// @Router       /api/sys/v1/role/{id}/dept [get]
+func (h *RoleHandler) GetDeptIds(c *gin.Context) {
+	idStr := c.Param("id")
+	roleId, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		response.FailBy(c, apperr.ErrInvalidId)
+		return
+	}
+	ids, err := h.svc.GetDeptIds(roleId)
+	if err != nil {
+		response.FailBy(c, apperr.ErrQueryFailed)
+		return
+	}
+	response.Success(c, ids)
+}

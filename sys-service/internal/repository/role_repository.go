@@ -24,6 +24,7 @@ import (
 type RoleRepository interface {
 	base.BaseRepository[model.Role]
 	GetMenuIds(roleId int64) ([]int64, error)
+	GetDeptIds(roleId int64) ([]int64, error)
 	CreateWithMenus(ctx context.Context, d dto.CreateRoleDTO) (*model.Role, error)
 	UpdateWithMenus(ctx context.Context, id int64, d dto.UpdateRoleDTO) error
 }
@@ -48,8 +49,16 @@ func (r *roleRepository) GetMenuIds(roleId int64) ([]int64, error) {
 	return ids, err
 }
 
-// expandWithParents 父子联动模式下，自动把所有祖先节点 ID 补进来
-func expandWithParents(db *gorm.DB, menuIds []int64) []int64 {
+func (r *roleRepository) GetDeptIds(roleId int64) ([]int64, error) {
+	var ids []int64
+	err := r.db.Model(&model.RoleDept{}).
+		Where("role_id = ?", roleId).
+		Pluck("dept_id", &ids).Error
+	return ids, err
+}
+
+// expandMenuWithParents 父子联动模式下，自动把菜单的所有祖先节点 ID 补进来。
+func expandMenuWithParents(db *gorm.DB, menuIds []int64) []int64 {
 	all := make(map[int64]struct{})
 	for _, id := range menuIds {
 		all[id] = struct{}{}
@@ -79,17 +88,35 @@ func expandWithParents(db *gorm.DB, menuIds []int64) []int64 {
 	return result
 }
 
-func saveRoleMenus(tx *gorm.DB, roleId int64, menuIds []int64) error {
+func saveRoleMenus(tx *gorm.DB, roleId int64, menuIds []int64, menuCheckStrictly int16) error {
 	if err := tx.Where("role_id = ?", roleId).Delete(&model.RoleMenu{}).Error; err != nil {
 		return err
 	}
 	if len(menuIds) == 0 {
 		return nil
 	}
-	menuIds = expandWithParents(tx, menuIds)
+	if menuCheckStrictly == 1 {
+		menuIds = expandMenuWithParents(tx, menuIds)
+	}
 	records := make([]model.RoleMenu, 0, len(menuIds))
 	for _, mid := range menuIds {
 		records = append(records, model.RoleMenu{RoleId: roleId, MenuId: mid})
+	}
+	return tx.Create(&records).Error
+}
+
+// saveRoleDepts 只保存前端明确选择的部门集合，不自动补祖先节点，
+// 避免角色数据范围因为树形结构被意外放大。
+func saveRoleDepts(tx *gorm.DB, roleId int64, deptIds []int64, _ int16) error {
+	if err := tx.Where("role_id = ?", roleId).Delete(&model.RoleDept{}).Error; err != nil {
+		return err
+	}
+	if len(deptIds) == 0 {
+		return nil
+	}
+	records := make([]model.RoleDept, 0, len(deptIds))
+	for _, did := range deptIds {
+		records = append(records, model.RoleDept{RoleId: roleId, DeptId: did})
 	}
 	return tx.Create(&records).Error
 }
@@ -102,7 +129,10 @@ func (r *roleRepository) CreateWithMenus(ctx context.Context, d dto.CreateRoleDT
 		if err := tx.Create(&role).Error; err != nil {
 			return err
 		}
-		return saveRoleMenus(tx, role.Id, d.MenuIds)
+		if err := saveRoleDepts(tx, role.Id, d.DeptIds, d.DeptCheckStrictly); err != nil {
+			return err
+		}
+		return saveRoleMenus(tx, role.Id, d.MenuIds, d.MenuCheckStrictly)
 	})
 	return &role, err
 }
@@ -111,6 +141,7 @@ func (r *roleRepository) CreateWithMenus(ctx context.Context, d dto.CreateRoleDT
 func (r *roleRepository) UpdateWithMenus(ctx context.Context, id int64, d dto.UpdateRoleDTO) error {
 	mp := utils.StructToMapIgnoreNil(d)
 	delete(mp, "id")
+	delete(mp, "deptIds")
 	delete(mp, "menuIds")
 	return r.Transaction(ctx, func(tx *gorm.DB) error {
 		if len(mp) > 0 {
@@ -118,6 +149,17 @@ func (r *roleRepository) UpdateWithMenus(ctx context.Context, id int64, d dto.Up
 				return err
 			}
 		}
-		return saveRoleMenus(tx, id, d.MenuIds)
+		deptCheckStrictly := int16(0)
+		if d.DeptCheckStrictly != nil {
+			deptCheckStrictly = *d.DeptCheckStrictly
+		}
+		if err := saveRoleDepts(tx, id, d.DeptIds, deptCheckStrictly); err != nil {
+			return err
+		}
+		menuCheckStrictly := int16(0)
+		if d.MenuCheckStrictly != nil {
+			menuCheckStrictly = *d.MenuCheckStrictly
+		}
+		return saveRoleMenus(tx, id, d.MenuIds, menuCheckStrictly)
 	})
 }

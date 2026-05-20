@@ -717,6 +717,9 @@ const enUS = {
     role: {
       title: 'Role Management', addTitle: 'Add Role', editTitle: 'Edit Role',
       roleName: 'Role Name', roleKey: 'Permission Key', menuPerms: 'Menu Permissions',
+      deptPerms: 'Data Scope Departments',
+      menuCheckStrictly: 'Enable menu parent-child linkage',
+      deptCheckStrictly: 'Enable department parent-child linkage',
       dataScope: 'Data Scope',
       roleNameRequired: 'Role name is required',
       roleNamePlaceholder: 'Enter role name',

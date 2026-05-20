@@ -30,6 +30,12 @@ type Role struct {
 	//数据范围（0：全部 1：自定义 2：本部门 3：本部门及以下）
 	DataScope int16 `gorm:"column:data_scope;type:tinyint;comment:数据范围" json:"dataScope"`
 
+	//菜单树选择项是否父子联动（0否 1是）
+	MenuCheckStrictly int16 `gorm:"column:menu_check_strictly;type:tinyint(1);default:1;comment:菜单树选择项是否父子联动（0否 1是）" json:"menuCheckStrictly"`
+
+	//部门树选择项是否父子联动（0否 1是）
+	DeptCheckStrictly int16 `gorm:"column:dept_check_strictly;type:tinyint(1);default:1;comment:部门树选择项是否父子联动（0否 1是）" json:"deptCheckStrictly"`
+
 	//状态（0正常 1停用）
 	Status int16 `gorm:"column:status;type:tinyint(1);comment:状态（0正常 1停用）" json:"status"`
 

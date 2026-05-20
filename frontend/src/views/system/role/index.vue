@@ -2,6 +2,7 @@
 import { IconDelete, IconEdit, IconFilter, IconPlus, IconCheck, IconClose } from '@arco-design/web-vue/es/icon';
 import roleApi from "@/api/system/role"
 import menuApi from "@/api/system/menu"
+import deptApi from "@/api/system/dept"
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -155,6 +156,17 @@ async function batchDelete() {
 const menuTreeData = ref<any[]>([])
 const checkedMenuKeys = ref<string[]>([])
 const menuExpandedKeys = ref<string[]>([])
+const deptTreeData = ref<any[]>([])
+const checkedDeptKeys = ref<string[]>([])
+
+function toKeyStrings(values: any[]): string[] {
+  return (values ?? []).map((item: any) => {
+    if (item && typeof item === 'object') {
+      return String(item.value ?? item.key ?? item.id ?? '')
+    }
+    return String(item)
+  }).filter(Boolean)
+}
 
 // 将平铺菜单列表转为树形结构
 function buildMenuTree(list: any[]): any[] {
@@ -196,6 +208,26 @@ async function loadMenuTree() {
   menuExpandedKeys.value = menuTreeData.value.map((n: any) => n.key)
 }
 
+function buildDeptTree(list: any[], parentId = '0'): any[] {
+  return (list ?? [])
+    .filter((item: any) => String(item.parentId ?? '0') === String(parentId))
+    .sort((a: any, b: any) => Number(a.sort ?? 0) - Number(b.sort ?? 0))
+    .map((item: any) => {
+      const children = buildDeptTree(list, item.id)
+      const node = {
+        key: String(item.id),
+        title: item.deptName || String(item.id),
+      } as any
+      if (children.length) node.children = children
+      return node
+    })
+}
+
+async function loadDeptTree() {
+  const list: any = await deptApi.list({})
+  deptTreeData.value = buildDeptTree(list ?? [])
+}
+
 function findNode(nodes: any[], key: string): any {
   for (const n of nodes) {
     if (n.key === key) return n
@@ -231,25 +263,46 @@ async function resetForm(id:string) {
   await nextTick()
   formRef.value?.clearValidate()
   checkedMenuKeys.value = []
+  checkedDeptKeys.value = []
   if (isEdit.value) {
     const res: any = await roleApi.getById(id)
     Object.assign(form, res);
-    // 加载已关联菜单，只回显叶节点，父节点由树组件联动勾选
+    form.menuCheckStrictly ??= 1
+    form.deptCheckStrictly ??= 1
+    // 父子联动开启时只回显叶子节点；关闭时保留后端返回的完整勾选集合。
     const menuIds: any = await roleApi.getMenuIds(String(form.id))
     const allIds = (menuIds ?? []).map((id: any) => String(id))
-    const idSet = new Set(allIds)
-    checkedMenuKeys.value = allIds.filter((id: string) => {
-      const node = findNode(menuTreeData.value, id)
-      return !node?.children?.length || !node.children.some((c: any) => idSet.has(c.key))
-    })
+    if (form.menuCheckStrictly === 1) {
+      const idSet = new Set(allIds)
+      checkedMenuKeys.value = allIds.filter((id: string) => {
+        const node = findNode(menuTreeData.value, id)
+        return !node?.children?.length || !node.children.some((c: any) => idSet.has(c.key))
+      })
+    } else {
+      checkedMenuKeys.value = allIds
+    }
+    const deptIds: any = await roleApi.getDeptIds(String(form.id))
+    const allDeptIds = (deptIds ?? []).map((deptId: any) => String(deptId))
+    if (form.deptCheckStrictly === 1) {
+      const deptIdSet = new Set(allDeptIds)
+      checkedDeptKeys.value = allDeptIds.filter((id: string) => {
+        const node = findNode(deptTreeData.value, id)
+        return !node?.children?.length || !node.children.some((c: any) => deptIdSet.has(c.key))
+      })
+    } else {
+      checkedDeptKeys.value = allDeptIds
+    }
   } else {
     Object.assign(form, {
       roleName: undefined,
       roleKey: undefined,
       sort: 0,
       dataScope: undefined,
+      menuCheckStrictly: 1,
+      deptCheckStrictly: 1,
       status: 0,
       remark: undefined,
+      deptIds: [],
     });
   }
 }
@@ -259,16 +312,21 @@ async function submitForm() {
     const valid = await formRef.value.validate()
     if (valid) return false
     submitLoading.value = true
-    // 只传叶节点，后端 expandWithParents 自动补全父节点
-    const menuIds = checkedMenuKeys.value.filter((key: string) => {
-      const node = findNode(menuTreeData.value, key)
-      return !node?.children?.length
-    }).map(Number)
+    // 父子联动开启时只传叶节点，后端自动补齐祖先；关闭时保留全部选中值。
+    const normalizedMenuKeys = toKeyStrings(checkedMenuKeys.value)
+    const menuIds = (form.menuCheckStrictly === 1
+      ? normalizedMenuKeys.filter((key: string) => {
+          const node = findNode(menuTreeData.value, key)
+          return !node?.children?.length
+        })
+      : normalizedMenuKeys
+    ).map(Number)
+    const deptIds = form.dataScope === 1 ? toKeyStrings(checkedDeptKeys.value).map(Number) : []
     if (isEdit.value) {
-      await roleApi.update(form.id!, { ...form, menuIds })
+      await roleApi.update(form.id!, { ...form, menuIds, deptIds })
       Message.success(t('common.editSuccess'));
     } else {
-      await roleApi.add({ ...form, menuIds })
+      await roleApi.add({ ...form, menuIds, deptIds })
       Message.success(t('common.addSuccess'));
     }
     modalVisible.value = false;
@@ -293,6 +351,7 @@ async function handleDelete(row: any) {
 
 loadPage();
 loadMenuTree();
+loadDeptTree();
 </script>
 
 <template>
@@ -500,6 +559,25 @@ loadMenuTree();
               </a-select>
             </a-form-item>
           </a-col>
+          <a-col v-if="form.dataScope === 1" :span="24">
+            <a-form-item :label="t('system.role.deptPerms')" :content-flex="false" :merge-props="false" style="width:100%">
+              <div class="tree-option-head">
+                <span>{{ t('system.role.deptCheckStrictly') }}</span>
+                <a-switch v-model="form.deptCheckStrictly" :checked-value="1" :unchecked-value="0" />
+              </div>
+              <a-tree-select
+                v-model="checkedDeptKeys"
+                :data="deptTreeData"
+                :placeholder="t('system.user.deptPlaceholder')"
+                multiple
+                tree-checkable
+                :tree-check-strictly="form.deptCheckStrictly !== 1"
+                allow-clear
+                :fallback-option="false"
+                style="width:100%"
+              />
+            </a-form-item>
+          </a-col>
           <!-- <a-col :span="isMobile ? 24 : 12">
             <a-form-item label="排序" field="sort"
               :rules="[{ required: true, message: '排序不能为空' }]"
@@ -518,12 +596,17 @@ loadMenuTree();
           <!-- 菜单功能权限树 -->
           <a-col :span="24">
             <a-form-item :label="t('system.role.menuPerms')" :content-flex="false" :merge-props="false" style="width:100%">
+              <div class="tree-option-head">
+                <span>{{ t('system.role.menuCheckStrictly') }}</span>
+                <a-switch v-model="form.menuCheckStrictly" :checked-value="1" :unchecked-value="0" />
+              </div>
               <div style="border: 1px solid var(--color-border-2); border-radius: 4px; padding: 8px; max-height: 300px; overflow-y: auto; width: 100%;">
                 <a-tree
                   v-model:checked-keys="checkedMenuKeys"
                   v-model:expanded-keys="menuExpandedKeys"
                   :data="menuTreeData"
                   checkable
+                  :check-strictly="form.menuCheckStrictly !== 1"
                   block-node
                   style="width: 100%"
                 />
@@ -551,3 +634,14 @@ loadMenuTree();
 
   </div>
 </template>
+
+<style scoped>
+.tree-option-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  color: var(--color-text-2);
+  font-size: 12px;
+}
+</style>

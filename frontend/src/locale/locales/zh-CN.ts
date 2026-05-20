@@ -723,6 +723,9 @@ const zhCN = {
     role: {
       title: '角色管理', addTitle: '新增角色', editTitle: '编辑角色',
       roleName: '角色名称', roleKey: '权限标识', menuPerms: '菜单功能权限',
+      deptPerms: '数据范围部门',
+      menuCheckStrictly: '菜单父子联动',
+      deptCheckStrictly: '部门父子联动',
       dataScope: '数据范围',
       roleNameRequired: '角色名称不能为空',
       roleNamePlaceholder: '请输入角色名称',

@@ -125,6 +125,7 @@ func registerRoleRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.Ope
 		g.GET("/page", h.Page)
 		g.GET("/:id", middleware.HasPermission("sys:role$query"), h.Get)
 		g.GET("/:id/menu", middleware.HasPermission("sys:role$query"), h.GetMenuIds)
+		g.GET("/:id/dept", middleware.HasPermission("sys:role$query"), h.GetDeptIds)
 		g.POST("", middleware.HasPermission("sys:role$add"), localmiddleware.OperLog(logWriter, "Role-[角色信息表]", consts.INSERT), h.Create)
 		g.PUT("/:id", middleware.HasPermission("sys:role$edit"), localmiddleware.OperLog(logWriter, "Role-[角色信息表]", consts.UPDATE), h.Update)
 		g.DELETE("/:ids", middleware.HasPermission("sys:role$delete"), localmiddleware.OperLog(logWriter, "Role-[角色信息表]", consts.DELETE), h.BatchDelete)

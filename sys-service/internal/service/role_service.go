@@ -21,6 +21,7 @@ import (
 type RoleService interface {
 	base.BaseService[model.Role, *dto.RoleQuery]
 	GetMenuIds(roleId int64) ([]int64, error)
+	GetDeptIds(roleId int64) ([]int64, error)
 	CreateWithMenus(ctx context.Context, d dto.CreateRoleDTO) (*model.Role, error)
 	UpdateWithMenus(ctx context.Context, id int64, d dto.UpdateRoleDTO) error
 }
@@ -39,6 +40,10 @@ func NewRoleService(repo repository.RoleRepository) RoleService {
 
 func (s *roleService) GetMenuIds(roleId int64) ([]int64, error) {
 	return s.repo.GetMenuIds(roleId)
+}
+
+func (s *roleService) GetDeptIds(roleId int64) ([]int64, error) {
+	return s.repo.GetDeptIds(roleId)
 }
 
 func (s *roleService) CreateWithMenus(ctx context.Context, d dto.CreateRoleDTO) (*model.Role, error) {

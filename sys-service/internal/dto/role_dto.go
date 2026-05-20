@@ -25,6 +25,10 @@ type RoleQuery struct {
 	RoleKey *string `form:"roleKey" gorm:"column:role_key" q:"like"`
 	// 数据范围（0：全部 1：自定义 2：本部门 3：本部门及以下）
 	DataScope *int16 `form:"dataScope" gorm:"column:data_scope" q:"eq"`
+	// 菜单树选择项是否父子联动（0否 1是）
+	MenuCheckStrictly *int16 `form:"menuCheckStrictly" gorm:"column:menu_check_strictly" q:"eq"`
+	// 部门树选择项是否父子联动（0否 1是）
+	DeptCheckStrictly *int16 `form:"deptCheckStrictly" gorm:"column:dept_check_strictly" q:"eq"`
 	// 状态（0正常 1停用）
 	Status *int16 `form:"status" gorm:"column:status" q:"eq"`
 	base.BaseQuery
@@ -40,10 +44,16 @@ type CreateRoleDTO struct {
 	Sort int `json:"sort" binding:"required"`
 	//数据范围
 	DataScope int16 `json:"dataScope"`
+	//菜单树选择项是否父子联动（0否 1是）
+	MenuCheckStrictly int16 `json:"menuCheckStrictly"`
+	//部门树选择项是否父子联动（0否 1是）
+	DeptCheckStrictly int16 `json:"deptCheckStrictly"`
 	//状态（0正常 1停用）
 	Status int16 `json:"status"`
 	//备注
 	Remark string `json:"remark" binding:"max=500"`
+	//部门ID列表
+	DeptIds []int64 `json:"deptIds"`
 	//菜单ID列表
 	MenuIds []int64 `json:"menuIds"`
 }
@@ -59,10 +69,16 @@ type UpdateRoleDTO struct {
 	Sort *int `json:"sort" binding:"required"`
 	//数据范围
 	DataScope *int16 `json:"dataScope"`
+	//菜单树选择项是否父子联动（0否 1是）
+	MenuCheckStrictly *int16 `json:"menuCheckStrictly"`
+	//部门树选择项是否父子联动（0否 1是）
+	DeptCheckStrictly *int16 `json:"deptCheckStrictly"`
 	//状态（0正常 1停用）
 	Status *int16 `json:"status"`
 	//备注
 	Remark *string `json:"remark" binding:"max=500"`
+	//部门ID列表
+	DeptIds []int64 `json:"deptIds"`
 	//菜单ID列表
 	MenuIds []int64 `json:"menuIds"`
 }
@@ -78,6 +94,10 @@ type RoleDTO struct {
 	Sort int `excel:"column:显示顺序;index:3;dict:" json:"sort,string" binding:"required"`
 	//数据范围（0：全部 1：自定义 2：本部门 3：本部门及以下）
 	DataScope int16 `excel:"column:数据范围（0：全部 1：自定义 2：本部门 3：本部门及以下）;index:4;dict:" json:"dataScope" binding:"required"`
+	//菜单树选择项是否父子联动（0否 1是）
+	MenuCheckStrictly int16 `json:"menuCheckStrictly"`
+	//部门树选择项是否父子联动（0否 1是）
+	DeptCheckStrictly int16 `json:"deptCheckStrictly"`
 	//状态（0正常 1停用）
 	Status int16 `excel:"column:状态（0正常 1停用）;index:5;dict:" json:"status" binding:"required"`
 	//备注

@@ -67,6 +67,13 @@ export default {
     },
 
     /**
+     * 获取角色已关联的部门ID列表
+     */
+    getDeptIds: (id: string) => {
+        return request.get(`/sys/v1/role/${id}/dept`)
+    },
+
+    /**
      * 导出Excel
      * @param filename Excel文件名称
      * @param query 查询参数
