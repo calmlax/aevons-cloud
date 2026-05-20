@@ -4670,13 +4670,6 @@ CREATE TABLE `sys_user_credential` (
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户Passkey凭据';
 
 -- ----------------------------
--- Records of sys_user_credential
--- ----------------------------
-BEGIN;
-INSERT INTO `sys_user_credential` VALUES (7, 2, 'develop', 0x032E86B4C9301ED58D832F96DC1C8BBF, 0xA501020326200121582037DE0D8711752F9E8E65FC569FEF86C64B1DDCD950F6DC8CBB1714BED85F0C1E225820FE478D6FF055A0FACB668278FABEC63093F8E45A8BE2203CCDFC66208281570D, 0x32, 0, 'ea9b8d664d011d213ce4b6b48cb575d4', 'none', '', 'hybrid,internal', '', 1, '', 0, '2026-05-19 09:35:34', '2026-04-26 16:30:18', '2026-05-19 09:35:34');
-COMMIT;
-
--- ----------------------------
 -- Table structure for sys_user_dept
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user_dept`;
