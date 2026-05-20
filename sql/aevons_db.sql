@@ -11,7 +11,7 @@
  Target Server Version : 80044
  File Encoding         : 65001
 
- Date: 20/05/2026 09:58:07
+ Date: 20/05/2026 13:43:47
 */
 
 SET NAMES utf8mb4;
@@ -416,7 +416,7 @@ CREATE TABLE `sys_dict_data` (
   `updated_by` bigint DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uk_dict_type_value` (`dict_type`,`dict_value`)
-) ENGINE=InnoDB AUTO_INCREMENT=242 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='字典数据表';
+) ENGINE=InnoDB AUTO_INCREMENT=243 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='字典数据表';
 
 -- ----------------------------
 -- Records of sys_dict_data
@@ -602,12 +602,13 @@ INSERT INTO `sys_dict_data` VALUES (228, 'sys_dict_tag_style', 'danger', 0, 5, '
 INSERT INTO `sys_dict_data` VALUES (233, 'sys_dict_tag_style', 'purple', 0, 10, 'purple', '', 0, '2026-04-18 13:43:07', '2026-04-18 13:43:57', 0);
 INSERT INTO `sys_dict_data` VALUES (234, 'sys_dict_tag_style', 'cyan', 0, 11, 'cyan', '', 0, '2026-04-18 13:43:22', '2026-04-18 13:43:22', 0);
 INSERT INTO `sys_dict_data` VALUES (235, 'sys_data_scope', '0', 0, 1, 'default', '', 0, '2026-04-18 19:19:09', '2026-04-18 19:30:44', 0);
-INSERT INTO `sys_dict_data` VALUES (236, 'sys_data_scope', '1', 0, 4, 'purple', '', 0, '2026-04-18 19:23:55', '2026-04-18 19:30:44', 0);
+INSERT INTO `sys_dict_data` VALUES (236, 'sys_data_scope', '1', 0, 2, 'purple', '', 0, '2026-04-18 19:23:55', '2026-05-20 13:28:01', 0);
 INSERT INTO `sys_dict_data` VALUES (237, 'sys_data_scope', '2', 0, 2, 'success', '', 0, '2026-04-18 19:24:40', '2026-04-18 19:30:44', 0);
 INSERT INTO `sys_dict_data` VALUES (238, 'sys_data_scope', '3', 0, 3, 'cyan', '', 0, '2026-04-18 19:25:13', '2026-04-18 19:30:44', 0);
 INSERT INTO `sys_dict_data` VALUES (239, 'sys_success_status', '1', 0, 1, 'success', '', 0, '2026-04-18 22:51:44', '2026-04-20 15:41:38', 0);
 INSERT INTO `sys_dict_data` VALUES (240, 'sys_locale_namespace', 'template', 0, 4, '', '', 0, '2026-04-20 14:46:06', '2026-04-20 14:46:06', 0);
 INSERT INTO `sys_dict_data` VALUES (241, 'sys_success_status', '4', 0, 3, 'danger', '', 0, '2026-04-20 15:58:00', '2026-04-20 15:58:00', 0);
+INSERT INTO `sys_dict_data` VALUES (242, 'sys_data_scope', '9', 0, 5, 'info', '', 1, '2026-05-20 13:22:15', '2026-05-20 13:28:15', 1);
 COMMIT;
 
 -- ----------------------------
@@ -928,8 +929,8 @@ INSERT INTO `sys_dict_data_tl` VALUES (234, 'en-US', 'Cyan', '');
 INSERT INTO `sys_dict_data_tl` VALUES (234, 'zh-CN', '青色', '');
 INSERT INTO `sys_dict_data_tl` VALUES (235, 'en-US', 'All', '');
 INSERT INTO `sys_dict_data_tl` VALUES (235, 'zh-CN', '全部', '');
-INSERT INTO `sys_dict_data_tl` VALUES (236, 'en-US', 'Customize', '');
-INSERT INTO `sys_dict_data_tl` VALUES (236, 'zh-CN', '自定义', '');
+INSERT INTO `sys_dict_data_tl` VALUES (236, 'en-US', 'Only myself', '');
+INSERT INTO `sys_dict_data_tl` VALUES (236, 'zh-CN', '仅本人', '');
 INSERT INTO `sys_dict_data_tl` VALUES (237, 'en-US', 'This department', '');
 INSERT INTO `sys_dict_data_tl` VALUES (237, 'zh-CN', '本部门', '');
 INSERT INTO `sys_dict_data_tl` VALUES (238, 'en-US', 'This department and below', '');
@@ -940,6 +941,8 @@ INSERT INTO `sys_dict_data_tl` VALUES (240, 'en-US', 'Template', '');
 INSERT INTO `sys_dict_data_tl` VALUES (240, 'zh-CN', '模板', '');
 INSERT INTO `sys_dict_data_tl` VALUES (241, 'en-US', 'Error', '');
 INSERT INTO `sys_dict_data_tl` VALUES (241, 'zh-CN', '异常', '');
+INSERT INTO `sys_dict_data_tl` VALUES (242, 'en-US', 'Customize', '');
+INSERT INTO `sys_dict_data_tl` VALUES (242, 'zh-CN', '自定义', '');
 COMMIT;
 
 -- ----------------------------
@@ -970,7 +973,7 @@ CREATE TABLE `sys_job` (
 -- Records of sys_job
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_job` VALUES (1, 'sys.test', '', 'sys.test', '0 */1 * * * *', 'sys.test', 0, 0, 0, 30, '', 0, '2026-04-19 16:13:53', '2026-05-18 18:03:12', 0);
+INSERT INTO `sys_job` VALUES (1, 'sys.test', '', 'sys.test', '0 */1 * * * *', 'sys.test', 1, 0, 0, 30, '', 0, '2026-04-19 16:13:53', '2026-05-20 10:08:18', 0);
 COMMIT;
 
 -- ----------------------------
@@ -991,7 +994,7 @@ CREATE TABLE `sys_job_log` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '日志生成时间',
   PRIMARY KEY (`id`),
   KEY `idx_job_id` (`job_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2601 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='定时任务执行日志表';
+) ENGINE=InnoDB AUTO_INCREMENT=2611 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='定时任务执行日志表';
 
 -- ----------------------------
 -- Records of sys_job_log
@@ -3393,6 +3396,16 @@ INSERT INTO `sys_job_log` VALUES (2597, 1, 'sys.test', '', 0, '[job] sys.test fi
 INSERT INTO `sys_job_log` VALUES (2598, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-20 09:56:00', 0, 'auto', '2026-05-20 09:56:00', '2026-05-20 09:56:00', '2026-05-20 09:56:00');
 INSERT INTO `sys_job_log` VALUES (2599, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-20 09:57:00', 0, 'auto', '2026-05-20 09:57:00', '2026-05-20 09:57:00', '2026-05-20 09:57:00');
 INSERT INTO `sys_job_log` VALUES (2600, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-20 09:58:00', 0, 'auto', '2026-05-20 09:58:00', '2026-05-20 09:58:00', '2026-05-20 09:58:00');
+INSERT INTO `sys_job_log` VALUES (2601, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-20 09:59:00', 0, 'auto', '2026-05-20 09:59:00', '2026-05-20 09:59:00', '2026-05-20 09:59:00');
+INSERT INTO `sys_job_log` VALUES (2602, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-20 10:00:00', 0, 'auto', '2026-05-20 10:00:00', '2026-05-20 10:00:00', '2026-05-20 10:00:00');
+INSERT INTO `sys_job_log` VALUES (2603, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-20 10:01:00', 0, 'auto', '2026-05-20 10:01:00', '2026-05-20 10:01:00', '2026-05-20 10:01:00');
+INSERT INTO `sys_job_log` VALUES (2604, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-20 10:02:00', 0, 'auto', '2026-05-20 10:02:00', '2026-05-20 10:02:00', '2026-05-20 10:02:00');
+INSERT INTO `sys_job_log` VALUES (2605, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-20 10:03:00', 0, 'auto', '2026-05-20 10:03:00', '2026-05-20 10:03:00', '2026-05-20 10:03:00');
+INSERT INTO `sys_job_log` VALUES (2606, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-20 10:04:00', 0, 'auto', '2026-05-20 10:04:00', '2026-05-20 10:04:00', '2026-05-20 10:04:00');
+INSERT INTO `sys_job_log` VALUES (2607, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-20 10:05:00', 0, 'auto', '2026-05-20 10:05:00', '2026-05-20 10:05:00', '2026-05-20 10:05:00');
+INSERT INTO `sys_job_log` VALUES (2608, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-20 10:06:00', 0, 'auto', '2026-05-20 10:06:00', '2026-05-20 10:06:00', '2026-05-20 10:06:00');
+INSERT INTO `sys_job_log` VALUES (2609, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-20 10:07:00', 0, 'auto', '2026-05-20 10:07:00', '2026-05-20 10:07:00', '2026-05-20 10:07:00');
+INSERT INTO `sys_job_log` VALUES (2610, 1, 'sys.test', '', 0, '[job] sys.test fired at 2026-05-20 10:08:00', 0, 'auto', '2026-05-20 10:08:00', '2026-05-20 10:08:00', '2026-05-20 10:08:00');
 COMMIT;
 
 -- ----------------------------
@@ -3610,25 +3623,12 @@ CREATE TABLE `sys_login_log` (
   `msg` varchar(50) DEFAULT NULL COMMENT '模块标题',
   `login_at` datetime DEFAULT NULL COMMENT '登录时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='操作日志记录';
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='操作日志记录';
 
 -- ----------------------------
 -- Records of sys_login_log
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_login_log` VALUES (1, 'admin', '100000', 'password', 'Linux', 'Chrome', '192.168.0.102', '', 1, 'Login successful', '2026-05-19 16:14:20');
-INSERT INTO `sys_login_log` VALUES (2, 'admin', '100000', 'password', 'Linux', 'Chrome', '192.168.0.102', '', 1, 'Login successful', '2026-05-19 16:26:11');
-INSERT INTO `sys_login_log` VALUES (3, 'admin', '100000', 'password', 'Linux', 'Chrome', '192.168.0.102', '', 1, 'Login successful', '2026-05-19 16:36:35');
-INSERT INTO `sys_login_log` VALUES (4, 'admin', '100000', 'password', 'Linux', 'Chrome', '192.168.0.102', '', 1, 'Login successful', '2026-05-19 16:37:01');
-INSERT INTO `sys_login_log` VALUES (5, 'admin', '100000', 'password', 'Linux', 'Chrome', '192.168.0.102', '', 1, 'Login successful', '2026-05-19 16:37:21');
-INSERT INTO `sys_login_log` VALUES (6, 'admin', '100000', 'password', 'Linux', 'Chrome', '192.168.31.81', '', 1, 'Login successful', '2026-05-19 16:56:46');
-INSERT INTO `sys_login_log` VALUES (7, 'admin', '100000', 'password', 'Linux', 'Chrome', '192.168.31.81', '', 1, 'Login successful', '2026-05-19 17:10:38');
-INSERT INTO `sys_login_log` VALUES (8, 'admin', 'auth-demo', 'authorization_code', 'Linux', 'Chrome', '192.168.31.81', '', 1, 'Login successful', '2026-05-19 17:13:48');
-INSERT INTO `sys_login_log` VALUES (9, 'admin', 'auth-demo', 'authorization_code', 'Linux', 'Chrome', '192.168.31.81', '', 1, 'Login successful', '2026-05-19 17:14:38');
-INSERT INTO `sys_login_log` VALUES (10, 'develop', '100000', 'password', 'Linux', 'Chrome', '192.168.31.81', '', 1, 'Login successful', '2026-05-19 17:21:14');
-INSERT INTO `sys_login_log` VALUES (11, 'admin', '100000', 'password', 'Linux', 'Chrome', '192.168.31.81', '', 1, 'Login successful', '2026-05-20 08:39:44');
-INSERT INTO `sys_login_log` VALUES (12, 'admin', '100000', 'password', 'Linux', 'Chrome', '192.168.31.81', '', 1, 'Login successful', '2026-05-20 08:40:09');
-INSERT INTO `sys_login_log` VALUES (13, 'admin', 'auth-demo', 'authorization_code', 'Linux', 'Chrome', '192.168.31.81', '', 1, 'Login successful', '2026-05-20 08:40:49');
 COMMIT;
 
 -- ----------------------------
@@ -4128,19 +4128,12 @@ CREATE TABLE `sys_oper_log` (
   `username` varchar(50) DEFAULT NULL COMMENT '用户名',
   `oper_at` datetime DEFAULT NULL COMMENT '操作时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='操作日志记录';
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='操作日志记录';
 
 -- ----------------------------
 -- Records of sys_oper_log
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_oper_log` VALUES (4, 'Online-[在线用户]', 'DELETE', 'Online-[在线用户]', 'DELETE', '/api/sys/v1/monitor/online/dc9ca7b4-1c66-4933-bb0e-658ec7773827', '192.168.0.102', '', '', '{\"code\":0,\"message\":\"success\",\"data\":null}\n', 'PC', 'Linux', 'Chrome', 1, '', 0, 1, 'admin', '2026-05-19 16:36:25');
-INSERT INTO `sys_oper_log` VALUES (5, 'Redis-[缓存管理]', 'DELETE', 'Redis-[缓存管理]', 'DELETE', '/api/sys/v1/monitor/cache/prefix?prefix=aevons:auth:refresh_token:', '192.168.0.102', '', '', '{\"code\":0,\"message\":\"success\",\"data\":{\"deleted\":6}}\n', 'PC', 'Linux', 'Chrome', 1, '', 0, 1, 'admin', '2026-05-19 16:36:51');
-INSERT INTO `sys_oper_log` VALUES (6, 'Redis-[缓存管理]', 'DELETE', 'Redis-[缓存管理]', 'DELETE', '/api/sys/v1/monitor/cache/prefix?prefix=aevons:auth:access_token:', '192.168.0.102', '', '', '{\"code\":0,\"message\":\"success\",\"data\":{\"deleted\":2}}\n', 'PC', 'Linux', 'Chrome', 1, '', 0, 1, 'admin', '2026-05-19 16:36:54');
-INSERT INTO `sys_oper_log` VALUES (7, 'Redis-[缓存管理]', 'DELETE', 'Redis-[缓存管理]', 'DELETE', '/api/sys/v1/monitor/cache', '192.168.0.102', '', '{\"keys\":[\"aevons:auth:access_token:0a296d99-7034-4c19-9454-58548c91e4a2\"]}', '{\"code\":0,\"message\":\"success\",\"data\":null}\n', 'PC', 'Linux', 'Chrome', 1, '', 0, 1, 'admin', '2026-05-19 16:37:07');
-INSERT INTO `sys_oper_log` VALUES (8, 'Online-[在线用户]', 'DELETE', 'Online-[在线用户]', 'DELETE', '/api/sys/v1/monitor/online/bde7a32c-bb76-44bd-9778-c761b79e3940', '192.168.0.102', '', '', '{\"code\":0,\"message\":\"success\",\"data\":null}\n', 'PC', 'Linux', 'Chrome', 1, '', 0, 1, 'admin', '2026-05-19 16:37:15');
-INSERT INTO `sys_oper_log` VALUES (9, 'Redis-[缓存管理]', 'DELETE', 'Redis-[缓存管理]', 'DELETE', '/api/sys/v1/monitor/cache', '192.168.0.102', '', '{\"keys\":[\"aevons:auth:access_refresh:27f3fe3b-0bca-4e79-a7fc-088089d6bb4c\"]}', '{\"code\":0,\"message\":\"success\",\"data\":null}\n', 'PC', 'Linux', 'Chrome', 1, '', 0, 1, 'admin', '2026-05-19 16:47:18');
-INSERT INTO `sys_oper_log` VALUES (10, '代码生成表', 'EXPORT', '代码生成表', 'GET', '/api/gen/v1/table/download?tableIds=251', '192.168.31.81', '', '', 'PK\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0%\0\0\0../sys-service/internal/model/conf.go��MOZK��ΧxrV@.�\n76��{ƴ��4�J��\0��3�3s�cbڪ����ƾ$�Ic]4jc�.ď3@W~�f�\0���������y��c��+|V\"Bv\"� ����w�c�ٻ8��=���fq ����]@&��%S�d�os� E�JU)�\"oۍFc\Z�FŴ�|B|�z�N��g.��]^	��ܭT�6�&�3�c�E��r�:�bhʪ��\Z����=�ëvDI�9�I����0N�\"�Bq����e�B�����\0�m�:�U�;�+�Ken�*��y�a^�Ӽ[*Թ�cΓ�����ÉO�,h�|ѭ�T���|�g��h�rK�]Z��M���ϧ�>�	D�\r �>��W0w���2�l|�9�u��:������J�I8�0Z^��p���b���\'�#��΀�{�-�֊�#�$��Fmt�c��\0��?Q����y������]_v^�T�������K=6�\n=�t���Ģŀ��Х2��*�N��5a�Q��z��n~Q������n���\\]���gT��j�v�7����T����:����ʭ��&yX����W�|T\'[v����^kb�É���F��˿b\\k��\ZޔO�ݳ#�����&�7��\"gS�k�ŸQ���a�?RƁ\'�7n!ۆ���s9�����m��H���Pbz��W!��0�54ŉ8K�bQﱅ�\0\0��PK>�� �\0\0b\0\0PK\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\'\0\0\0../sys-service/internal/dto/conf_dto.goĖ�o�D�_���GyV�K�&c���m��&1�\nB�s�kz�?�L\Z�I�G�654�V�����\r	�������U�t�j�q(ڋ��sw�����}�ME]V\Z4f!�e�|�Sos�h�;<�=�y��o!�G�(.[�l��5�(�ՙbe�tɏ�Iݡ��cM��q��.(�#�t\n�e�S��PJŋ����Vk4�Z͎MKL@+3�s�Z2F�\ZM�f�\n�r\rʖܺX�UE7te*3��b��e/cղ	�+ɡW�Z�=�{��x�?��u�:تi��$yh0�#yЙ����]�ë�j���؂��	kb��:������z\r�6\n����	�ϵ��}����x<�����y�{^w��x���{]�:M�,s�-��p���>F�0���Cқ�A\0d���l��E�6j9S1HΗ���Zj�r\"�����k6Q������\Z�0O\rq�h8�\n��aՂ*��pUq��4���2������b�\0ƱR�B>t,3*�NM���Z�&-��D�����JE(���y����$$n�N��I��l�W�]Ew��Q<R�\'}�{:|�?����ֆ�ǃ�E�{\n%�I�x�\0I7����J�LEh2�p�3��o>h�>X\rR=����������e���o�y[]�p\'�>@�m�j���#B���~�������z�i��&l�?:����{�IoC��{l����C�����k{�#d���g��/9���W<�f��&�����nN���ip7\Z�\'���w���W|�w$��@��S-����\'m$����s4R\n뼜$�+����ƪ��L��v�<�����$Ok�q����9\'3�\n����S,�LM��Ԋ�5��Z���	�V\\ �\n��gpd��W\ZM��q�3����/M��B���Yޞ�ڡ����ӚM<Ռ�pn}!5���˩����9S���]�\"�yUǶ9�cM<���\'�\n�\nY=-�!���%^ڔ~7��!x)4��O�TJ)ы�\Z���tb)�$�\0\0��PK�К�\0\0�\r\0\0PK\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0/\0\0\0../sys-service/internal/service/conf_service.go���n�@�k�S��@9�|�J���� %��[�ϫ�^gw|Ɗ�A��@T<\0T�...', 'PC', 'Linux', 'Chrome', 1, '', 4, 2, 'develop', '2026-05-19 17:35:20');
 COMMIT;
 
 -- ----------------------------
@@ -4668,6 +4661,12 @@ CREATE TABLE `sys_user_credential` (
   UNIQUE KEY `uk_credential_id` (`credential_id`),
   KEY `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户Passkey凭据';
+
+-- ----------------------------
+-- Records of sys_user_credential
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for sys_user_dept

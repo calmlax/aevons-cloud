@@ -720,8 +720,8 @@ func (s *authService) issueTokenPairWithScopes(ctx context.Context, userId int64
 			DataScope: role.DataScope,
 			RoleName:  role.RoleName,
 		}
-		//自定义权限
-		if role.DataScope == 2 {
+		// 自定义数据范围
+		if role.DataScope == 9 {
 			deptIds, err := s.authRepo.GetRoleDeptIdsByRoleId(role.Id)
 			if err != nil {
 				return nil, err

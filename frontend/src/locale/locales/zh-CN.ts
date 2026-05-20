@@ -668,7 +668,7 @@ const zhCN = {
     search: '搜索', refresh: '刷新', confirm: '确认', close: '关闭', detail: '详情',
     batchDelete: '批量删除', clear: '清空', export: '导出', select: '选择', selectAll: '全选',
     selected: '已选 {count} 项', noMore: '已全部加载', noData: '暂无数据',
-    confirmDelete: '确认删除', confirmDeleteContent: '确认删除选中的 {count} 条记录？',
+    hint: '提示',confirmDelete: '确认删除', confirmDeleteContent: '确认删除选中的 {count} 条记录？',
     confirmClear: '确认清空', confirmClearContent: '确认清空所有数据吗？此操作不可恢复！',
     deleteSuccess: '删除成功', saveSuccess: '保存成功', addSuccess: '新增成功', editSuccess: '修改成功', clearSuccess: '已清空',
     status: '状态', remark: '备注', sort: '排序', name: '名称', type: '类型',

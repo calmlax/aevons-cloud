@@ -204,7 +204,7 @@ async function handleDelete(record: any) {
 
 async function handleRefreshCache() {
   Modal.confirm({
-    title: t('common.confirmDelete'),
+    title: t('common.hint'),
     content: t('system.dict.refreshCacheConfirm'),
     okButtonProps: { status: 'danger' },
     onOk: async () => {

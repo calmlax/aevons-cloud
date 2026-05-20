@@ -662,7 +662,7 @@ const enUS = {
     search: 'Search', refresh: 'Refresh', confirm: 'Confirm', close: 'Close', detail: 'Detail',
     batchDelete: 'Batch Delete', clear: 'Clear', export: 'Export', select: 'Select', selectAll: 'Select All',
     selected: '{count} selected', noMore: 'All loaded', noData: 'No data',
-    confirmDelete: 'Confirm Delete', confirmDeleteContent: 'Delete {count} selected records?',
+    hint: 'Hint',confirmDelete: 'Confirm Delete', confirmDeleteContent: 'Delete {count} selected records?',
     confirmClear: 'Confirm Clear', confirmClearContent: 'Clear all data? This cannot be undone!',
     deleteSuccess: 'Deleted', saveSuccess: 'Saved', addSuccess: 'Added', editSuccess: 'Updated', clearSuccess: 'Cleared',
     status: 'Status', remark: 'Remark', sort: 'Sort', name: 'Name', type: 'Type',

@@ -27,7 +27,7 @@ type Role struct {
 	//显示顺序
 	Sort int `gorm:"column:sort;type:int;comment:显示顺序" json:"sort"`
 
-	//数据范围（0：全部 1：自定义 2：本部门 3：本部门及以下）
+	//数据范围（0：全部 1：仅本人 2：本部门 3：本部门及以下 9：自定义）
 	DataScope int16 `gorm:"column:data_scope;type:tinyint;comment:数据范围" json:"dataScope"`
 
 	//菜单树选择项是否父子联动（0否 1是）

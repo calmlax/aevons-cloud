@@ -23,7 +23,7 @@ type RoleQuery struct {
 	RoleName *string `form:"roleName" gorm:"column:role_name" q:"like"`
 	// 角色权限字符串
 	RoleKey *string `form:"roleKey" gorm:"column:role_key" q:"like"`
-	// 数据范围（0：全部 1：自定义 2：本部门 3：本部门及以下）
+	// 数据范围（0：全部 1：仅本人 2：本部门 3：本部门及以下 9：自定义）
 	DataScope *int16 `form:"dataScope" gorm:"column:data_scope" q:"eq"`
 	// 菜单树选择项是否父子联动（0否 1是）
 	MenuCheckStrictly *int16 `form:"menuCheckStrictly" gorm:"column:menu_check_strictly" q:"eq"`
@@ -92,8 +92,8 @@ type RoleDTO struct {
 	RoleKey string `excel:"column:角色权限字符串;index:2;dict:" json:"roleKey" binding:"max=32"`
 	//显示顺序
 	Sort int `excel:"column:显示顺序;index:3;dict:" json:"sort,string" binding:"required"`
-	//数据范围（0：全部 1：自定义 2：本部门 3：本部门及以下）
-	DataScope int16 `excel:"column:数据范围（0：全部 1：自定义 2：本部门 3：本部门及以下）;index:4;dict:" json:"dataScope" binding:"required"`
+	//数据范围（0：全部 1：仅本人 2：本部门 3：本部门及以下 9：自定义）
+	DataScope int16 `excel:"column:数据范围（0：全部 1：仅本人 2：本部门 3：本部门及以下 9：自定义）;index:4;dict:" json:"dataScope" binding:"required"`
 	//菜单树选择项是否父子联动（0否 1是）
 	MenuCheckStrictly int16 `json:"menuCheckStrictly"`
 	//部门树选择项是否父子联动（0否 1是）

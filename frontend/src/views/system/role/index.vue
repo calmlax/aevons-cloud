@@ -321,7 +321,7 @@ async function submitForm() {
         })
       : normalizedMenuKeys
     ).map(Number)
-    const deptIds = form.dataScope === 1 ? toKeyStrings(checkedDeptKeys.value).map(Number) : []
+    const deptIds = form.dataScope === 9 ? toKeyStrings(checkedDeptKeys.value).map(Number) : []
     if (isEdit.value) {
       await roleApi.update(form.id!, { ...form, menuIds, deptIds })
       Message.success(t('common.editSuccess'));
@@ -559,7 +559,7 @@ loadDeptTree();
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col v-if="form.dataScope === 1" :span="24">
+          <a-col v-if="form.dataScope === 9" :span="24">
             <a-form-item :label="t('system.role.deptPerms')" :content-flex="false" :merge-props="false" style="width:100%">
               <div class="tree-option-head">
                 <span>{{ t('system.role.deptCheckStrictly') }}</span>
