@@ -269,75 +269,75 @@ func (s *genTableService) GetGens(isFrontend bool) []dto.CodeDTO {
 	gens = append(gens, dto.CodeDTO{
 		Name:         "Model",
 		FileName:     "model.tpl",
-		SaveFileName: "../%s-service/internal/model/%s.go",
+		SaveFileName: "%s-service/internal/model/%s.go",
 		FileType:     "go",
 	})
 	gens = append(gens, dto.CodeDTO{
 		Name:         "DTO",
 		FileName:     "dto.tpl",
-		SaveFileName: "../%s-service/internal/dto/%s_dto.go",
+		SaveFileName: "%s-service/internal/dto/%s_dto.go",
 		FileType:     "go",
 	})
 	gens = append(gens, dto.CodeDTO{
 		Name:         "Service",
 		FileName:     "service.tpl",
-		SaveFileName: "../%s-service/internal/service/%s_service.go",
+		SaveFileName: "%s-service/internal/service/%s_service.go",
 		FileType:     "go",
 	})
 	gens = append(gens, dto.CodeDTO{
 		Name:         "Repository",
 		FileName:     "repository.tpl",
-		SaveFileName: "../%s-service/internal/repository/%s_repository.go",
+		SaveFileName: "%s-service/internal/repository/%s_repository.go",
 		FileType:     "go",
 	})
 	gens = append(gens, dto.CodeDTO{
 		Name:         "Handler",
 		FileName:     "handler.tpl",
-		SaveFileName: "../%s-service/internal/handler/%s_handler.go",
+		SaveFileName: "%s-service/internal/handler/%s_handler.go",
 		FileType:     "go",
 	})
 	gens = append(gens, dto.CodeDTO{
 		Name:         "Router",
 		FileName:     "router.tpl",
-		SaveFileName: "../%s-service/internal/router/%s_router.go",
+		SaveFileName: "%s-service/internal/router/%s_router.go",
 		FileType:     "go",
 	})
 	if !isFrontend {
 		gens = append(gens, dto.CodeDTO{
 			Name:         "SQL",
 			FileName:     "sql.tpl",
-			SaveFileName: "../%s-service/gen_code/sql/%s.sql",
+			SaveFileName: "%s-service/gen_code/sql/%s.sql",
 			FileType:     "sql",
 		})
 		gens = append(gens, dto.CodeDTO{
 			Name:         "API",
 			FileName:     "api.tpl",
-			SaveFileName: "../%s-service/gen_code/api/%s.ts",
+			SaveFileName: "%s-service/gen_code/api/%s.ts",
 			FileType:     "ts",
 		})
 		gens = append(gens, dto.CodeDTO{
 			Name:         "Vue",
 			FileName:     "vue.tpl",
-			SaveFileName: "../%s-service/gen_code/vue/%s.vue",
+			SaveFileName: "%s-service/gen_code/vue/%s.vue",
 			FileType:     "vue",
 		})
 	} else {
 		gens = append(gens, dto.CodeDTO{
 			Name:         "sql",
 			FileName:     "sql.tpl",
-			SaveFileName: "../%s-service/gen_code/sql/%s.%s.menu.sql",
+			SaveFileName: "%s-service/gen_code/sql/%s.menu.sql",
 			FileType:     "sql",
 		})
 		gens = append(gens, dto.CodeDTO{
 			Name:         "api",
 			FileName:     "api.tpl",
-			SaveFileName: "../%s-service/gen_code/api/%s/%s.ts",
+			SaveFileName: "%s-service/gen_code/api/%s.ts",
 			FileType:     "ts",
 		})
 		gens = append(gens, dto.CodeDTO{
 			Name:         "vue",
 			FileName:     "vue.tpl",
-			SaveFileName: "../%s-service/gen_code/vue/%s.vue",
+			SaveFileName: "%s-service/gen_code/vue/%s.vue",
 			FileType:     "vue",
 		})
 	}
@@ -434,7 +434,7 @@ func (s *genTableService) CommandGenerateCode(tableNames []string, moduleName st
 		for _, gen := range gens {
 
 			// 拼接最终保存路径（自动替换 moduleName 和 className）
-			savePath := fmt.Sprintf(gen.SaveFileName, moduleName, cleanName)
+			savePath := fmt.Sprintf(gen.SaveFileName, "../"+moduleName, cleanName)
 			dir := filepath.Dir(savePath)
 
 			// 自动创建目录
