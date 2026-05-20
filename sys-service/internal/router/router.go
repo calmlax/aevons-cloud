@@ -15,6 +15,7 @@ import (
 	"github.com/calmlax/aevons-framework/core"
 	"github.com/calmlax/aevons-framework/core/server"
 	"github.com/calmlax/aevons-framework/middleware"
+	dsmodel "github.com/calmlax/aevons-framework/model"
 	"github.com/calmlax/aevons-framework/xlog"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -101,8 +102,12 @@ func registerUserRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.Ope
 	h := handler.NewUserHandler(service.NewUserService(repository.NewUserRepository(db)))
 	g := rg.Group("/user")
 	{
-		g.GET("/list", middleware.HasPermission("sys:user$list"), h.List)
-		g.GET("/page", middleware.HasPermission("sys:user$list"), h.Page)
+		dataScope := middleware.DataScope(dsmodel.DataScope{
+			UserAlias:  "sys_user",
+			UserIdName: "id",
+		})
+		g.GET("/list", middleware.HasPermission("sys:user$list"), dataScope, h.List)
+		g.GET("/page", middleware.HasPermission("sys:user$list"), dataScope, h.Page)
 		g.GET("/:id", middleware.HasPermission("sys:user$query"), h.Get)
 		g.GET("/:id/relations", middleware.HasPermission("sys:user$query"), h.GetRelations)
 		g.POST("", middleware.HasPermission("sys:user$add"), localmiddleware.OperLog(logWriter, "User-[用户管理]", consts.INSERT), h.Create)
