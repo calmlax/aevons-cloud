@@ -27,6 +27,7 @@ import (
 	"github.com/calmlax/aevons-framework/utils"
 
 	"github.com/calmlax/aevons-framework/core/base"
+	"github.com/calmlax/aevons-framework/core/scope"
 
 	"gorm.io/gorm"
 )
@@ -66,13 +67,13 @@ func NewGenTableService(repo repository.GenTableRepository, columnRepo repositor
 }
 
 // Delete 批量删除数据表（级联删除对应字段）
-func (s *genTableService) BatchDelete(ids []int64) error {
+func (s *genTableService) BatchDelete(ids []int64, scopes ...scope.DBScope) error {
 	// 先删除关联字段
 	if err := s.columnRepo.DeleteByTableIds(ids); err != nil {
 		return err
 	}
 
-	return s.BaseService.BatchDelete(ids)
+	return s.BaseService.BatchDelete(ids, scopes...)
 }
 
 func (s *genTableService) DBTables() ([]model.GenTable, error) {
