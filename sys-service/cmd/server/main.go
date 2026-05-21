@@ -12,10 +12,14 @@
 package main
 
 import (
+	"internal-grpc/sys_grpc"
+	"sys-service/internal/grpcs"
 	"sys-service/internal/router"
 
 	"github.com/calmlax/aevons-framework/core"
+	"github.com/calmlax/aevons-framework/grpcx"
 	"github.com/calmlax/aevons-framework/xlog"
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -31,8 +35,24 @@ func main() {
 		xlog.Fatal("failed to setup router: %v", err)
 	}
 
-	// HTTP 启动、Consul 注册和优雅关闭统一由框架接管。
-	if err := core.RunGin(app, engine); err != nil {
-		xlog.Fatal("failed to run http server: %v", err)
+	cfg, err := app.RawConfig()
+	if err != nil {
+		xlog.Fatal("failed to read config from app: %v", err)
+	}
+
+	var grpcSrv *grpc.Server
+
+	if cfg.Server.GRPCPort > 0 {
+		grpcSrv = grpcx.NewServer()
+		dbConn, dbErr := app.RawDatabase()
+		if dbErr != nil {
+			xlog.Fatal("failed to read database from app: %v", dbErr)
+		}
+		sys_grpc.RegisterService(grpcSrv, grpcs.NewSysServiceServer(dbConn))
+	}
+
+	// HTTP、gRPC、Consul 注册和优雅关闭统一由框架接管。
+	if err := core.RunGinAndGRPC(app, engine, grpcSrv, cfg.Server.GRPCPort); err != nil {
+		xlog.Fatal("failed to run http/grpc server: %v", err)
 	}
 }
