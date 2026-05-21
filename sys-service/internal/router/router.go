@@ -99,7 +99,8 @@ func registerConfRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.Ope
 }
 
 func registerUserRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.OperLogWriter) {
-	h := handler.NewUserHandler(service.NewUserService(repository.NewUserRepository(db)))
+	dictSvc := service.NewDictDataService(repository.NewDictDataRepository(db))
+	h := handler.NewUserHandler(service.NewUserService(repository.NewUserRepository(db)), dictSvc)
 	g := rg.Group("/user")
 	{
 		dataScope := middleware.DataScope(scope.DataScope{
@@ -109,6 +110,9 @@ func registerUserRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.Ope
 		})
 		g.GET("/list", middleware.HasPermission("sys:user$list"), dataScope, h.List)
 		g.GET("/page", middleware.HasPermission("sys:user$list"), dataScope, h.Page)
+		g.GET("/export", middleware.HasPermission("sys:user$export"), dataScope, h.Export)
+		g.GET("/import/template", middleware.HasPermission("sys:user$import"), h.ImportTemplate)
+		g.POST("/import", middleware.HasPermission("sys:user$import"), localmiddleware.OperLog(logWriter, "User-[用户导入]", consts.IMPORT), h.Import)
 		g.GET("/:id", middleware.HasPermission("sys:user$query"), dataScope, h.Get)
 		g.GET("/:id/relations", middleware.HasPermission("sys:user$query"), h.GetRelations)
 		g.POST("", middleware.HasPermission("sys:user$add"), localmiddleware.OperLog(logWriter, "User-[用户管理]", consts.INSERT), h.Create)

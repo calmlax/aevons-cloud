@@ -10,12 +10,15 @@
 package handler
 
 import (
+	"context"
 	"strconv"
 	"sys-service/internal/dto"
 	"sys-service/internal/model"
 	"sys-service/internal/service"
 
+	"github.com/calmlax/aevons-framework/core/scope"
 	apperr "github.com/calmlax/aevons-framework/errors"
+	"github.com/calmlax/aevons-framework/excel"
 	"github.com/calmlax/aevons-framework/response"
 
 	"github.com/calmlax/aevons-framework/core/base"
@@ -24,14 +27,16 @@ import (
 )
 
 type UserHandler struct {
-	crud *base.BaseHandler[model.User, *dto.UserQuery, dto.CreateUserDTO, dto.UpdateUserDTO]
-	svc  service.UserService
+	crud    *base.BaseHandler[model.User, *dto.UserQuery, dto.CreateUserDTO, dto.UpdateUserDTO]
+	svc     service.UserService
+	dictSvc service.DictDataService
 }
 
-func NewUserHandler(svc service.UserService) *UserHandler {
+func NewUserHandler(svc service.UserService, dictSvc service.DictDataService) *UserHandler {
 	return &UserHandler{
-		crud: base.NewBaseHandler[model.User, *dto.UserQuery, dto.CreateUserDTO, dto.UpdateUserDTO](svc),
-		svc:  svc,
+		crud:    base.NewBaseHandler[model.User, *dto.UserQuery, dto.CreateUserDTO, dto.UpdateUserDTO](svc),
+		svc:     svc,
+		dictSvc: dictSvc,
 	}
 }
 
@@ -236,4 +241,99 @@ func (h *UserHandler) UpdateStatus(c *gin.Context) {
 		return
 	}
 	response.Success(c, id)
+}
+
+// Export 导出用户 Excel。
+//
+// @Summary      导出用户
+// @Tags         用户管理
+// @Produce      application/octet-stream
+// @Security     BearerAuth
+// @Router       /api/sys/v1/user/export [get]
+func (h *UserHandler) Export(c *gin.Context) {
+	q, ok := base.BindQuery[*dto.UserQuery](c)
+	if !ok {
+		return
+	}
+	list, err := h.svc.ListExcel(q, scope.GetDBScopes(c)...)
+	if err != nil {
+		response.FailBy(c, apperr.ErrQueryFailed)
+		return
+	}
+	if err := excel.Export(c, excel.ExportParam{
+		DataList:     list,
+		StructPtr:    &dto.UserDTO{},
+		FileName:     "用户列表",
+		SheetName:    "用户",
+		DictProvider: h.dictProvider(c),
+	}); err != nil {
+		response.FailServerError(c, "excel.export.failed", map[string]any{"error": err.Error()})
+	}
+}
+
+// ImportTemplate 下载用户导入模板。
+//
+// @Summary      下载用户导入模板
+// @Tags         用户管理
+// @Produce      application/octet-stream
+// @Security     BearerAuth
+// @Router       /api/sys/v1/user/import/template [get]
+func (h *UserHandler) ImportTemplate(c *gin.Context) {
+	if err := excel.Export(c, excel.ExportParam{
+		DataList:     []dto.UserDTO{},
+		StructPtr:    &dto.UserDTO{},
+		FileName:     "用户导入模板",
+		SheetName:    "用户导入模板",
+		DictProvider: h.dictProvider(c),
+	}); err != nil {
+		response.FailServerError(c, "excel.export.failed", map[string]any{"error": err.Error()})
+	}
+}
+
+// Import 解析用户导入文件。
+//
+// @Summary      导入用户 Excel
+// @Tags         用户管理
+// @Accept       mpfd
+// @Produce      json
+// @Security     BearerAuth
+// @Param        file  formData  file  true  "Excel 文件"
+// @Success      200   {object}  response.Response
+// @Router       /api/sys/v1/user/import [post]
+func (h *UserHandler) Import(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		response.FailBy(c, apperr.ErrInvalidBody)
+		return
+	}
+	result, err := excel.Import(c.Request.Context(), excel.ImportParam{
+		File:         file,
+		StructPtr:    &dto.UserDTO{},
+		DictProvider: h.dictProvider(c),
+	})
+	if err != nil {
+		response.FailServerError(c, "excel.import.failed", map[string]any{"error": err.Error()})
+		return
+	}
+	response.Success(c, result)
+}
+
+func (h *UserHandler) dictProvider(c *gin.Context) excel.DictProvider {
+	langCode := base.GetLanguage(c)
+	return func(ctx context.Context, dictKey string) ([]excel.DictItem, error) {
+		list, err := h.dictSvc.GetDictDataCache(dictKey)
+		if err != nil {
+			return nil, err
+		}
+		var items []excel.DictItem
+		for _, item := range list {
+			if item.LangCode == langCode {
+				items = append(items, excel.DictItem{
+					Value: item.DictValue,
+					Label: item.Label,
+				})
+			}
+		}
+		return items, nil
+	}
 }

@@ -105,33 +105,33 @@ type ResetPasswordDTO struct {
 
 type UserDTO struct {
 	//用户编号
-	Id int64 `excel:"column:用户编号;index:0;dict:" json:"id,string" binding:"required"`
+	Id int64 `excel:"column:用户编号;index:0;mode:export;" json:"id,string" binding:"required"`
 	//用户名
-	Username string `excel:"column:用户名;index:1;dict:" json:"username" binding:"required,max=32"`
+	Username string `excel:"column:用户名;index:1;" json:"username" binding:"required,max=32"`
 	//呢称
-	Nickname string `excel:"column:呢称;index:2;dict:" json:"nickname" binding:"required,max=50"`
+	Nickname string `excel:"column:呢称;index:2;" json:"nickname" binding:"required,max=50"`
 	//用户类型
 	Type int16 `excel:"column:用户类型;index:3;dict:sys_user_type" json:"type" binding:"required"`
 	//邮箱
-	Email string `excel:"column:邮箱;index:4;dict:" json:"email" binding:"max=64"`
+	Email string `excel:"column:邮箱;index:4;" json:"email" binding:"max=64"`
 	//手机号
-	Mobile string `excel:"column:手机号;index:5;dict:" json:"mobile" binding:"max=11"`
+	Mobile string `excel:"column:手机号;index:5;" json:"mobile" binding:"max=11"`
 	//性别（0未知 1男 2女）
-	Sex int16 `excel:"column:性别（0未知 1男 2女）;index:6;dict:sys_user_sex" json:"sex" binding:"required"`
+	Sex int16 `excel:"column:性别;index:6;dict:sys_user_sex" json:"sex" binding:"required"`
 	//头像
-	Avatar string `excel:"column:头像;index:7;dict:" json:"avatar" binding:"max=255"`
+	Avatar string `excel:"column:头像;index:7;" json:"avatar" binding:"max=255"`
 	//电子签名
-	Autograph string `excel:"column:电子签名;index:8;dict:" json:"autograph" binding:"max=255"`
+	Autograph string `json:"autograph" binding:"max=255"`
 	//密码
-	Password string `excel:"column:密码;index:9;dict:" json:"password" binding:"required,max=128"`
+	Password string `json:"password" binding:"required,max=128"`
 	//状态（0正常 1停用）
 	Status int16 `excel:"column:状态（0正常 1停用）;index:10;dict:sys_common_status" json:"status" binding:"required"`
 	//
-	CreatedBy int64 `excel:"column:;index:11;dict:" json:"createdBy,string"`
+	CreatedBy int64 `excel:"column:创建人;index:11;mode:export;" json:"createdBy,string"`
 	//
-	CreatedAt time.Time `excel:"column:;index:12;dict:" json:"createdAt"`
+	CreatedAt time.Time `excel:"column:创建时间;index:12;mode:export;format:2006-01-02 15:04:05;" json:"createdAt"`
 	//
-	UpdatedBy int64 `excel:"column:;index:13;dict:" json:"updatedBy,string"`
+	UpdatedBy int64 `json:"updatedBy,string"`
 	//
-	UpdatedAt time.Time `excel:"column:;index:14;dict:" json:"updatedAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }

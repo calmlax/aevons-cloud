@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { IconDelete, IconEdit, IconFilter, IconPlus, IconCheck, IconClose, IconLock } from '@arco-design/web-vue/es/icon'
+import { IconDelete, IconDownload, IconEdit, IconFilter, IconPlus, IconCheck, IconClose, IconLock, IconUpload } from '@arco-design/web-vue/es/icon'
 import userApi from '@/api/system/user'
 import roleApi from '@/api/system/role'
 import deptApi from '@/api/system/dept'
@@ -93,6 +93,74 @@ async function batchDelete() {
     okButtonProps: { status: 'danger' },
     onOk: async () => { await userApi.delete(selectedIds.value); Message.success(t('common.deleteSuccess')); selectedIds.value = []; loadPage() },
   })
+}
+
+// ── Excel 导入导出 ────────────────────────────────────
+const exportLoading = ref(false)
+const templateLoading = ref(false)
+const importLoading = ref(false)
+const fileInputRef = ref<HTMLInputElement | null>(null)
+const importModalVisible = ref(false)
+const importResultVisible = ref(false)
+const importResult = ref<any>({
+  successCount: 0,
+  failedCount: 0,
+  errors: [],
+})
+
+async function handleExport() {
+  exportLoading.value = true
+  try {
+    await userApi.exportFile(queryParams.value, t('system.user.exportFileName'))
+    Message.success(t('system.user.exportSuccess'))
+  } finally {
+    exportLoading.value = false
+  }
+}
+
+async function handleDownloadTemplate() {
+  templateLoading.value = true
+  try {
+    await userApi.downloadTemplate(t('system.user.importTemplateFileName'))
+    Message.success(t('system.user.downloadTemplateSuccess'))
+  } finally {
+    templateLoading.value = false
+  }
+}
+
+function openImportPicker() {
+  fileInputRef.value?.click()
+}
+
+async function handleImportChange(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  input.value = ''
+  if (!file) return
+
+  const fileName = file.name.toLowerCase()
+  if (!fileName.endsWith('.xlsx')) {
+    Message.error(t('system.user.importFileTypeError'))
+    return
+  }
+
+  const formData = new FormData()
+  formData.append('file', file)
+
+  importLoading.value = true
+  try {
+    const res: any = await userApi.importExcel(formData)
+    importResult.value = {
+      successCount: res?.successCount ?? 0,
+      failedCount: res?.failedCount ?? 0,
+      errors: res?.errors ?? [],
+    }
+    importModalVisible.value = false
+    importResultVisible.value = true
+    Message.success(t('system.user.importParsed'))
+  } finally {
+    importLoading.value = false
+  }
 }
 
 // ── 选项数据 ───────────────────────────────────────────
@@ -270,7 +338,14 @@ loadPage()
           <a-button v-permission="'sys:user$delete'" status="danger" :disabled="!selectedIds.length" @click="batchDelete">
             <template #icon><IconDelete /></template>{{ t('common.batchDelete') }}
           </a-button>
+          <a-button v-permission="'sys:user$export'" :loading="exportLoading" @click="handleExport">
+            <template #icon><IconDownload /></template>{{ t('common.export') }}
+          </a-button>
+          <a-button v-permission="'sys:user$import'" :loading="templateLoading || importLoading" @click="importModalVisible = true">
+            <template #icon><IconUpload /></template>{{ t('system.user.importBtn') }}
+          </a-button>
         </a-space>
+        <input ref="fileInputRef" type="file" accept=".xlsx" style="display:none" @change="handleImportChange" />
         <div class="cl-toolbar-right">
           <a-input-search v-model="queryParams.username" :placeholder="t('system.user.searchPlaceholder')" allow-clear class="cl-toolbar-search"
             @search="handleSearch" @press-enter="handleSearch" />
@@ -513,6 +588,55 @@ loadPage()
           <a-button type="primary" :loading="resetPwdLoading" @click="submitResetPassword">{{ t('system.user.confirmReset') }}</a-button>
         </div>
       </a-form>
+    </a-modal>
+
+    <!-- 导入弹窗 -->
+    <a-modal
+      v-model:visible="importModalVisible"
+      :title="t('system.user.importBtn')"
+      :width="isMobile ? '100%' : 560"
+      :footer="false">
+      <a-space direction="vertical" fill size="large">
+        <a-alert type="info">
+          <template #title>{{ t('system.user.importTemplateFileName') }}</template>
+          <template #default>{{ t('system.user.downloadTemplate') }} / {{ t('system.user.importBtn') }}</template>
+        </a-alert>
+        <a-button long :loading="templateLoading" @click="handleDownloadTemplate">
+          <template #icon><IconDownload /></template>{{ t('system.user.downloadTemplate') }}
+        </a-button>
+        <a-button long type="primary" :loading="importLoading" @click="openImportPicker">
+          <template #icon><IconUpload /></template>{{ t('system.user.importBtn') }}
+        </a-button>
+        <div style="display:flex;justify-content:center">
+          <a-button @click="importModalVisible = false">{{ t('common.cancel') }}</a-button>
+        </div>
+      </a-space>
+    </a-modal>
+
+    <!-- 导入结果 -->
+    <a-modal v-model:visible="importResultVisible" :title="t('system.user.importResultTitle')" :width="isMobile ? '100%' : 720" :footer="false">
+      <a-space direction="vertical" fill size="large">
+        <a-alert type="info">
+          <template #title>{{ t('system.user.importResultSummary', { success: importResult.successCount, failed: importResult.failedCount }) }}</template>
+        </a-alert>
+        <a-table
+          v-if="importResult.errors?.length"
+          :bordered="false"
+          :pagination="false"
+          :data="importResult.errors"
+          row-key="row"
+          :scroll="{ y: 320 }">
+          <template #columns>
+            <a-table-column :title="t('system.user.importErrorRow')" data-index="row" :width="100" />
+            <a-table-column :title="t('system.user.importErrorColumn')" data-index="column" :width="180" />
+            <a-table-column :title="t('system.user.importErrorMsg')" data-index="msg" />
+          </template>
+        </a-table>
+        <a-empty v-else :description="t('system.user.importNoErrors')" />
+        <div style="display:flex;justify-content:center">
+          <a-button type="primary" @click="importResultVisible = false">{{ t('common.confirm') }}</a-button>
+        </div>
+      </a-space>
     </a-modal>
   </div>
 </template>

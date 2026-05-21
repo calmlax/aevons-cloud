@@ -16,6 +16,7 @@ import (
 	"sys-service/internal/repository"
 
 	"github.com/calmlax/aevons-framework/core/base"
+	corescope "github.com/calmlax/aevons-framework/core/scope"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -35,6 +36,8 @@ type UserService interface {
 	ResetPassword(userId int64, newPassword string) error
 	// 更新状态
 	UpdateStatus(userId int64, status int16) error
+	// 导出用户 DTO 列表
+	ListExcel(q *dto.UserQuery, scopes ...corescope.DBScope) ([]dto.UserDTO, error)
 }
 
 type userService struct {
@@ -163,4 +166,31 @@ func (s *userService) ResetPassword(userId int64, newPassword string) error {
 
 func (s *userService) UpdateStatus(userId int64, status int16) error {
 	return s.repo.UpdateStatus(userId, status)
+}
+
+func (s *userService) ListExcel(q *dto.UserQuery, scopes ...corescope.DBScope) ([]dto.UserDTO, error) {
+	users, err := s.List(q, scopes...)
+	if err != nil {
+		return nil, err
+	}
+	result := make([]dto.UserDTO, 0, len(users))
+	for _, item := range users {
+		result = append(result, dto.UserDTO{
+			Id:        item.Id,
+			Username:  item.Username,
+			Nickname:  item.Nickname,
+			Type:      item.Type,
+			Email:     item.Email,
+			Mobile:    item.Mobile,
+			Sex:       item.Sex,
+			Avatar:    item.Avatar,
+			Autograph: item.Autograph,
+			Status:    item.Status,
+			CreatedBy: item.CreatedBy,
+			CreatedAt: item.CreatedAt,
+			UpdatedBy: item.UpdatedBy,
+			UpdatedAt: item.UpdatedAt,
+		})
+	}
+	return result, nil
 }
