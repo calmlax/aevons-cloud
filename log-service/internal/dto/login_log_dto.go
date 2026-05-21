@@ -10,6 +10,8 @@
 package dto
 
 import (
+	"time"
+
 	"github.com/calmlax/aevons-framework/core/base"
 )
 
@@ -34,4 +36,29 @@ type CreateLoginLogDTO struct {
 }
 
 type UpdateLoginLogDTO struct {
+}
+
+type LoginLogDTO struct {
+	//编号
+	Id int64 `json:"id,string" binding:"required"`
+	//登录用户名
+	Username string `json:"username" binding:"required,max=50"`
+	//客户端ID
+	ClientId string `json:"clientId" binding:"required,max=32"`
+	//授权类型
+	GrantType string `json:"grantType" binding:"max=20"`
+	//系统
+	Os string `json:"os" binding:"max=50"`
+	//浏览器
+	Browser string `json:"browser" binding:"max=50"`
+	//登录IP
+	Ip string `json:"ip" binding:"max=128"`
+	//登录地点
+	Location string `json:"location" binding:"max=255"`
+	//状态（0失败 1成功）
+	Status int16 `json:"status"`
+	//模块标题
+	Msg string `json:"msg" binding:"max=50"`
+	//登录时间
+	LoginAt time.Time `json:"loginAt"`
 }

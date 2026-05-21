@@ -10,9 +10,9 @@
 package handler
 
 import (
-	"context"
 	"strconv"
 	"sys-service/internal/dto"
+	sysexcel "sys-service/internal/excel"
 	"sys-service/internal/model"
 	"sys-service/internal/service"
 
@@ -27,16 +27,16 @@ import (
 )
 
 type UserHandler struct {
-	crud    *base.BaseHandler[model.User, *dto.UserQuery, dto.CreateUserDTO, dto.UpdateUserDTO]
-	svc     service.UserService
-	dictSvc service.DictDataService
+	crud         *base.BaseHandler[model.User, *dto.UserQuery, dto.CreateUserDTO, dto.UpdateUserDTO]
+	svc          service.UserService
+	dictProvider sysexcel.DictProviderBuilder
 }
 
-func NewUserHandler(svc service.UserService, dictSvc service.DictDataService) *UserHandler {
+func NewUserHandler(svc service.UserService, dictProvider sysexcel.DictProviderBuilder) *UserHandler {
 	return &UserHandler{
-		crud:    base.NewBaseHandler[model.User, *dto.UserQuery, dto.CreateUserDTO, dto.UpdateUserDTO](svc),
-		svc:     svc,
-		dictSvc: dictSvc,
+		crud:         base.NewBaseHandler[model.User, *dto.UserQuery, dto.CreateUserDTO, dto.UpdateUserDTO](svc),
+		svc:          svc,
+		dictProvider: dictProvider,
 	}
 }
 
@@ -265,7 +265,7 @@ func (h *UserHandler) Export(c *gin.Context) {
 		StructPtr:    &dto.UserDTO{},
 		FileName:     "用户列表",
 		SheetName:    "用户",
-		DictProvider: h.dictProvider(c),
+		DictProvider: h.dictProvider.Build(c),
 	}); err != nil {
 		response.FailServerError(c, "excel.export.failed", map[string]any{"error": err.Error()})
 	}
@@ -284,7 +284,7 @@ func (h *UserHandler) ImportTemplate(c *gin.Context) {
 		StructPtr:    &dto.UserDTO{},
 		FileName:     "用户导入模板",
 		SheetName:    "用户导入模板",
-		DictProvider: h.dictProvider(c),
+		DictProvider: h.dictProvider.Build(c),
 	}); err != nil {
 		response.FailServerError(c, "excel.export.failed", map[string]any{"error": err.Error()})
 	}
@@ -309,31 +309,11 @@ func (h *UserHandler) Import(c *gin.Context) {
 	result, err := excel.Import(c.Request.Context(), excel.ImportParam{
 		File:         file,
 		StructPtr:    &dto.UserDTO{},
-		DictProvider: h.dictProvider(c),
+		DictProvider: h.dictProvider.Build(c),
 	})
 	if err != nil {
 		response.FailServerError(c, "excel.import.failed", map[string]any{"error": err.Error()})
 		return
 	}
 	response.Success(c, result)
-}
-
-func (h *UserHandler) dictProvider(c *gin.Context) excel.DictProvider {
-	langCode := base.GetLanguage(c)
-	return func(ctx context.Context, dictKey string) ([]excel.DictItem, error) {
-		list, err := h.dictSvc.GetDictDataCache(dictKey)
-		if err != nil {
-			return nil, err
-		}
-		var items []excel.DictItem
-		for _, item := range list {
-			if item.LangCode == langCode {
-				items = append(items, excel.DictItem{
-					Value: item.DictValue,
-					Label: item.Label,
-				})
-			}
-		}
-		return items, nil
-	}
 }

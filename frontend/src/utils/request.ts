@@ -251,8 +251,8 @@ service.interceptors.response.use(
         // 这时没有任何退路可言，全面强制退出并阻断一切队列。
         refreshSubscribers = [];
         const authStore = useAuthStore();
-        authStore.clearAuth(true);
-        //Message.error(i18n.global.t('sys.api.sessionExpired'));
+        authStore.clearAuth(false);
+        Message.error(i18n.global.t('sys.api.sessionExpired'));
         return Promise.reject(refreshError);
       } finally {
         // 记得解锁

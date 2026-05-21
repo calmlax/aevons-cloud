@@ -2,6 +2,7 @@ package router
 
 import (
 	"fmt"
+	sysexcel "sys-service/internal/excel"
 	"sys-service/internal/handler"
 	localmiddleware "sys-service/internal/middleware"
 	"sys-service/internal/repository"
@@ -100,7 +101,8 @@ func registerConfRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.Ope
 
 func registerUserRoutes(rg *gin.RouterGroup, db *gorm.DB, logWriter log_grpc.OperLogWriter) {
 	dictSvc := service.NewDictDataService(repository.NewDictDataRepository(db))
-	h := handler.NewUserHandler(service.NewUserService(repository.NewUserRepository(db)), dictSvc)
+	dictProvider := sysexcel.NewDictProviderBuilder(dictSvc)
+	h := handler.NewUserHandler(service.NewUserService(repository.NewUserRepository(db)), dictProvider)
 	g := rg.Group("/user")
 	{
 		dataScope := middleware.DataScope(scope.DataScope{
